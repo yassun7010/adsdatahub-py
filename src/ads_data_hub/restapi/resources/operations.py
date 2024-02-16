@@ -1,4 +1,9 @@
-class OperationsResource:
+from typing import Literal
+
+ResourceName = Literal["operations"]
+
+
+class Resource:
     """このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。"""
 
     def cancel(self, name: str):

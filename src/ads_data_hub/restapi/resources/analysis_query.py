@@ -1,3 +1,5 @@
+from typing import Literal
+
 from ads_data_hub.restapi.schemas.analysis_queries_start import (
     AnalysisQueriesStartDict,
     AnalysisQueriesStartModel,
@@ -6,11 +8,10 @@ from ads_data_hub.restapi.schemas.analysis_queries_start_transient import (
     AnalysisQueriesStartTransient,
 )
 
+ResourceName = Literal["customers.analysisQueries"]
 
-class AnalysisQueriesResource:
-    def __init__(self, parent: str) -> None:
-        self._parent = parent
 
+class Resource:
     def create(self) -> None:
         """
         後で実行するための分析クエリを作成します。

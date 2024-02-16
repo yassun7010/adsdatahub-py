@@ -1,3 +1,38 @@
+from typing import assert_never
+
+from typing_extensions import overload
+
+from ads_data_hub.restapi.resources import analysis_query, operations
+
+
 class Client:
-    def request(self):
-        pass
+    @overload
+    def request(
+        self, resource_name: analysis_query.ResourceName
+    ) -> analysis_query.Resource:
+        """
+        Ads Data Hub 内で実行できる分析クエリを定義します。
+
+        Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
+        """
+        ...
+
+    @overload
+    def request(self, resource_name: operations.ResourceName) -> operations.Resource:
+        """
+        このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
+
+        Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations?hl=ja
+        """
+        ...
+
+    def request(
+        self, resource_name: analysis_query.ResourceName | operations.ResourceName
+    ) -> analysis_query.Resource | operations.Resource:
+        match resource_name:
+            case "customers.analysisQueries":
+                return analysis_query.Resource()
+            case "operations":
+                return operations.Resource()
+            case _:
+                assert_never(resource_name)
