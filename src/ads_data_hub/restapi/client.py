@@ -101,7 +101,7 @@ class Client(ClientWithProject):
             if not self._credentials.valid:
                 self._credentials.refresh(google.auth.transport.requests.Request())
 
-        if _http is None:
+        if _http is None and self._credentials is not None:
             self._http_internal = httpx.Client(
                 headers={
                     "Authorization": f"Bearer {self._credentials.token}",
