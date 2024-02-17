@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from ads_data_hub.restapi.client import Client
 
@@ -8,4 +10,4 @@ class TestAnalysisQuery:
             Client().request(
                 "https://adsdatahub.googleapis.com/v1/operations/{operation_id}",
                 operation_id="aaa",
-            ).wait()
+            ).wait(timeout=datetime.timedelta(seconds=1))

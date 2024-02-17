@@ -1,3 +1,4 @@
+import datetime
 from typing import Annotated, Literal, TypedDict
 
 import httpx
@@ -70,7 +71,7 @@ class Resource:
     def wait(
         self,
         timeout: Annotated[
-            str | None,
+            datetime.timedelta | str | int | float | None,
             Doc(
                 """
                 タイムアウトするまでの最大待機時間。
