@@ -6,6 +6,12 @@ from ads_data_hub.restapi.schemas.status import StatusModel
 
 class OperationModel(Model):
     name: str
+    """
+    サーバーによって割り当てられる名前。
+
+    最初にその名前を返すサービスと同じサービス内でのみ一意になります。
+    デフォルトの HTTP マッピングを使用している場合は、name を operations/{unique_id} で終わるリソース名にします。
+    """
 
     metadata: QueryMetadataModel
 

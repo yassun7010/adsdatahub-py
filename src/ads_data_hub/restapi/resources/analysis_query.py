@@ -1,4 +1,4 @@
-from typing import Annotated, Literal
+from typing import Annotated, Literal, TypedDict
 
 import httpx
 from typing_extensions import Doc
@@ -12,12 +12,22 @@ from ads_data_hub.restapi.schemas.analysis_queries_start_transient import (
 )
 from ads_data_hub.restapi.schemas.analysis_query import AnalysisQuery
 
-ResourceName = Literal["customers.analysisQueries"]
+ResourceName = Literal[
+    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"
+]
+RESOURCE_NAME: ResourceName = (
+    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"
+)
+
+
+class QueryParameters(TypedDict):
+    customer_id: str
 
 
 class Resource:
-    def __init__(self, client: httpx.Client) -> None:
+    def __init__(self, client: httpx.Client, query_parameters: QueryParameters) -> None:
         self._client = client
+        self._base_url = RESOURCE_NAME.format(**query_parameters)
 
     def create(
         self,

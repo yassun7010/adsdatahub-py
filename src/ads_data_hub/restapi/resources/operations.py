@@ -1,16 +1,24 @@
-from typing import Literal
+from typing import Annotated, Literal, TypedDict
 
 import httpx
-from typing_extensions import Annotated, Doc
+from typing_extensions import Doc
 
-ResourceName = Literal["operations"]
+ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{operation_id}"]
+RESOURCE_NAME: ResourceName = (
+    "https://adsdatahub.googleapis.com/v1/operations/{operation_id}"
+)
+
+
+class QueryParameters(TypedDict):
+    operation_id: str
 
 
 class Resource:
     """このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。"""
 
-    def __init__(self, client: httpx.Client) -> None:
+    def __init__(self, client: httpx.Client, query_parameters: QueryParameters) -> None:
         self._client = client
+        self._base_url = RESOURCE_NAME.format(**query_parameters)
 
     def cancel(self, name: str):
         """
@@ -60,10 +68,23 @@ class Resource:
         raise NotImplementedError()
 
     def wait(
-        self, name: Annotated[str, Doc("待機するオペレーション リソースの名前。")]
+        self,
+        timeout: Annotated[
+            str | None,
+            Doc(
+                """
+                タイムアウトするまでの最大待機時間。
+
+                空白のままにした場合、待機時間は基になる HTTP/RPC プロトコルによって許可される最長の時間になります。
+                RPC コンテキストの期限も指定されている場合は、短い方が使用されます。
+                小数点以下 9 桁まで、「s」で終わる秒単位の期間（例: "3.5s"）。
+                """
+            ),
+        ] = None,
     ):
         """
         指定した長時間実行オペレーションが完了するか、指定したタイムアウトに達するまで待機し、最新の状態を返します。
+
         オペレーションがすでに完了している場合は、すぐに最新の状態が返されます。
         指定されたタイムアウトがデフォルトの HTTP/RPC タイムアウトを上回る場合は、HTTP/RPC タイムアウトが使用されます。
         サーバーがこのメソッドをサポートしていない場合は、google.rpc.Code.UNIMPLEMENTED を返します。
