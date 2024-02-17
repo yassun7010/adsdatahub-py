@@ -1,6 +1,7 @@
 from typing import Literal
 
 import httpx
+from typing_extensions import Annotated, Doc
 
 ResourceName = Literal["operations"]
 
@@ -58,7 +59,9 @@ class Resource:
         """
         raise NotImplementedError()
 
-    def wait(self, name: str):
+    def wait(
+        self, name: Annotated[str, Doc("待機するオペレーション リソースの名前。")]
+    ):
         """
         指定した長時間実行オペレーションが完了するか、指定したタイムアウトに達するまで待機し、最新の状態を返します。
         オペレーションがすでに完了している場合は、すぐに最新の状態が返されます。

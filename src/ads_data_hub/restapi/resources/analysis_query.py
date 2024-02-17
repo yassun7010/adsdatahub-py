@@ -1,6 +1,7 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 import httpx
+from typing_extensions import Doc
 
 from ads_data_hub.restapi.schemas.analysis_queries_start import (
     AnalysisQueriesStartDict,
@@ -9,6 +10,7 @@ from ads_data_hub.restapi.schemas.analysis_queries_start import (
 from ads_data_hub.restapi.schemas.analysis_queries_start_transient import (
     AnalysisQueriesStartTransient,
 )
+from ads_data_hub.restapi.schemas.analysis_query import AnalysisQuery
 
 ResourceName = Literal["customers.analysisQueries"]
 
@@ -17,7 +19,11 @@ class Resource:
     def __init__(self, client: httpx.Client) -> None:
         self._client = client
 
-    def create(self) -> None:
+    def create(
+        self,
+        parent: Annotated[str, Doc("クエリを所有する親リソース名。")],
+        query: AnalysisQuery,
+    ) -> None:
         """
         後で実行するための分析クエリを作成します。
         現時点では、クエリの検証は行われません。

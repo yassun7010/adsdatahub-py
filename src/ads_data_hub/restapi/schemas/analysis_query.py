@@ -106,3 +106,6 @@ class AnalysisQueryModel(ExtraForbidModel):
     filtered_row_summary: FilteredRowSummaryDict
 
     generate_filtered_row_summary_automatically: bool
+
+
+AnalysisQuery = AnalysisQueryModel | AnalysisQueryDict
