@@ -1,5 +1,7 @@
 from typing import Literal
 
+import httpx
+
 from ads_data_hub.restapi.schemas.analysis_queries_start import (
     AnalysisQueriesStartDict,
     AnalysisQueriesStartModel,
@@ -12,6 +14,9 @@ ResourceName = Literal["customers.analysisQueries"]
 
 
 class Resource:
+    def __init__(self, client: httpx.Client) -> None:
+        self._client = client
+
     def create(self) -> None:
         """
         後で実行するための分析クエリを作成します。

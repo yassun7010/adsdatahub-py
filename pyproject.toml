@@ -11,6 +11,7 @@ python = "^3.11"
 google-api-python-client = "^2.114.0"
 pydantic = "^2.6.1"
 typing-extensions = "^4.9.0"
+httpx = "^0.26.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -19,7 +20,7 @@ pytest = "^7.4.4"
 taskipy = "^1.12.2"
 pyright = "^1.1.348"
 ipython = "^8.20.0"
-ruff = "^0.1.14"
+ruff = "^0.2"
 
 [tool.taskipy.tasks]
 format = "ruff format ."

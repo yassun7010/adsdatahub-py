@@ -1,11 +1,15 @@
 from typing import assert_never
 
+import httpx
 from typing_extensions import overload
 
 from ads_data_hub.restapi.resources import analysis_query, operations
 
 
 class Client:
+    def __init__(self) -> None:
+        self._http_client = httpx.Client()
+
     @overload
     def request(
         self, resource_name: analysis_query.ResourceName
@@ -31,8 +35,8 @@ class Client:
     ) -> analysis_query.Resource | operations.Resource:
         match resource_name:
             case "customers.analysisQueries":
-                return analysis_query.Resource()
+                return analysis_query.Resource(self._http_client)
             case "operations":
-                return operations.Resource()
+                return operations.Resource(self._http_client)
             case _:
                 assert_never(resource_name)

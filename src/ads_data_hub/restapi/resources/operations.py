@@ -1,10 +1,15 @@
 from typing import Literal
 
+import httpx
+
 ResourceName = Literal["operations"]
 
 
 class Resource:
     """このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。"""
+
+    def __init__(self, client: httpx.Client) -> None:
+        self._client = client
 
     def cancel(self, name: str):
         """
