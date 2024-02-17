@@ -10,16 +10,16 @@ RESOURCE_NAME: ResourceName = (
 )
 
 
-class QueryParameters(TypedDict):
+class PathParameters(TypedDict):
     operation_id: str
 
 
 class Resource:
     """このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。"""
 
-    def __init__(self, client: httpx.Client, query_parameters: QueryParameters) -> None:
+    def __init__(self, client: httpx.Client, path_parameters: PathParameters) -> None:
         self._client = client
-        self._base_url = RESOURCE_NAME.format(**query_parameters)
+        self._base_url = RESOURCE_NAME.format(**path_parameters)
 
     def cancel(self, name: str):
         """

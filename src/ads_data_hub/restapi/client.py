@@ -1,15 +1,16 @@
 import os
-from typing import Any, Union, assert_never, cast, override
+from typing import Any, Union, assert_never, cast
 
 import google.api_core.client_info
 import google.api_core.client_options
 import google.api_core.exceptions
 import google.auth.credentials
+import google.auth.transport.requests
 import httpx
 from google.auth import environment_vars
-from google.auth.credentials import AnonymousCredentials
+from google.auth.credentials import AnonymousCredentials, Credentials
 from google.cloud.client import ClientWithProject
-from typing_extensions import Unpack, overload
+from typing_extensions import Unpack, overload, override
 
 from ads_data_hub.restapi.resources import analysis_query, operations
 
@@ -33,7 +34,7 @@ class Client(ClientWithProject):
     def __init__(
         self,
         project: str | object | None = _marker,
-        credentials=None,
+        credentials: Credentials | None = None,
         client_info: google.api_core.client_info.ClientInfo | None = None,
         client_options: Union[
             google.api_core.client_options.ClientOptions,
@@ -90,12 +91,22 @@ class Client(ClientWithProject):
                     no_project = True
                     project = "<none>"
 
-        super(Client, self).__init__(
+        super().__init__(
             project=project,
             credentials=credentials,
             client_options=client_options,
-            _http=_http or httpx.Client(),
+            _http=_http,
         )
+        if self._credentials:
+            if not self._credentials.valid:
+                self._credentials.refresh(google.auth.transport.requests.Request())
+
+        if _http is None:
+            self._http_internal = httpx.Client(
+                headers={
+                    "Authorization": f"Bearer {self._credentials.token}",
+                }
+            )
 
         if no_project:
             self.project = None
@@ -109,12 +120,12 @@ class Client(ClientWithProject):
     def request(
         self,
         resource_name: analysis_query.ResourceName,
-        **params: Unpack[analysis_query.QueryParameters],
+        **params: Unpack[analysis_query.PathParameters],
     ) -> analysis_query.Resource:
         """
         Ads Data Hub 内で実行できる分析クエリを定義します。
 
-        Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
+        Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja
         """
         ...
 
@@ -122,7 +133,7 @@ class Client(ClientWithProject):
     def request(
         self,
         resource_name: operations.ResourceName,
-        **params: Unpack[operations.QueryParameters],
+        **params: Unpack[operations.PathParameters],
     ) -> operations.Resource:
         """
         このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
@@ -139,11 +150,11 @@ class Client(ClientWithProject):
         match resource_name:
             case "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries":
                 return analysis_query.Resource(
-                    self._http, cast(analysis_query.QueryParameters, params)
+                    self._http, cast(analysis_query.PathParameters, params)
                 )
             case "https://adsdatahub.googleapis.com/v1/operations/{operation_id}":
                 return operations.Resource(
-                    self._http, cast(operations.QueryParameters, params)
+                    self._http, cast(operations.PathParameters, params)
                 )
             case _:
                 assert_never(resource_name)

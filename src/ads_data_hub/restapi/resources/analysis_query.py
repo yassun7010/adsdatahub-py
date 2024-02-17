@@ -1,6 +1,7 @@
 from typing import Annotated, Literal, TypedDict
 
 import httpx
+from httpx._types import QueryParamTypes
 from typing_extensions import Doc
 
 from ads_data_hub.restapi.schemas.analysis_queries_start import (
@@ -20,14 +21,14 @@ RESOURCE_NAME: ResourceName = (
 )
 
 
-class QueryParameters(TypedDict):
+class PathParameters(TypedDict):
     customer_id: str
 
 
 class Resource:
-    def __init__(self, client: httpx.Client, query_parameters: QueryParameters) -> None:
-        self._client = client
-        self._base_url = RESOURCE_NAME.format(**query_parameters)
+    def __init__(self, http: httpx.Client, path_parameters: PathParameters) -> None:
+        self._http = http
+        self._base_url = RESOURCE_NAME.format(**path_parameters)
 
     def create(
         self,
@@ -59,13 +60,46 @@ class Resource:
         """
         raise NotImplementedError()
 
-    def list(self) -> None:
+    def list(
+        self,
+        page_size: Annotated[
+            int | None,
+            Doc(
+                "返される最大アイテム数。0 の場合、サーバーは返されるクエリの数を決定します。"
+            ),
+        ] = None,
+        page_token: Annotated[
+            str | None,
+            Doc(
+                "前の呼び出しによって返されたページトークン。次のページの結果を返すために使用されます。"
+            ),
+        ] = None,
+        filter: Annotated[
+            str | None,
+            Doc(
+                """
+                レスポンスをフィルタします。
+
+                次のフィールド / 形式を使用します。
+                name=”customers/271828/analysisQueries/pi314159265359” title=”up_and_right” queryText="SELECT LN(2.7182818284);" queryState="RUNNABLE"createTime>updateTime>updateTime>updateTime>updateTime>update_time
+                """
+            ),
+        ] = None,
+    ) -> httpx.Response:
         """
         指定した顧客が所有する分析クエリを一覧表示します。
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/list?hl=ja
         """
-        raise NotImplementedError()
+        query_params: QueryParamTypes = {}
+        if page_size is not None:
+            query_params["pageSize"] = page_size
+        if page_token is not None:
+            query_params["pageToken"] = page_token
+        if filter is not None:
+            query_params["filter"] = filter
+
+        return self._http.request("GET", self._base_url, params=query_params)
 
     def patch(self, name: str) -> None:
         """
@@ -94,7 +128,7 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
         """
-        _response = self._client.post(
+        _response = self._http.post(
             "/v1/customers.analysisQueries:startTransient", json=params
         )
 
