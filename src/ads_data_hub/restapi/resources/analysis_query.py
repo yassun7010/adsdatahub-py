@@ -84,7 +84,9 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
         """
-        raise NotImplementedError()
+        _response = self._client.post(
+            "/v1/customers.analysisQueries:startTransient", json=params
+        )
 
     def validate(self, parent: str):
         """

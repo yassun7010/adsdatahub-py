@@ -1,26 +1,48 @@
 from typing_extensions import Literal, TypedDict
 
 
-class Type(TypedDict):
+class TypeDict(TypedDict):
     type: Literal["STRING", "INT64"]
 
 
-class ArrayType(TypedDict):
-    arrayType: "FieldType"
+class ArrayTypeDict(TypedDict):
+    arrayType: "FieldTypeDict"
 
 
-class StructType(TypedDict):
-    structType: list["StructField"]
+class StructTypeDict(TypedDict):
+    structType: list["StructFieldDict"]
 
 
-class StructField(TypedDict):
+class StructFieldDict(TypedDict):
     fieldName: str
-    fieldType: "FieldType"
+    fieldType: "FieldTypeDict"
 
 
-FieldType = Type | ArrayType
+FieldTypeDict = TypeDict | ArrayTypeDict
 """
 BigQuery のフィールド タイプを定義します。
 
 Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/FieldType?hl=ja
 """
+
+
+class TypeModel(TypedDict):
+    type: Literal["STRING", "INT64"]
+
+
+class ArrayTypeModel(TypedDict):
+    arrayType: "FieldTypeModel"
+
+
+class StructTypeModel(TypedDict):
+    structType: list["StructFieldModel"]
+
+
+class StructFieldModel(TypedDict):
+    fieldName: str
+    fieldType: "FieldTypeModel"
+
+
+FieldTypeModel = TypeModel | ArrayTypeModel
+
+FieldType = FieldTypeDict | FieldTypeModel

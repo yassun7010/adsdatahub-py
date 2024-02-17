@@ -8,6 +8,8 @@ class StatusDict(TypedDict):
     Status 型は、REST API や RPC API など、さまざまなプログラミング環境に適した論理エラーモデルを定義します。
     gRPC により使用されます。
     各 Status メッセージには、エラーコード、エラー メッセージ、エラーの詳細という 3 種類のデータが含まれます。
+
+    Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations?hl=ja#Status
     """
 
     code: int
