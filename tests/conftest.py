@@ -1,13 +1,18 @@
 import os
 
-import ads_data_hub.restapi
+import adsdatahub.restapi
 import pytest
 
 
 @pytest.fixture
 def restapi_client():
-    return ads_data_hub.restapi.Client(
+    return adsdatahub.restapi.Client(
         client_options={
             "credentials_file": os.environ["GOOGLE_APPLICATION_CREDENTIALS"],
         }
     )
+
+
+@pytest.fixture
+def client_id() -> str:
+    return os.environ["ADS_DATA_HUB_CUSTOMER_ID"]

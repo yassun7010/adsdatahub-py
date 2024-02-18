@@ -1,5 +1,5 @@
-import ads_data_hub
+import adsdatahub
 
 
 def test_version():
-    assert ads_data_hub.__version__ is not None
+    assert adsdatahub.__version__ is not None

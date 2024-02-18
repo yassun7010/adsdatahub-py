@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "ads-data-hub"
+name = "adsdatahub"
 version = "0.1.0"
 description = "Ads Data Hub API client for Python"
 authors = ["yassun7010 <yassun7010@outlook.com>"]
 readme = "README.md"
-packages = [{ include = "ads_data_hub", from = "src" }]
+packages = [{ include = "adsdatahub", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
