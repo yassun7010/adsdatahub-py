@@ -1,10 +1,14 @@
 import datetime
+from typing import Union
 
 from pydantic import Field
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 from ads_data_hub.restapi.schemas._model import ExtraForbidModel
-from ads_data_hub.restapi.schemas.filtered_row_summary import FilteredRowSummaryDict
+from ads_data_hub.restapi.schemas.filtered_row_summary import (
+    FilteredRowSummaryDict,
+    FilteredRowSummaryModel,
+)
 from ads_data_hub.restapi.schemas.merge_spec import MergeSpecDict, MergeSpecModel
 from ads_data_hub.restapi.schemas.parameter_type import (
     ParameterTypeDict,
@@ -75,7 +79,13 @@ class AnalysisQueryDict(TypedDict):
     """
 
 
-class AnalysisQueryModel(ExtraForbidModel):
+class AnalysisQueryBaseModel(ExtraForbidModel):
+    """
+    Ads Data Hub 内で実行できる分析クエリを定義します。
+
+    Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#AnalysisQuery
+    """
+
     name: str
 
     title: str
@@ -86,26 +96,52 @@ class AnalysisQueryModel(ExtraForbidModel):
         dict[str, ParameterTypeModel],
         Field(
             alias="parameterTypes",
+            default_factory=dict,
         ),
     ]
 
-    merge_spec: MergeSpecModel | None = None
+    merge_spec: Annotated[
+        MergeSpecModel,
+        Field(alias="mergeSpec", default_factory=MergeSpecDict),
+    ]
+    """
+    行をマージする手順。
 
-    query_state: QueryState
+    deprecated: このフィールドは非推奨です。代わりに filter_row_summary を使用してください。
 
-    update_time: datetime.datetime
+    存在する場合、プライバシー上の理由でドロップされるはずの行が 1 つに結合されます。
+    マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に表示されます。
+    """
 
-    update_email: str
+    query_state: Annotated[QueryState, Field(alias="queryState")]
 
-    create_time: datetime.datetime
+    update_time: Annotated[datetime.datetime, Field(alias="updateTime")]
 
-    create_email: str
+    update_email: Annotated[str, Field(alias="updateEmail")]
 
-    query_share: list[QueryShareDict]
+    create_time: Annotated[datetime.datetime, Field(alias="createTime")]
 
-    filtered_row_summary: FilteredRowSummaryDict
+    create_email: Annotated[str | None, Field(alias="createEmail")] = None
 
-    generate_filtered_row_summary_automatically: bool
+    query_share: Annotated[list[QueryShareDict], Field(default_factory=list)]
 
+
+class AnalysisQueryGenerateFilteredRowSummaryAutomaticallyModel(AnalysisQueryBaseModel):
+    generate_filtered_row_summary_automatically: Annotated[
+        bool, Field(alias="generateFilteredRowSummaryAutomatically")
+    ]
+
+
+class AnalysisQueryFilteredRowSummaryModel(AnalysisQueryBaseModel):
+    filtered_row_summary: Annotated[
+        FilteredRowSummaryModel, Field(alias="filteredRowSummary")
+    ]
+
+
+AnalysisQueryModel = Union[
+    AnalysisQueryBaseModel,
+    AnalysisQueryGenerateFilteredRowSummaryAutomaticallyModel,
+    AnalysisQueryFilteredRowSummaryModel,
+]
 
 AnalysisQuery = AnalysisQueryModel | AnalysisQueryDict

@@ -16,4 +16,5 @@ class TestAnalysisQuery:
         )
 
     def test_list(self, analysis_query_resource: analysis_query.Resource):
-        assert analysis_query_resource.list().status_code == 200
+        response = analysis_query_resource.list(filter="")
+        assert response.queries

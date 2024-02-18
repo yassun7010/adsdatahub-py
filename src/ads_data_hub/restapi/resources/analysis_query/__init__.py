@@ -2,8 +2,12 @@ from typing import Annotated, Literal, TypedDict
 
 import httpx
 from httpx._types import QueryParamTypes
-from typing_extensions import Doc
+from typing_extensions import Doc, Unpack
 
+from ads_data_hub.restapi.resources.analysis_query.list import (
+    AnalysisQueryListQueryParams,
+    AnalysisQueryResponse,
+)
 from ads_data_hub.restapi.schemas.analysis_queries_start import (
     AnalysisQueriesStartDict,
     AnalysisQueriesStartModel,
@@ -62,44 +66,28 @@ class Resource:
 
     def list(
         self,
-        page_size: Annotated[
-            int | None,
-            Doc(
-                "返される最大アイテム数。0 の場合、サーバーは返されるクエリの数を決定します。"
-            ),
-        ] = None,
-        page_token: Annotated[
-            str | None,
-            Doc(
-                "前の呼び出しによって返されたページトークン。次のページの結果を返すために使用されます。"
-            ),
-        ] = None,
-        filter: Annotated[
-            str | None,
-            Doc(
-                """
-                レスポンスをフィルタします。
-
-                次のフィールド / 形式を使用します。
-                name=”customers/271828/analysisQueries/pi314159265359” title=”up_and_right” queryText="SELECT LN(2.7182818284);" queryState="RUNNABLE"createTime>updateTime>updateTime>updateTime>updateTime>update_time
-                """
-            ),
-        ] = None,
-    ) -> httpx.Response:
+        **query_params: Unpack[AnalysisQueryListQueryParams],
+    ) -> AnalysisQueryResponse:
         """
         指定した顧客が所有する分析クエリを一覧表示します。
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/list?hl=ja
         """
-        query_params: QueryParamTypes = {}
-        if page_size is not None:
-            query_params["pageSize"] = page_size
-        if page_token is not None:
-            query_params["pageToken"] = page_token
-        if filter is not None:
-            query_params["filter"] = filter
+        _query_params: QueryParamTypes = {}
+        if page_size := query_params.get("page_size"):
+            _query_params["pageSize"] = page_size
+        if page_token := query_params.get("page_token"):
+            _query_params["pageToken"] = page_token
+        if filter := query_params.get("filter"):
+            _query_params["filter"] = filter
 
-        return self._http.request("GET", self._base_url, params=query_params)
+        response = self._http.request("GET", self._base_url, params=_query_params)
+        if response.status_code != 200:
+            raise Exception(response.json())
+
+        with open("response.json", "w") as f:
+            f.write(response.content.decode("utf-8"))
+        return AnalysisQueryResponse.model_validate_json(response.content)
 
     def patch(self, name: str) -> None:
         """

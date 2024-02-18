@@ -22,5 +22,5 @@ class ParameterTypeDict(TypedDict):
 
 class ParameterTypeModel(ExtraForbidModel):
     type: FieldType
-    description: str
+    description: str | None = None
     defaultValue: ParameterValue
