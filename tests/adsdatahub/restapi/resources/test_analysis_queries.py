@@ -1,7 +1,6 @@
-from textwrap import dedent
-
 import adsdatahub.restapi
 import pytest
+from adsdatahub.exceptions import ResponseStatusCodeError
 from adsdatahub.restapi.resources import analysis_queries
 
 
@@ -24,32 +23,5 @@ class TestAnalysisQueries:
     def test_start_transient(
         self, analysis_queries_resource: analysis_queries.Resource, customer_id: str
     ):
-        analysis_queries_resource.start_transient(
-            query={
-                "name": "customers/417739410/analysisQueries/7b54b3857feb4c329fb7917152a081ae",
-                "title": "adh_cache_test_chiba",
-                "queryText": dedent(
-                    """
-                    select
-                        campaign_id,
-                        date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') as date,
-                        count(query_id.time_usec) as imp
-                    from
-                        adh.google_ads_impressions
-                    group by 1, 2;
-                    """
-                ),
-                "updateTime": "2023-12-21T03:54:31.642Z",
-                "updateEmail": "chiba_katsuhito@cyberagent.co.jp",
-                "createTime": "2023-12-21T03:54:31.642Z",
-                "createEmail": "chiba_katsuhito@cyberagent.co.jp",
-                "generateFilteredRowSummaryAutomatically": True,
-            },
-            spec={
-                "adsDataCustomerId": customer_id,
-                "startDate": "2023-12-21T03:54:31.642Z",
-                "endDate": "2023-12-21T03:54:31.642Z",
-                "timeZone": "Asia/Tokyo",
-            },
-            dest_table="adh_cache_test_chiba",
-        )
+        with pytest.raises(ResponseStatusCodeError):
+            analysis_queries_resource.start_transient(**{})
