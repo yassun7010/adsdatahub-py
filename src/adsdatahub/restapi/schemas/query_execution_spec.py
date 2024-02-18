@@ -3,13 +3,14 @@ import datetime
 from typing_extensions import NotRequired, TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
+from adsdatahub.restapi.schemas.date import DateDict, DateModel
 from adsdatahub.restapi.schemas.parameter_value import (
     ParameterValueDict,
     ParameterValueModel,
 )
 
 
-class QueryExecutionSpecDict(TypedDict):
+class QueryExecutionSpecRequestDict(TypedDict):
     """クエリ実行パラメータを定義します。
 
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/QueryExecutionSpec?hl=ja
@@ -29,20 +30,20 @@ class QueryExecutionSpecDict(TypedDict):
     """
 
     # TODO: converter
-    startDate: datetime.date
+    startDate: DateDict | datetime.date | str
     """クエリの開始日（この日付を含む）。"""
 
     # TODO: converter
-    endDate: datetime.date
+    endDate: DateDict | datetime.date | str
     """クエリの終了日（その日を含む）。"""
 
-    timeZone: str
+    timeZone: NotRequired[str | None]
     """クエリの開始日と終了日のタイムゾーン。指定しない場合、デフォルトは 'UTC' です。"""
 
-    parameterValues: dict[str, ParameterValueDict]
+    parameterValues: NotRequired[dict[str, ParameterValueDict]]
     """クエリで想定されるその他のパラメータ。各パラメータ名をそのバインドされた値にマッピングします。"""
 
-    jobId: str
+    jobId: NotRequired[str]
     """
     クエリ オペレーションのジョブ ID。
     結果として得られるオペレーションは、"operations/[jobId]" という名前になります（例: "operations/job_123"）。
@@ -51,14 +52,26 @@ class QueryExecutionSpecDict(TypedDict):
     """
 
 
-class QueryExecutionSpecModel(ExtraForbidModel):
+class QueryExecutionSpecRequestModel(ExtraForbidModel):
+    adsDataCustomerId: str | None = None
+    matchDataCustomerId: str | None = None
+    startDate: DateModel | datetime.date | str
+    endDate: DateModel | datetime.date | str
+    timeZone: str | None = None
+    parameterValues: dict[str, ParameterValueModel]
+    jobId: str | None = None
+
+
+class QueryExecutionSpecResponseModel(ExtraForbidModel):
     adsDataCustomerId: str
     matchDataCustomerId: str
-    startDate: datetime.date
-    endDate: datetime.date
+    startDate: DateModel
+    endDate: DateModel
     timeZone: str
     parameterValues: dict[str, ParameterValueModel]
     jobId: str
 
 
-QueryExecutionSpec = QueryExecutionSpecDict | QueryExecutionSpecModel
+QueryExecutionSpecRequest = (
+    QueryExecutionSpecRequestDict | QueryExecutionSpecRequestModel
+)

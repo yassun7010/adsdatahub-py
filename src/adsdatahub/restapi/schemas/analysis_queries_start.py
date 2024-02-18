@@ -2,8 +2,8 @@ from typing_extensions import NotRequired, TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
 from adsdatahub.restapi.schemas.query_execution_spec import (
-    QueryExecutionSpecDict,
-    QueryExecutionSpecModel,
+    QueryExecutionSpecRequestDict,
+    QueryExecutionSpecRequestModel,
 )
 
 
@@ -16,7 +16,7 @@ class AnalysisQueriesStartDict(TypedDict):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/start?hl=ja
     """
 
-    spec: QueryExecutionSpecDict
+    spec: QueryExecutionSpecRequestDict
     """クエリ実行パラメータを定義します。"""
 
     destTable: str
@@ -35,6 +35,6 @@ class AnalysisQueriesStartDict(TypedDict):
 
 
 class AnalysisQueriesStartModel(ExtraForbidModel):
-    spec: QueryExecutionSpecModel
+    spec: QueryExecutionSpecRequestModel
     destTable: str
     customerId: str | None

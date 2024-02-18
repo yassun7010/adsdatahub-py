@@ -1,3 +1,5 @@
+import datetime
+
 from typing_extensions import TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
@@ -11,6 +13,8 @@ class DateDict(TypedDict):
     年と 0 年の年（記念日など）。
     自ら年（0 か月と 0 日）。
     年と月、ゼロ日（クレジット カードの有効期限など）
+
+    Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/Date?hl=ja
     """
 
     year: int
@@ -27,3 +31,6 @@ class DateModel(ExtraForbidModel):
     year: int
     month: int
     day: int
+
+    def to_date(self) -> datetime.date:
+        return datetime.date(self.year, self.month, self.day)

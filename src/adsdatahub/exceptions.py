@@ -26,8 +26,12 @@ class ResponseStatusCodeError(AdsdatahubError):
 
     def __init__(self, response: httpx.Response) -> None:
         self.response = response
+        if response.headers.get("content-type") == "application/json":
+            self.response_body = response.json()
+        else:
+            self.response_body = response.content.decode("utf-8")
 
     @property
     @override
     def message(self) -> str:
-        return f"Response Status Code Error: {self.response}."
+        return f"Response Status Code Error {self.response}: {self.response_body}"

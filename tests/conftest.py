@@ -14,5 +14,5 @@ def restapi_client():
 
 
 @pytest.fixture
-def client_id() -> str:
+def customer_id() -> str:
     return os.environ["ADS_DATA_HUB_CUSTOMER_ID"]

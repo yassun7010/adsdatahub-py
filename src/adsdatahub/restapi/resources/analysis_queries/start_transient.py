@@ -1,7 +1,7 @@
 from typing_extensions import TypedDict
 
 from adsdatahub.restapi.schemas.analysis_query import AnalysisQuery
-from adsdatahub.restapi.schemas.query_execution_spec import QueryExecutionSpec
+from adsdatahub.restapi.schemas.query_execution_spec import QueryExecutionSpecRequest
 
 
 class AnalysisQueriesStartTransientQueryParams(TypedDict):
@@ -14,7 +14,7 @@ class AnalysisQueriesStartTransientQueryParams(TypedDict):
     実行するクエリ。
     """
 
-    spec: QueryExecutionSpec
+    spec: QueryExecutionSpecRequest
     """
     クエリ実行パラメータを定義します。
     """

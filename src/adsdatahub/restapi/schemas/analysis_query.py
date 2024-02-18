@@ -1,10 +1,9 @@
 import datetime
-from typing import Union
 
-from pydantic import Field, RootModel
+from pydantic import Field
 from typing_extensions import Annotated, NotRequired, TypedDict
 
-from adsdatahub.restapi.schemas._model import ExtraForbidModel, Model
+from adsdatahub.restapi.schemas._model import ExtraForbidModel
 from adsdatahub.restapi.schemas.filtered_row_summary import (
     FilteredRowSummaryDict,
     FilteredRowSummaryModel,
@@ -34,7 +33,7 @@ class AnalysisQueryDict(TypedDict):
     queryText: str
     """標準 SQL で記述されたクエリテキスト。"""
 
-    parameterTypes: dict[str, ParameterTypeDict]
+    parameterTypes: NotRequired[dict[str, ParameterTypeDict]]
     """クエリで想定されるその他のパラメータ。各引数名をその引数タイプにマッピングします。"""
 
     mergeSpec: NotRequired[MergeSpecDict]
@@ -44,34 +43,36 @@ class AnalysisQueryDict(TypedDict):
     マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に表示されます。
     """
 
-    queryState: QueryState
+    queryState: NotRequired[QueryState | str]
     """クエリの状態。"""
 
     # TODO: convertion
-    updateTime: datetime.datetime
+    updateTime: datetime.datetime | str
     """クエリが最後に更新された時刻。"""
 
     updateEmail: str
     """クエリを最後に更新したユーザーのメールアドレス。"""
 
     # TODO: convertion
-    createTime: datetime.datetime
+    createTime: datetime.datetime | str
     """クエリが作成された時刻。"""
 
     createEmail: str
     """クエリを作成したユーザーのメールアドレス。"""
 
-    queryShare: list[QueryShareDict]
+    queryShare: Annotated[
+        NotRequired[list[QueryShareDict]], Field(default_factory=list)
+    ]
     """所有する Ads Data Hub ユーザー以外のクエリも共有する方法を紹介します。"""
 
-    filteredRowSummary: FilteredRowSummaryDict
+    filteredRowSummary: NotRequired[FilteredRowSummaryDict]
     """
     プライバシー上の理由によってドロップされた行を 1 つの結合行に統合する方法を定義します。
     マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に含められます。
 
     generateFilteredRowSummaryAutomatically と同時に使えません。"""
 
-    generateFilteredRowSummaryAutomatically: bool
+    generateFilteredRowSummaryAutomatically: NotRequired[bool]
     """
     true の場合、フィルタリングされた行の概要が自動的に生成されます。
 
@@ -79,7 +80,7 @@ class AnalysisQueryDict(TypedDict):
     """
 
 
-class AnalysisQueryBaseModel(ExtraForbidModel):
+class AnalysisQueryModel(ExtraForbidModel):
     """
     Ads Data Hub 内で実行できる分析クエリを定義します。
 
@@ -125,25 +126,13 @@ class AnalysisQueryBaseModel(ExtraForbidModel):
 
     query_share: Annotated[list[QueryShareDict], Field(default_factory=list)]
 
-
-class AnalysisQueryGenerateFilteredRowSummaryAutomaticallyModel(AnalysisQueryBaseModel):
-    generate_filtered_row_summary_automatically: Annotated[
-        bool, Field(alias="generateFilteredRowSummaryAutomatically")
-    ]
-
-
-class AnalysisQueryFilteredRowSummaryModel(AnalysisQueryBaseModel):
     filtered_row_summary: Annotated[
-        FilteredRowSummaryModel, Field(alias="filteredRowSummary")
-    ]
+        FilteredRowSummaryModel | None, Field(alias="filteredRowSummary")
+    ] = None
 
-
-class AnalysisQueryModel(Model, RootModel):
-    root: Union[
-        AnalysisQueryBaseModel,
-        AnalysisQueryGenerateFilteredRowSummaryAutomaticallyModel,
-        AnalysisQueryFilteredRowSummaryModel,
-    ]
+    generate_filtered_row_summary_automatically: Annotated[
+        bool | None, Field(alias="generateFilteredRowSummaryAutomatically")
+    ] = None
 
 
 AnalysisQuery = AnalysisQueryModel | AnalysisQueryDict

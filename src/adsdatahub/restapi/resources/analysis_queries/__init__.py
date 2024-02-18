@@ -62,7 +62,7 @@ class Resource:
         )
 
     def start_transient(
-        self, **query_params: AnalysisQueriesStartTransientQueryParams
+        self, **query_params: Unpack[AnalysisQueriesStartTransientQueryParams]
     ) -> OperationModel:
         """
         一時的な分析クエリで実行を開始します。
