@@ -18,7 +18,7 @@ def snake2camel(**origin: Any) -> dict[str, Any]:
             camel_key = "".join(map(lambda s: s.capitalize(), k.split("_")))
             camel_key = camel_key[0].lower() + camel_key[1:]
 
-            data[camel_key] = k
+            data[camel_key] = v
         else:
             data[k] = v
 
