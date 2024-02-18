@@ -1,7 +1,10 @@
 from typing_extensions import TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
-from adsdatahub.restapi.schemas.parameter_value import ParameterValue
+from adsdatahub.restapi.schemas.parameter_value import (
+    ParameterValueDict,
+    ParameterValueModel,
+)
 from adsdatahub.restapi.schemas.summary_type import SummaryType
 
 
@@ -13,9 +16,9 @@ class ColumnSummaryRuleDict(TypedDict):
     """
 
     type: SummaryType
-    value: ParameterValue
+    value: ParameterValueDict
 
 
 class ColumnSummaryRuleModel(ExtraForbidModel):
     type: SummaryType
-    value: ParameterValue
+    value: ParameterValueModel

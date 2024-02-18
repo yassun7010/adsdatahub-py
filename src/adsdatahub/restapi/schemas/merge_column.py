@@ -2,7 +2,10 @@ from typing import TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
 from adsdatahub.restapi.schemas.merge_type import MergeType
-from adsdatahub.restapi.schemas.parameter_value import ParameterValue
+from adsdatahub.restapi.schemas.parameter_value import (
+    ParameterValueDict,
+    ParameterValueModel,
+)
 
 
 class MergeColumnDict(TypedDict):
@@ -17,7 +20,7 @@ class MergeColumnDict(TypedDict):
     列の値を組み合わせるために使用するメソッドです。
     """
 
-    value: ParameterValue
+    value: ParameterValueDict
     """
     使用する定数値（CONSTANT マージタイプでのみ有効）。
     """
@@ -35,7 +38,7 @@ class MergeColumnModel(ExtraForbidModel):
     列の値を組み合わせるために使用するメソッドです。
     """
 
-    value: ParameterValue
+    value: ParameterValueModel
     """
     使用する定数値（CONSTANT マージタイプでのみ有効）。
     """

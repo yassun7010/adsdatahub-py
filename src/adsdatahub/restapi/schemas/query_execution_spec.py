@@ -3,7 +3,10 @@ import datetime
 from typing_extensions import NotRequired, TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
-from adsdatahub.restapi.schemas.parameter_value import ParameterValue
+from adsdatahub.restapi.schemas.parameter_value import (
+    ParameterValueDict,
+    ParameterValueModel,
+)
 
 
 class QueryExecutionSpecDict(TypedDict):
@@ -36,7 +39,7 @@ class QueryExecutionSpecDict(TypedDict):
     timeZone: str
     """クエリの開始日と終了日のタイムゾーン。指定しない場合、デフォルトは 'UTC' です。"""
 
-    parameterValues: dict[str, ParameterValue]
+    parameterValues: dict[str, ParameterValueDict]
     """クエリで想定されるその他のパラメータ。各パラメータ名をそのバインドされた値にマッピングします。"""
 
     jobId: str
@@ -54,5 +57,5 @@ class QueryExecutionSpecModel(ExtraForbidModel):
     startDate: datetime.date
     endDate: datetime.date
     timeZone: str
-    parameterValues: dict[str, ParameterValue]
+    parameterValues: dict[str, ParameterValueModel]
     jobId: str

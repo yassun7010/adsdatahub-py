@@ -1,24 +1,49 @@
 from typing_extensions import TypedDict
 
+from adsdatahub.restapi.schemas._model import ExtraForbidModel
 
-class Value(TypedDict):
+
+class ValueDict(TypedDict):
     value: str
 
 
-class ArrayValue(TypedDict):
-    arrayValue: "ArrayValueValues"
+class ArrayValueDict(TypedDict):
+    arrayValue: "ArrayValueValuesDict"
 
 
-class ArrayValueValues(TypedDict):
-    values: list["ParameterValue"]
+class ArrayValueValuesDict(TypedDict):
+    values: list["ParameterValueDict"]
 
 
-class StructValue(TypedDict):
-    structValue: "StructValueValues"
+class StructValueDict(TypedDict):
+    structValue: "StructValueValuesDict"
 
 
-class StructValueValues(TypedDict):
-    values: dict[str, "ParameterValue"]
+class StructValueValuesDict(TypedDict):
+    values: dict[str, "ParameterValueDict"]
 
 
-ParameterValue = Value | ArrayValue | StructValue
+ParameterValueDict = ValueDict | ArrayValueDict | StructValueDict
+
+
+class ValueModel(ExtraForbidModel):
+    value: str
+
+
+class ArrayValueModel(ExtraForbidModel):
+    arrayValue: "ArrayValueValuesModel"
+
+
+class ArrayValueValuesModel(TypedDict):
+    values: list["ParameterValueModel"]
+
+
+class StructValueModel(TypedDict):
+    structValue: "StructValueValuesModel"
+
+
+class StructValueValuesModel(TypedDict):
+    values: dict[str, "ParameterValueModel"]
+
+
+ParameterValueModel = ValueModel | ArrayValueModel | StructValueModel

@@ -1,5 +1,5 @@
 from adsdatahub.restapi.schemas._model import Model
-from adsdatahub.restapi.schemas.parameter_value import ParameterValue
+from adsdatahub.restapi.schemas.parameter_value import ParameterValueModel
 
 
 class QueryMetadataModel(Model):
@@ -8,7 +8,7 @@ class QueryMetadataModel(Model):
     customerId: str
     adsDataCustomerId: str
     matchDataCustomerId: str
-    parameterValues: dict[str, ParameterValue]
+    parameterValues: dict[str, ParameterValueModel]
     startTime: str
     endTime: str
     queryText: str

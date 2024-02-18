@@ -3,7 +3,7 @@ from typing_extensions import TypedDict
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
 
 from .field_type import FieldType
-from .parameter_value import ParameterValue
+from .parameter_value import ParameterValueDict, ParameterValueModel
 
 
 class ParameterTypeDict(TypedDict):
@@ -17,10 +17,10 @@ class ParameterTypeDict(TypedDict):
 
     description: str
 
-    defaultValue: ParameterValue
+    defaultValue: ParameterValueDict
 
 
 class ParameterTypeModel(ExtraForbidModel):
     type: FieldType
     description: str | None = None
-    defaultValue: ParameterValue
+    defaultValue: ParameterValueModel
