@@ -1,10 +1,10 @@
 import datetime
 from typing import Union
 
-from pydantic import Field
+from pydantic import Field, RootModel
 from typing_extensions import Annotated, NotRequired, TypedDict
 
-from adsdatahub.restapi.schemas._model import ExtraForbidModel
+from adsdatahub.restapi.schemas._model import ExtraForbidModel, Model
 from adsdatahub.restapi.schemas.filtered_row_summary import (
     FilteredRowSummaryDict,
     FilteredRowSummaryModel,
@@ -138,10 +138,12 @@ class AnalysisQueryFilteredRowSummaryModel(AnalysisQueryBaseModel):
     ]
 
 
-AnalysisQueryModel = Union[
-    AnalysisQueryBaseModel,
-    AnalysisQueryGenerateFilteredRowSummaryAutomaticallyModel,
-    AnalysisQueryFilteredRowSummaryModel,
-]
+class AnalysisQueryModel(Model, RootModel):
+    root: Union[
+        AnalysisQueryBaseModel,
+        AnalysisQueryGenerateFilteredRowSummaryAutomaticallyModel,
+        AnalysisQueryFilteredRowSummaryModel,
+    ]
+
 
 AnalysisQuery = AnalysisQueryModel | AnalysisQueryDict
