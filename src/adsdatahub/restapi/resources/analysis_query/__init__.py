@@ -1,9 +1,9 @@
 from typing import Annotated, Literal, TypedDict
 
 import httpx
-from httpx._types import QueryParamTypes
 from typing_extensions import Doc, Unpack
 
+from adsdatahub.restapi._helpers import parse_response_body, snake2camel
 from adsdatahub.restapi.resources.analysis_query.list import (
     AnalysisQueryListQueryParams,
     AnalysisQueryResponse,
@@ -73,19 +73,12 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/list?hl=ja
         """
-        _query_params: QueryParamTypes = {}
-        if page_size := query_params.get("page_size"):
-            _query_params["pageSize"] = page_size
-        if page_token := query_params.get("page_token"):
-            _query_params["pageToken"] = page_token
-        if filter := query_params.get("filter"):
-            _query_params["filter"] = filter
-
-        response = self._http.request("GET", self._base_url, params=_query_params)
-        if response.status_code != 200:
-            raise Exception(response.json())
-
-        return AnalysisQueryResponse.model_validate_json(response.content)
+        return parse_response_body(
+            AnalysisQueryResponse,
+            self._http.request(
+                "GET", self._base_url, params=snake2camel(**query_params)
+            ),
+        )
 
     def patch(self, name: str) -> None:
         """
