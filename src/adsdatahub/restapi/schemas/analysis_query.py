@@ -17,7 +17,7 @@ from adsdatahub.restapi.schemas.query_share import QueryShareDict
 from adsdatahub.restapi.schemas.query_state import QueryState
 
 
-class AnalysisQueryDict(TypedDict):
+class AnalysisQueryRequestDict(TypedDict):
     """
     Ads Data Hub 内で実行できる分析クエリを定義します。
 
@@ -80,7 +80,7 @@ class AnalysisQueryDict(TypedDict):
     """
 
 
-class AnalysisQueryModel(ExtraForbidModel):
+class AnalysisQueryRequestModel(ExtraForbidModel):
     """
     Ads Data Hub 内で実行できる分析クエリを定義します。
 
@@ -135,4 +135,59 @@ class AnalysisQueryModel(ExtraForbidModel):
     ] = None
 
 
-AnalysisQuery = AnalysisQueryModel | AnalysisQueryDict
+class AnalysisQueryResponseModel(ExtraForbidModel):
+    """
+    Ads Data Hub 内で実行できる分析クエリを定義します。
+
+    Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#AnalysisQuery
+    """
+
+    name: str
+
+    title: str | None = None
+
+    query_text: Annotated[str | None, Field(alias="queryText")] = None
+
+    parameter_types: Annotated[
+        dict[str, ParameterTypeModel],
+        Field(
+            alias="parameterTypes",
+            default_factory=dict,
+        ),
+    ]
+
+    merge_spec: Annotated[
+        MergeSpecModel,
+        Field(alias="mergeSpec", default_factory=MergeSpecDict),
+    ]
+    """
+    行をマージする手順。
+
+    deprecated: このフィールドは非推奨です。代わりに filter_row_summary を使用してください。
+
+    存在する場合、プライバシー上の理由でドロップされるはずの行が 1 つに結合されます。
+    マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に表示されます。
+    """
+
+    query_state: Annotated[QueryState, Field(alias="queryState")]
+
+    update_time: Annotated[datetime.datetime, Field(alias="updateTime")]
+
+    update_email: Annotated[str, Field(alias="updateEmail")]
+
+    create_time: Annotated[datetime.datetime, Field(alias="createTime")]
+
+    create_email: Annotated[str | None, Field(alias="createEmail")] = None
+
+    query_share: Annotated[list[QueryShareDict], Field(default_factory=list)]
+
+    filtered_row_summary: Annotated[
+        FilteredRowSummaryModel | None, Field(alias="filteredRowSummary")
+    ] = None
+
+    generate_filtered_row_summary_automatically: Annotated[
+        bool | None, Field(alias="generateFilteredRowSummaryAutomatically")
+    ] = None
+
+
+AnalysisQueryRequest = AnalysisQueryRequestModel | AnalysisQueryRequestDict

@@ -11,7 +11,7 @@ from adsdatahub.restapi.resources.analysis_queries.list import (
 from adsdatahub.restapi.resources.analysis_queries.start_transient import (
     AnalysisQueriesStartTransientQueryParams,
 )
-from adsdatahub.restapi.schemas.analysis_query import AnalysisQuery
+from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryRequest
 from adsdatahub.restapi.schemas.operation import OperationModel
 
 ResourceName = Literal[
@@ -34,7 +34,7 @@ class Resource:
     def create(
         self,
         parent: Annotated[str, Doc("クエリを所有する親リソース名。")],
-        query: AnalysisQuery,
+        query: AnalysisQueryRequest,
     ) -> None:
         """
         後で実行するための分析クエリを作成します。

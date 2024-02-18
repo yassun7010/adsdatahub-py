@@ -19,7 +19,7 @@ class OperationModel(Model):
     デフォルトの HTTP マッピングを使用している場合は、name を operations/{unique_id} で終わるリソース名にします。
     """
 
-    metadata: QueryMetadataModel
+    metadata: QueryMetadataModel | None = None
     """
     オペレーションに関連付けられたサービス固有のデータを含む QueryMetadata オブジェクト。
 

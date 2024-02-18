@@ -7,7 +7,7 @@ from adsdatahub.restapi.schemas.analysis_queries_start import (
     AnalysisQueriesStartDict,
     AnalysisQueriesStartModel,
 )
-from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
+from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryResponseModel
 
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}"
@@ -33,14 +33,14 @@ class Resource:
         """
         raise NotImplementedError()
 
-    def get(self) -> AnalysisQueryModel:
+    def get(self) -> AnalysisQueryResponseModel:
         """
         リクエストされた分析クエリを取得します。
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/get?hl=ja
         """
         return parse_response_body(
-            AnalysisQueryModel,
+            AnalysisQueryResponseModel,
             self._http.request("GET", self._base_url),
         )
 
