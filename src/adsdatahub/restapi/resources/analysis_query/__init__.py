@@ -85,8 +85,6 @@ class Resource:
         if response.status_code != 200:
             raise Exception(response.json())
 
-        with open("response.json", "w") as f:
-            f.write(response.content.decode("utf-8"))
         return AnalysisQueryResponse.model_validate_json(response.content)
 
     def patch(self, name: str) -> None:
