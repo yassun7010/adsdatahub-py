@@ -59,3 +59,6 @@ class QueryExecutionSpecModel(ExtraForbidModel):
     timeZone: str
     parameterValues: dict[str, ParameterValueModel]
     jobId: str
+
+
+QueryExecutionSpec = QueryExecutionSpecDict | QueryExecutionSpecModel

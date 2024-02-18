@@ -8,10 +8,11 @@ from adsdatahub.restapi.resources.analysis_queries.list import (
     AnalysisQueryListQueryParams,
     AnalysisQueryListResponse,
 )
-from adsdatahub.restapi.schemas.analysis_queries_start_transient import (
-    AnalysisQueriesStartTransient,
+from adsdatahub.restapi.resources.analysis_queries.start_transient import (
+    AnalysisQueriesStartTransientQueryParams,
 )
 from adsdatahub.restapi.schemas.analysis_query import AnalysisQuery
+from adsdatahub.restapi.schemas.operation import OperationModel
 
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"
@@ -60,7 +61,9 @@ class Resource:
             ),
         )
 
-    def start_transient(self, params: AnalysisQueriesStartTransient, /):
+    def start_transient(
+        self, **query_params: AnalysisQueriesStartTransientQueryParams
+    ) -> OperationModel:
         """
         一時的な分析クエリで実行を開始します。
         結果は、指定した BigQuery 宛先テーブルに書き込まれます。
@@ -68,7 +71,12 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
         """
-        raise NotImplementedError()
+        return parse_response_body(
+            OperationModel,
+            self._http.request(
+                "POST", self._base_url, json=snake2camel(**query_params)
+            ),
+        )
 
     def validate(self, parent: str):
         """
