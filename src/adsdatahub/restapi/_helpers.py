@@ -30,4 +30,5 @@ def parse_response_body(
 ) -> GenericResponseBody:
     if response.status_code != 200:
         raise ResponseStatusCodeError(response)
+
     return response_body_type.model_validate_json(response.content)
