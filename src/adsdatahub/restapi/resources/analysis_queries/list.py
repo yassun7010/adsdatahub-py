@@ -3,7 +3,7 @@ from typing import Annotated, NotRequired, TypedDict
 from pydantic import Field
 
 from adsdatahub.restapi.schemas._model import Model
-from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryResponseModel
+from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
 
 
 class AnalysisQueryListQueryParams(TypedDict):
@@ -33,7 +33,7 @@ class AnalysisQueryListQueryParams(TypedDict):
 
 
 class AnalysisQueryListResponse(Model):
-    queries: list[AnalysisQueryResponseModel]
+    queries: list[AnalysisQueryModel]
     """
     クエリのリスト。
     """

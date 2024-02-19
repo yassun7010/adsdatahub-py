@@ -1,7 +1,7 @@
-from typing import Annotated, Literal, TypedDict
+from typing import Literal, TypedDict
 
 import httpx
-from typing_extensions import Doc, Unpack
+from typing_extensions import Unpack
 
 from adsdatahub.restapi._helpers import parse_response_body, snake2camel
 from adsdatahub.restapi.resources.analysis_queries.list import (
@@ -11,7 +11,11 @@ from adsdatahub.restapi.resources.analysis_queries.list import (
 from adsdatahub.restapi.resources.analysis_queries.start_transient import (
     AnalysisQueriesStartTransientQueryParams,
 )
-from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryRequest
+from adsdatahub.restapi.schemas.analysis_query import (
+    AnalysisQueryModel,
+    AnalysisQueryRequest,
+    AnalysisQueryRequestModel,
+)
 from adsdatahub.restapi.schemas.operation import OperationModel
 
 ResourceName = Literal[
@@ -33,17 +37,21 @@ class Resource:
 
     def create(
         self,
-        parent: Annotated[str, Doc("クエリを所有する親リソース名。")],
         query: AnalysisQueryRequest,
-    ) -> None:
+    ) -> AnalysisQueryModel:
         """
         後で実行するための分析クエリを作成します。
         現時点では、クエリの検証は行われません。
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/create?hl=ja
         """
+        if isinstance(query, dict):
+            query = AnalysisQueryRequestModel.model_validate(query)
 
-        raise NotImplementedError()
+        return parse_response_body(
+            AnalysisQueryModel,
+            self._http.request("POST", self._base_url, json=query.model_dump()),
+        )
 
     def list(
         self,

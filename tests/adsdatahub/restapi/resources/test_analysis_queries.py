@@ -16,6 +16,17 @@ class TestAnalysisQueries:
             customer_id=customer_id,
         )
 
+    def test_create(
+        self, analysis_queries_resource: analysis_queries.Resource, customer_id: str
+    ):
+        with pytest.raises(ResponseStatusCodeError):
+            analysis_queries_resource.create(
+                {
+                    "title": "ads-data-hub-test",
+                    "queryText": "SELECT * FROM `project.dataset.table`",
+                }
+            )
+
     def test_list(self, analysis_queries_resource: analysis_queries.Resource):
         response = analysis_queries_resource.list(filter="")
         assert response.queries

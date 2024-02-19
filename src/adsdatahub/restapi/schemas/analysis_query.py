@@ -24,7 +24,7 @@ class AnalysisQueryRequestDict(TypedDict):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#AnalysisQuery
     """
 
-    name: str
+    name: NotRequired[str]
     """クエリを一意に識別する名前。"""
 
     title: str
@@ -45,20 +45,6 @@ class AnalysisQueryRequestDict(TypedDict):
 
     queryState: NotRequired[QueryState | str]
     """クエリの状態。"""
-
-    # TODO: convertion
-    updateTime: datetime.datetime | str
-    """クエリが最後に更新された時刻。"""
-
-    updateEmail: str
-    """クエリを最後に更新したユーザーのメールアドレス。"""
-
-    # TODO: convertion
-    createTime: datetime.datetime | str
-    """クエリが作成された時刻。"""
-
-    createEmail: str
-    """クエリを作成したユーザーのメールアドレス。"""
 
     queryShare: Annotated[
         NotRequired[list[QueryShareDict]], Field(default_factory=list)
@@ -87,7 +73,7 @@ class AnalysisQueryRequestModel(ExtraForbidModel):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#AnalysisQuery
     """
 
-    name: str
+    name: str | None = None
 
     title: str
 
@@ -114,16 +100,6 @@ class AnalysisQueryRequestModel(ExtraForbidModel):
     マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に表示されます。
     """
 
-    query_state: Annotated[QueryState, Field(alias="queryState")]
-
-    update_time: Annotated[datetime.datetime, Field(alias="updateTime")]
-
-    update_email: Annotated[str, Field(alias="updateEmail")]
-
-    create_time: Annotated[datetime.datetime, Field(alias="createTime")]
-
-    create_email: Annotated[str | None, Field(alias="createEmail")] = None
-
     query_share: Annotated[list[QueryShareDict], Field(default_factory=list)]
 
     filtered_row_summary: Annotated[
@@ -135,7 +111,7 @@ class AnalysisQueryRequestModel(ExtraForbidModel):
     ] = None
 
 
-class AnalysisQueryResponseModel(ExtraForbidModel):
+class AnalysisQueryModel(ExtraForbidModel):
     """
     Ads Data Hub 内で実行できる分析クエリを定義します。
 
