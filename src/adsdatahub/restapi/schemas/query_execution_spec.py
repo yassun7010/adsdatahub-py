@@ -1,5 +1,6 @@
 import datetime
 
+from pydantic import field_serializer
 from typing_extensions import NotRequired, TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
@@ -60,6 +61,17 @@ class QueryExecutionSpecRequestModel(ExtraForbidModel):
     timeZone: str | None = None
     parameterValues: dict[str, ParameterValueModel]
     jobId: str | None = None
+
+    @field_serializer("startDate", "endDate")
+    def serialize_dt(self, date: DateModel | datetime.date | str) -> DateDict:
+        if isinstance(date, str):
+            date = datetime.date.fromisoformat(date)
+
+        if isinstance(date, datetime.date):
+            return DateDict(year=date.year, month=date.month, day=date.day)
+
+        else:
+            return DateDict(year=date.year, month=date.month, day=date.day)
 
 
 class QueryExecutionSpecResponseModel(ExtraForbidModel):
