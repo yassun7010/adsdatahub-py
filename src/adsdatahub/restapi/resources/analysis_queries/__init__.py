@@ -17,6 +17,9 @@ from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryRequestModel,
 )
 from adsdatahub.restapi.schemas.operation import OperationModel
+from adsdatahub.restapi.schemas.query_execution_spec import (
+    QueryExecutionSpecRequestModel,
+)
 
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"
@@ -79,10 +82,27 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
         """
+        query = query_params["query"]
+        spec = query_params["spec"]
+
         return parse_response_body(
             OperationModel,
             self._http.request(
-                "POST", self._base_url, json=snake2camel(**query_params)
+                "POST",
+                f"{self._base_url}:startTransient",
+                json={
+                    "query": (
+                        AnalysisQueryRequestModel.model_validate(query)
+                        if isinstance(query, dict)
+                        else query
+                    ).model_dump(),
+                    "spec": (
+                        QueryExecutionSpecRequestModel.model_validate(spec)
+                        if isinstance(spec, dict)
+                        else spec
+                    ).model_dump(),
+                    "destTable": query_params["dest_table"],
+                },
             ),
         )
 

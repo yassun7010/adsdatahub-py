@@ -1,6 +1,7 @@
 import datetime
+from typing import Annotated
 
-from pydantic import field_serializer
+from pydantic import Field, field_serializer
 from typing_extensions import NotRequired, TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
@@ -54,15 +55,20 @@ class QueryExecutionSpecRequestDict(TypedDict):
 
 
 class QueryExecutionSpecRequestModel(ExtraForbidModel):
-    adsDataCustomerId: str | None = None
-    matchDataCustomerId: str | None = None
-    startDate: DateModel | datetime.date | str
-    endDate: DateModel | datetime.date | str
-    timeZone: str | None = None
-    parameterValues: dict[str, ParameterValueModel]
-    jobId: str | None = None
+    ads_data_customer_id: Annotated[str | None, Field(alias="adsDataCustomerId")] = None
+    match_data_customer_id: Annotated[
+        str | None, Field(alias="matchDataCustomerId")
+    ] = None
+    start_date: Annotated[DateModel | datetime.date | str, Field(alias="startDate")]
+    end_date: Annotated[DateModel | datetime.date | str, Field(alias="endDate")]
+    time_zone: Annotated[str | None, Field(alias="timeZone")] = None
+    parameter_values: Annotated[
+        dict[str, ParameterValueModel],
+        Field(alias="parameterValues", default_factory=dict),
+    ]
+    job_id: Annotated[str | None, Field(alias="jobId")] = None
 
-    @field_serializer("startDate", "endDate")
+    @field_serializer("start_date", "end_date")
     def serialize_dt(self, date: DateModel | datetime.date | str) -> DateDict:
         if isinstance(date, str):
             date = datetime.date.fromisoformat(date)

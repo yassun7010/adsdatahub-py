@@ -28,11 +28,20 @@ class TestAnalysisQueries:
             )
 
     def test_list(self, analysis_queries_resource: analysis_queries.Resource):
-        response = analysis_queries_resource.list(filter="")
+        response = analysis_queries_resource.list()
         assert response.queries
 
     def test_start_transient(
         self, analysis_queries_resource: analysis_queries.Resource, customer_id: str
     ):
-        with pytest.raises(ResponseStatusCodeError):
-            analysis_queries_resource.start_transient(**{})
+        analysis_queries_resource.start_transient(
+            query={
+                "title": "ads-data-hub-test",
+                "queryText": "SELECT * FROM `project.dataset.table`",
+            },
+            spec={
+                "startDate": "2021-01-01",
+                "endDate": "2021-12-31",
+            },
+            dest_table="project.dataset.table",
+        )
