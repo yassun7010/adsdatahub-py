@@ -1,4 +1,4 @@
-from typing import Literal, TypedDict
+from typing import Any, Literal, TypedDict
 
 import httpx
 from typing_extensions import Unpack
@@ -11,6 +11,10 @@ from adsdatahub.restapi.resources.analysis_queries.list import (
 from adsdatahub.restapi.resources.analysis_queries.start_transient import (
     AnalysisQueriesStartTransientQueryParams,
 )
+from adsdatahub.restapi.resources.analysis_queries.validate import (
+    AnalysisQueriesValidateQueryParams,
+    AnalysisQueriesValidateResponseBody,
+)
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
     AnalysisQueryRequest,
@@ -20,6 +24,7 @@ from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_execution_spec import (
     QueryExecutionSpecRequestModel,
 )
+from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"
@@ -40,7 +45,7 @@ class Resource:
 
     def create(
         self,
-        query: AnalysisQueryRequest,
+        request_body: AnalysisQueryRequest,
     ) -> AnalysisQueryModel:
         """
         後で実行するための分析クエリを作成します。
@@ -48,12 +53,12 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/create?hl=ja
         """
-        if isinstance(query, dict):
-            query = AnalysisQueryRequestModel.model_validate(query)
+        if isinstance(request_body, dict):
+            request_body = AnalysisQueryRequestModel.model_validate(request_body)
 
         return parse_response_body(
             AnalysisQueryModel,
-            self._http.request("POST", self._base_url, json=query.model_dump()),
+            self._http.request("POST", self._base_url, json=request_body.model_dump()),
         )
 
     def list(
@@ -73,8 +78,8 @@ class Resource:
         )
 
     def start_transient(
-        self, **query_params: Unpack[AnalysisQueriesStartTransientQueryParams]
-    ) -> OperationModel:
+        self, **request_body: Unpack[AnalysisQueriesStartTransientQueryParams]
+    ) -> OperationModel[QueryMetadataModel]:
         """
         一時的な分析クエリで実行を開始します。
         結果は、指定した BigQuery 宛先テーブルに書き込まれます。
@@ -82,11 +87,11 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
         """
-        query = query_params["query"]
-        spec = query_params["spec"]
+        query = request_body["query"]
+        spec = request_body["spec"]
 
         return parse_response_body(
-            OperationModel,
+            OperationModel[QueryMetadataModel],
             self._http.request(
                 "POST",
                 f"{self._base_url}:startTransient",
@@ -101,15 +106,49 @@ class Resource:
                         if isinstance(spec, dict)
                         else spec
                     ).model_dump(),
-                    "destTable": query_params["dest_table"],
+                    "destTable": request_body["dest_table"],
                 },
             ),
         )
 
-    def validate(self, parent: str):
+    def validate(
+        self, **request_body: Unpack[AnalysisQueriesValidateQueryParams]
+    ) -> AnalysisQueriesValidateResponseBody:
         """
         提供された分析クエリに対して静的検証チェックを実行します。
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/validate?hl=ja
         """
-        raise NotImplementedError()
+        query = request_body["query"]
+        json_value: dict[str, Any] = {
+            "query": (
+                AnalysisQueryRequestModel.model_validate(query)
+                if isinstance(query, dict)
+                else query
+            ).model_dump(),
+        }
+
+        if ads_data_customer_id := request_body.get("ads_data_customer_id"):
+            json_value["adsDataCustomerId"] = ads_data_customer_id
+
+        if match_data_customer_id := request_body.get("match_data_customer_id"):
+            json_value["matchDataCustomerId"] = match_data_customer_id
+
+        if spec := request_body.get("spec"):
+            json_value["spec"] = (
+                QueryExecutionSpecRequestModel.model_validate(spec)
+                if isinstance(spec, dict)
+                else spec
+            ).model_dump()
+
+        if include_performance_info := request_body.get("include_performance_info"):
+            json_value["includePerformanceInfo"] = include_performance_info
+
+        return parse_response_body(
+            AnalysisQueriesValidateResponseBody,
+            self._http.request(
+                "POST",
+                f"{self._base_url}:validate",
+                json=json_value,
+            ),
+        )

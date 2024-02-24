@@ -4,6 +4,9 @@ from typing import Annotated, Literal, TypedDict
 import httpx
 from typing_extensions import Doc
 
+from adsdatahub.restapi.schemas.operation import OperationModel
+from adsdatahub.restapi.schemas.query_metadata import QueryMetadataWithQueryTextModel
+
 ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{operation_id}"]
 RESOURCE_NAME: ResourceName = (
     "https://adsdatahub.googleapis.com/v1/operations/{operation_id}"
@@ -45,7 +48,7 @@ class Resource:
         """
         raise NotImplementedError()
 
-    def get(self, name: str):
+    def get(self, name: str) -> OperationModel[QueryMetadataWithQueryTextModel]:
         """
         長時間実行オペレーションの最新の状態を取得します。
         クライアントはこのメソッドを使用して、API サービスで推奨される間隔でオペレーションの結果をポーリングできます。

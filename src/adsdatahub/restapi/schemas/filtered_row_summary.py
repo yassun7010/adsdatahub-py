@@ -1,3 +1,6 @@
+from typing import Annotated
+
+from pydantic import Field
 from typing_extensions import TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
@@ -18,4 +21,10 @@ class FilteredRowSummaryDict(TypedDict):
 
 
 class FilteredRowSummaryModel(ExtraForbidModel):
-    columns: dict[str, ColumnSummaryRuleModel]
+    """
+    分析クエリ結果のスキーマの手順を結合します。
+
+    Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#FilteredRowSummary
+    """
+
+    columns: Annotated[dict[str, ColumnSummaryRuleModel], Field(default_factory=dict)]

@@ -1,10 +1,16 @@
+from typing import Generic, TypeVar
+
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 from adsdatahub.restapi.schemas.query_response import QueryResponseModel
 from adsdatahub.restapi.schemas.status import StatusModel
 
+GenericQueryMetadataModel = TypeVar(
+    "GenericQueryMetadataModel", bound=QueryMetadataModel
+)
 
-class OperationModel(Model):
+
+class OperationModel(Generic[GenericQueryMetadataModel], Model):
     """
     このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
 
@@ -19,7 +25,7 @@ class OperationModel(Model):
     デフォルトの HTTP マッピングを使用している場合は、name を operations/{unique_id} で終わるリソース名にします。
     """
 
-    metadata: QueryMetadataModel | None = None
+    metadata: GenericQueryMetadataModel | None
     """
     オペレーションに関連付けられたサービス固有のデータを含む QueryMetadata オブジェクト。
 

@@ -68,14 +68,6 @@ class QueryMetadataModel(Model):
     （例: "2014-10-02T15:01:23Z"、"2014-10-02T15:01:23.045123456Z"）。
     """
 
-    query_text: Annotated[str | None, Field(alias="queryText")] = None
-    """
-    実行されたクエリのテキスト。
-
-    このフィールドは、google.longrunning.Operations.GetOperation 呼び出しのレスポンスでのみ設定されます。
-    google.longrunning.Operations.ListOperations の呼び出しや他の呼び出しのレスポンスでは省略されます。
-    """
-
     dest_table: Annotated[str | None, Field(alias="destTable")] = None
     """
     クエリ結果の宛先テーブル。分析クエリに使用されます。
@@ -84,4 +76,14 @@ class QueryMetadataModel(Model):
     user_list_id: Annotated[str | None, Field(alias="userListId")] = None
     """
     クエリ結果を入力するユーザーリスト。ユーザーリストのクエリに使用されます。
+    """
+
+
+class QueryMetadataWithQueryTextModel(QueryMetadataModel):
+    query_text: Annotated[str | None, Field(alias="queryText")] = None
+    """
+    実行されたクエリのテキスト。
+
+    このフィールドは、google.longrunning.Operations.GetOperation 呼び出しのレスポンスでのみ設定されます。
+    google.longrunning.Operations.ListOperations の呼び出しや他の呼び出しのレスポンスでは省略されます。
     """

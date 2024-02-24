@@ -45,3 +45,23 @@ class TestAnalysisQueries:
             },
             dest_table="project.dataset.table",
         )
+
+    def test_validate(
+        self, analysis_queries_resource: analysis_queries.Resource, customer_id: str
+    ):
+        analysis_queries_resource.validate(
+            query={
+                "title": "ads-data-hub-test",
+                "queryText": """
+                    select
+                        campaign_id,
+                        date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') as date,
+                        count(query_id.time_usec) as imp
+                    from
+                        adh.google_ads_impressions
+                    group by
+                        campaign_id,
+                        date
+                    """,
+            },
+        )
