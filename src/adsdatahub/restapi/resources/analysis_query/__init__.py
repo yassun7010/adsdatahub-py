@@ -7,7 +7,11 @@ from adsdatahub.restapi.schemas.analysis_queries_start import (
     AnalysisQueriesStartDict,
     AnalysisQueriesStartModel,
 )
-from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
+from adsdatahub.restapi.schemas.analysis_query import (
+    AnalysisQueryModel,
+    AnalysisQueryRequestDict,
+    AnalysisQueryRequestModel,
+)
 
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}"
@@ -47,12 +51,32 @@ class Resource:
             self._http.request("GET", self._base_url),
         )
 
-    def patch(self, name: str) -> None:
+    def patch(
+        self, request_body: AnalysisQueryRequestModel | AnalysisQueryRequestDict
+    ) -> AnalysisQueryModel:
         """
         既存の分析クエリを更新します。部分更新はサポートされています。次のクエリ フィールドは、この方法では更新できないため、無視されます。
 
+        - queryState
+        - createTime
+        - createEmail（作成メール）
+        - updateTime
+        - updateEmail
+
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/patch?hl=ja
         """
+        return parse_response_body(
+            AnalysisQueryModel,
+            self._http.request(
+                "PATCH",
+                self._base_url,
+                json=(
+                    AnalysisQueryRequestModel.model_validate(request_body)
+                    if isinstance(request_body, dict)
+                    else request_body
+                ).model_dump(),
+            ),
+        )
 
     def start(
         self, params: AnalysisQueriesStartDict | AnalysisQueriesStartModel
