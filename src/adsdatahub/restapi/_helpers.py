@@ -1,4 +1,4 @@
-from typing import Any, TypeVar
+from typing import Any, TypeVar, overload
 
 import httpx
 
@@ -25,10 +25,26 @@ def snake2camel(**origin: Any) -> dict[str, Any]:
     return data
 
 
+@overload
+def parse_response_body(response_body_type: None, response: httpx.Response) -> None:
+    ...
+
+
+@overload
 def parse_response_body(
     response_body_type: type[GenericResponseBody], response: httpx.Response
 ) -> GenericResponseBody:
+    ...
+
+
+def parse_response_body(
+    response_body_type: type[GenericResponseBody] | None, response: httpx.Response
+) -> GenericResponseBody | None:
     if response.status_code != 200:
         raise ResponseStatusCodeError(response)
 
-    return response_body_type.model_validate_json(response.content)
+    if response_body_type is None:
+        return None
+
+    else:
+        return response_body_type.model_validate_json(response.content)

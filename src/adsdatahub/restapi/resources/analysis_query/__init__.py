@@ -31,7 +31,10 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/delete?hl=ja
         """
-        raise NotImplementedError()
+        return parse_response_body(
+            None,
+            self._http.request("DELETE", self._base_url),
+        )
 
     def get(self) -> AnalysisQueryModel:
         """
