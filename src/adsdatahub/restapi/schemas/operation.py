@@ -15,6 +15,9 @@ GenericQueryMetadataModel = TypeVar(
 class OperationNameModel(Model):
     unique_id: str
 
+    def __str__(self) -> str:
+        return f"operations/{self.unique_id}"
+
 
 class OperationModel(Model, Generic[GenericQueryMetadataModel]):
     """
