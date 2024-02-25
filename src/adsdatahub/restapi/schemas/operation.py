@@ -1,6 +1,6 @@
-from typing import Generic, TypeVar
+from typing import Annotated, Generic, TypeVar
 
-from pydantic import field_serializer, validator
+from pydantic import BeforeValidator, PlainSerializer, ValidationInfo
 
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
@@ -19,6 +19,17 @@ class OperationNameModel(Model):
         return f"operations/{self.unique_id}"
 
 
+def _deserialize_name(value: str, info: ValidationInfo) -> dict[str, str]:
+    if not value.startswith("operations/"):
+        raise ValueError(f"Invalid operation name: {value}")
+
+    return {"unique_id": value[len("operations/") :]}
+
+
+def _serialize_name(model: OperationNameModel) -> str:
+    return f"operations/{model.unique_id}"
+
+
 class OperationModel(Model, Generic[GenericQueryMetadataModel]):
     """
     このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
@@ -26,7 +37,11 @@ class OperationModel(Model, Generic[GenericQueryMetadataModel]):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations?hl=ja#Operation
     """
 
-    name: OperationNameModel
+    name: Annotated[
+        OperationNameModel,
+        BeforeValidator(_deserialize_name),
+        PlainSerializer(_serialize_name),
+    ]
     """
     サーバーによって割り当てられる名前。
 
@@ -65,15 +80,3 @@ class OperationModel(Model, Generic[GenericQueryMetadataModel]):
 
     例: { "id": 1234, "@type": "types.example.com/standard/id" }
     """
-
-    @validator("name", pre=True)
-    @classmethod
-    def _parse_name(cls, v: str) -> dict[str, str]:
-        if not v.startswith("operations/"):
-            raise ValueError(f"Invalid operation name: {v}")
-
-        return {"unique_id": v[len("operations/") :]}
-
-    @field_serializer("name")
-    def _serialize_name(self, v: OperationNameModel) -> str:
-        return f"operations/{v.unique_id}"
