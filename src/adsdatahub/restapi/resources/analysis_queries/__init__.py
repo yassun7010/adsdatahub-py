@@ -35,7 +35,7 @@ RESOURCE_NAME: ResourceName = (
 
 
 class PathParameters(TypedDict):
-    customer_id: str
+    customer_id: int
 
 
 class Resource:

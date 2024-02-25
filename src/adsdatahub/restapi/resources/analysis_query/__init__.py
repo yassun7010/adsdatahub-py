@@ -1,17 +1,21 @@
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, Unpack
 
 import httpx
 
 from adsdatahub.restapi._helpers import parse_response_body
-from adsdatahub.restapi.schemas.analysis_queries_start import (
-    AnalysisQueriesStartDict,
-    AnalysisQueriesStartModel,
+from adsdatahub.restapi.resources.analysis_query.start import (
+    AnalysisQueryStartRequestBody,
 )
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
     AnalysisQueryRequestDict,
     AnalysisQueryRequestModel,
 )
+from adsdatahub.restapi.schemas.operation import OperationModel
+from adsdatahub.restapi.schemas.query_execution_spec import (
+    QueryExecutionSpecRequestModel,
+)
+from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}"
@@ -20,7 +24,7 @@ RESOURCE_NAME: ResourceName = "https://adsdatahub.googleapis.com/v1/customers/{c
 
 
 class PathParameters(TypedDict):
-    customer_id: str
+    customer_id: int
     resource_id: str
 
 
@@ -79,8 +83,8 @@ class Resource:
         )
 
     def start(
-        self, params: AnalysisQueriesStartDict | AnalysisQueriesStartModel
-    ) -> None:
+        self, **request_body: Unpack[AnalysisQueryStartRequestBody]
+    ) -> OperationModel[QueryMetadataModel]:
         """
         保存された分析クエリの実行を開始します。
         結果は、指定した BigQuery 宛先テーブルに書き込まれます。
@@ -88,4 +92,25 @@ class Resource:
 
         Refarence: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/start?hl=ja
         """
-        raise NotImplementedError()
+        spec = request_body["spec"]
+
+        json_value = {
+            "spec": (
+                QueryExecutionSpecRequestModel.model_validate(spec)
+                if isinstance(spec, dict)
+                else spec
+            ).model_dump(),
+            "destTable": request_body["dest_table"],
+        }
+
+        if customer_id := request_body.get("customer_id"):
+            json_value["customerId"] = customer_id
+
+        return parse_response_body(
+            OperationModel[QueryMetadataModel],
+            self._http.request(
+                "POST",
+                f"{self._base_url}:start",
+                json=json_value,
+            ),
+        )

@@ -9,7 +9,7 @@ class TestAnalysisQueries:
     def analysis_queries_resource(
         self,
         restapi_client: adsdatahub.restapi.Client,
-        customer_id: str,
+        customer_id: int,
     ) -> analysis_queries.Resource:
         return restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
@@ -17,7 +17,7 @@ class TestAnalysisQueries:
         )
 
     def test_create(
-        self, analysis_queries_resource: analysis_queries.Resource, customer_id: str
+        self, analysis_queries_resource: analysis_queries.Resource, customer_id: int
     ):
         with pytest.raises(ResponseStatusCodeError):
             analysis_queries_resource.create(
@@ -32,7 +32,7 @@ class TestAnalysisQueries:
         assert response.queries
 
     def test_start_transient(
-        self, analysis_queries_resource: analysis_queries.Resource, customer_id: str
+        self, analysis_queries_resource: analysis_queries.Resource, customer_id: int
     ):
         analysis_queries_resource.start_transient(
             query={
@@ -47,7 +47,7 @@ class TestAnalysisQueries:
         )
 
     def test_validate(
-        self, analysis_queries_resource: analysis_queries.Resource, customer_id: str
+        self, analysis_queries_resource: analysis_queries.Resource, customer_id: int
     ):
         analysis_queries_resource.validate(
             query={
