@@ -4,7 +4,6 @@ from typing import Callable, TypedDict
 import adsdatahub.restapi
 import pytest
 from adsdatahub.exceptions import (
-    AdsDataHubResponseStatusCodeError,
     AdsDataHubUnimplementedError,
 )
 from adsdatahub.restapi.resources import operation
@@ -56,12 +55,10 @@ class TestOperation:
         restapi_client: adsdatahub.restapi.Client,
         operation_response: OperationModel[QueryMetadataModel],
     ):
-        # TODO: 正しいクエリを作成する必要がある。
-        with pytest.raises(AdsDataHubResponseStatusCodeError):
-            restapi_client.request(
-                "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-                **parse_operation_name(operation_response.name),
-            ).cancel()
+        restapi_client.request(
+            "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
+            unique_id=operation_response.name.unique_id,
+        ).cancel()
 
     def test_delete(
         self,
@@ -71,7 +68,7 @@ class TestOperation:
         try:
             restapi_client.request(
                 "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-                **parse_operation_name(operation_response.name),
+                unique_id=operation_response.name.unique_id,
             ).delete()
 
         except AdsDataHubUnimplementedError:
@@ -86,7 +83,7 @@ class TestOperation:
     ):
         restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-            **parse_operation_name(operation_response.name),
+            unique_id=operation_response.name.unique_id,
         ).get()
 
     def test_wait(
@@ -96,13 +93,9 @@ class TestOperation:
     ):
         restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-            **parse_operation_name(operation_response.name),
+            unique_id=operation_response.name.unique_id,
         ).wait()
 
 
 class OperationNameParams(TypedDict):
     unique_id: str
-
-
-def parse_operation_name(name: str) -> OperationNameParams:
-    return {"unique_id": name.split("/")[-1]}
