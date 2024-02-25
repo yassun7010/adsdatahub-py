@@ -4,17 +4,18 @@ from typing import Annotated, Literal, TypedDict
 import httpx
 from typing_extensions import Doc
 
+from adsdatahub.restapi._helpers import parse_response_body
 from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_metadata import QueryMetadataWithQueryTextModel
 
-ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{operation_id}"]
+ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{unique_id}"]
 RESOURCE_NAME: ResourceName = (
-    "https://adsdatahub.googleapis.com/v1/operations/{operation_id}"
+    "https://adsdatahub.googleapis.com/v1/operations/{unique_id}"
 )
 
 
 class PathParameters(TypedDict):
-    operation_id: str
+    unique_id: str
 
 
 class Resource:
@@ -24,7 +25,7 @@ class Resource:
         self._client = client
         self._base_url = RESOURCE_NAME.format(**path_parameters)
 
-    def cancel(self, name: str):
+    def cancel(self):
         """
         長時間実行オペレーションの非同期キャンセルを開始します。
         サーバーは操作のキャンセルに全力を尽くしますが、成功は保証されません。
@@ -35,7 +36,10 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/cancel?hl=ja
         """
-        raise NotImplementedError()
+        return parse_response_body(
+            None,
+            self._client.request("POST", f"{self._base_url}:cancel"),
+        )
 
     def delete(self, name: str):
         """

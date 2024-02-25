@@ -16,3 +16,13 @@ def restapi_client():
 @pytest.fixture
 def customer_id() -> int:
     return int(os.environ["ADS_DATA_HUB_CUSTOMER_ID"])
+
+
+@pytest.fixture
+def project() -> str:
+    return os.environ["PROJECT"]
+
+
+@pytest.fixture
+def dataset() -> str:
+    return os.environ["DATASET"]

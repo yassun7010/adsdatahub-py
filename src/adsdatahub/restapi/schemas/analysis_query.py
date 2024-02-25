@@ -89,7 +89,7 @@ class AnalysisQueryRequestModel(ExtraForbidModel):
 
     merge_spec: Annotated[
         MergeSpecModel,
-        Field(alias="mergeSpec", default_factory=MergeSpecDict),
+        Field(alias="mergeSpec", default_factory=lambda: MergeSpecModel(columns={})),
     ]
     """
     行をマージする手順。

@@ -12,7 +12,7 @@ from google.auth.credentials import AnonymousCredentials, Credentials
 from google.cloud.client import ClientWithProject
 from typing_extensions import Unpack, overload, override
 
-from adsdatahub.restapi.resources import analysis_queries, analysis_query, operations
+from adsdatahub.restapi.resources import analysis_queries, analysis_query, operation
 
 _marker: object = object()
 
@@ -145,9 +145,9 @@ class Client(ClientWithProject):
     @overload
     def request(
         self,
-        resource_name: operations.ResourceName,
-        **params: Unpack[operations.PathParameters],
-    ) -> operations.Resource:
+        resource_name: operation.ResourceName,
+        **params: Unpack[operation.PathParameters],
+    ) -> operation.Resource:
         """
         このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
 
@@ -160,13 +160,13 @@ class Client(ClientWithProject):
         resource_name: Union[
             analysis_queries.ResourceName,
             analysis_query.ResourceName,
-            operations.ResourceName,
+            operation.ResourceName,
         ],
         **params: Any,
     ) -> Union[
         analysis_queries.Resource,
         analysis_query.Resource,
-        operations.Resource,
+        operation.Resource,
     ]:
         match resource_name:
             case "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries":
@@ -179,9 +179,9 @@ class Client(ClientWithProject):
                     self._http, cast(analysis_query.PathParameters, params)
                 )
 
-            case "https://adsdatahub.googleapis.com/v1/operations/{operation_id}":
-                return operations.Resource(
-                    self._http, cast(operations.PathParameters, params)
+            case "https://adsdatahub.googleapis.com/v1/operations/{unique_id}":
+                return operation.Resource(
+                    self._http, cast(operation.PathParameters, params)
                 )
 
             case _:
