@@ -12,6 +12,8 @@ from adsdatahub.restapi.schemas._newtype import CustomerId
 from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 
+from tests.conftest import SLEEP_TIME_SEC
+
 OperationId = str
 
 OperationResourceGetter = Callable[[OperationId], operation.Resource]
@@ -58,7 +60,7 @@ class TestOperation:
         restapi_client: adsdatahub.restapi.Client,
         operation_response: OperationModel[QueryMetadataModel],
     ):
-        await asyncio.sleep(1)
+        await asyncio.sleep(SLEEP_TIME_SEC)
         restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
             unique_id=operation_response.name.unique_id,

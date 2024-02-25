@@ -4,6 +4,8 @@ import adsdatahub.restapi
 import pytest
 from adsdatahub.restapi.schemas._newtype import CustomerId
 
+SLEEP_TIME_SEC = 3
+
 
 @pytest.fixture
 def restapi_client():

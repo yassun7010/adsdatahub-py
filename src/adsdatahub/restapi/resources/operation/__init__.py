@@ -8,6 +8,7 @@ from adsdatahub.restapi._helpers import (
     validate_response_status_code,
 )
 from adsdatahub.restapi.resources.operation.wait import OperationWaitRequestBody
+from adsdatahub.restapi.schemas._newtype import UniqueId
 from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_metadata import (
     QueryMetadataModel,
@@ -21,7 +22,7 @@ RESOURCE_NAME: ResourceName = (
 
 
 class PathParameters(TypedDict):
-    unique_id: str
+    unique_id: UniqueId
 
 
 class Resource:

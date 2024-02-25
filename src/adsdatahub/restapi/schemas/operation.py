@@ -3,6 +3,7 @@ from typing import Annotated, Generic, TypeVar
 from pydantic import BeforeValidator, PlainSerializer, ValidationInfo
 
 from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._newtype import UniqueId
 from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 from adsdatahub.restapi.schemas.query_response import QueryResponseModel
 from adsdatahub.restapi.schemas.status import StatusModel
@@ -13,7 +14,7 @@ GenericQueryMetadataModel = TypeVar(
 
 
 class OperationNameModel(Model):
-    unique_id: str
+    unique_id: UniqueId
 
     def __str__(self) -> str:
         return f"operations/{self.unique_id}"

@@ -5,6 +5,8 @@ import adsdatahub.restapi
 import pytest
 from adsdatahub.restapi.schemas._newtype import CustomerId
 
+from tests.conftest import SLEEP_TIME_SEC
+
 
 class TestAnalysisQuery:
     @pytest.mark.asyncio
@@ -21,7 +23,7 @@ class TestAnalysisQuery:
             }
         )
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(SLEEP_TIME_SEC)
 
         restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
@@ -43,7 +45,7 @@ class TestAnalysisQuery:
             }
         )
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(SLEEP_TIME_SEC)
 
         try:
             restapi_client.request(
@@ -106,7 +108,7 @@ class TestAnalysisQuery:
             }
         )
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(SLEEP_TIME_SEC)
 
         try:
             restapi_client.request(
