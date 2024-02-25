@@ -9,6 +9,7 @@ from adsdatahub.restapi._helpers import (
 from adsdatahub.restapi.resources.analysis_query.start import (
     AnalysisQueryStartRequestBody,
 )
+from adsdatahub.restapi.schemas._newtype import CustomerId, ResourceId
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
     AnalysisQueryRequestDict,
@@ -27,8 +28,8 @@ RESOURCE_NAME: ResourceName = "https://adsdatahub.googleapis.com/v1/customers/{c
 
 
 class PathParameters(TypedDict):
-    customer_id: int
-    resource_id: str
+    customer_id: CustomerId
+    resource_id: ResourceId
 
 
 class Resource:

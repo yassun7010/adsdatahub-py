@@ -2,6 +2,7 @@ import os
 
 import adsdatahub.restapi
 import pytest
+from adsdatahub.restapi.schemas._newtype import CustomerId
 
 
 @pytest.fixture
@@ -14,8 +15,8 @@ def restapi_client():
 
 
 @pytest.fixture
-def customer_id() -> int:
-    return int(os.environ["ADS_DATA_HUB_CUSTOMER_ID"])
+def customer_id() -> CustomerId:
+    return os.environ["ADS_DATA_HUB_CUSTOMER_ID"]
 
 
 @pytest.fixture

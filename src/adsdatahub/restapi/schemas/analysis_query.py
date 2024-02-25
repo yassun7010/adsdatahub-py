@@ -1,9 +1,10 @@
 import datetime
 
-from pydantic import Field
+from pydantic import BeforeValidator, Field, PlainSerializer, ValidationInfo
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
+from adsdatahub.restapi.schemas._newtype import CustomerId, ResourceId
 from adsdatahub.restapi.schemas.filtered_row_summary import (
     FilteredRowSummaryDict,
     FilteredRowSummaryModel,
@@ -15,6 +16,42 @@ from adsdatahub.restapi.schemas.parameter_type import (
 )
 from adsdatahub.restapi.schemas.query_share import QueryShareDict
 from adsdatahub.restapi.schemas.query_state import QueryState
+
+
+class AnalysisQueryNameModel(ExtraForbidModel):
+    customer_id: CustomerId
+    resource_id: ResourceId
+
+    def __str__(self) -> str:
+        return f"customers/{self.customer_id}/analysisQueries/{self.resource_id}"
+
+
+def _deserialize_name(
+    value: str | None, info: ValidationInfo
+) -> dict[str, str | int] | None:
+    if value is None:
+        return None
+
+    splited_value = value.split("/")
+
+    if (
+        len(splited_value) != 4
+        or splited_value[0] != "customers"
+        or splited_value[2] != "analysisQueries"
+    ):
+        raise ValueError(f"Invalid operation name: {value}")
+
+    return {
+        "customer_id": splited_value[1],
+        "resource_id": splited_value[3],
+    }
+
+
+def _serialize_name(model: AnalysisQueryNameModel | None) -> str | None:
+    if model is None:
+        return None
+
+    return f"customers/{model.customer_id}/analysisQueries/{model.resource_id}"
 
 
 class AnalysisQueryRequestDict(TypedDict):
@@ -73,7 +110,11 @@ class AnalysisQueryRequestModel(ExtraForbidModel):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#AnalysisQuery
     """
 
-    name: str | None = None
+    name: Annotated[
+        AnalysisQueryNameModel | None,
+        BeforeValidator(_deserialize_name),
+        PlainSerializer(_serialize_name),
+    ] = None
 
     title: str
 
@@ -118,7 +159,11 @@ class AnalysisQueryModel(ExtraForbidModel):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#AnalysisQuery
     """
 
-    name: str
+    name: Annotated[
+        AnalysisQueryNameModel,
+        BeforeValidator(_deserialize_name),
+        PlainSerializer(_serialize_name),
+    ]
 
     title: str | None = None
 

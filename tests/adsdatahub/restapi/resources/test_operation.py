@@ -1,6 +1,6 @@
 import asyncio
 import uuid
-from typing import Callable, TypedDict
+from typing import Callable
 
 import adsdatahub.restapi
 import pytest
@@ -8,6 +8,7 @@ from adsdatahub.exceptions import (
     AdsDataHubUnimplementedError,
 )
 from adsdatahub.restapi.resources import operation
+from adsdatahub.restapi.schemas._newtype import CustomerId
 from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 
@@ -19,7 +20,7 @@ OperationResourceGetter = Callable[[OperationId], operation.Resource]
 class TestOperation:
     @pytest.fixture
     def operation_response(
-        self, restapi_client: adsdatahub.restapi.Client, customer_id: int
+        self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
     ) -> OperationModel[QueryMetadataModel]:
         return restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
@@ -98,7 +99,3 @@ class TestOperation:
             "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
             unique_id=operation_response.name.unique_id,
         ).wait()
-
-
-class OperationNameParams(TypedDict):
-    unique_id: str

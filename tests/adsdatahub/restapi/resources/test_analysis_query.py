@@ -1,13 +1,16 @@
 import asyncio
 import uuid
-from typing import TypedDict
 
 import adsdatahub.restapi
 import pytest
+from adsdatahub.restapi.schemas._newtype import CustomerId
 
 
 class TestAnalysisQuery:
-    def test_delete(self, restapi_client: adsdatahub.restapi.Client, customer_id: int):
+    @pytest.mark.asyncio
+    async def test_delete(
+        self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
+    ):
         query = restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
@@ -17,14 +20,18 @@ class TestAnalysisQuery:
                 "queryText": "SELECT 1",
             }
         )
+
+        await asyncio.sleep(1)
+
         restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
-            **parse_query_name(query.name),
+            customer_id=query.name.customer_id,
+            resource_id=query.name.resource_id,
         ).delete()
 
     @pytest.mark.asyncio
     async def test_get(
-        self, restapi_client: adsdatahub.restapi.Client, customer_id: int
+        self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
     ):
         query = restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
@@ -41,16 +48,20 @@ class TestAnalysisQuery:
         try:
             restapi_client.request(
                 "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
-                **parse_query_name(query.name),
+                customer_id=query.name.customer_id,
+                resource_id=query.name.resource_id,
             ).get()
 
         finally:
             restapi_client.request(
                 "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
-                **parse_query_name(query.name),
+                customer_id=query.name.customer_id,
+                resource_id=query.name.resource_id,
             ).delete()
 
-    def test_patch(self, restapi_client: adsdatahub.restapi.Client, customer_id: int):
+    def test_patch(
+        self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
+    ):
         query_title = f"ads-data-hub-test-{uuid.uuid4()}"
         query = restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
@@ -65,7 +76,8 @@ class TestAnalysisQuery:
         try:
             restapi_client.request(
                 "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
-                **parse_query_name(query.name),
+                customer_id=query.name.customer_id,
+                resource_id=query.name.resource_id,
             ).patch(
                 {
                     "title": query_title,
@@ -76,12 +88,13 @@ class TestAnalysisQuery:
         finally:
             restapi_client.request(
                 "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
-                **parse_query_name(query.name),
+                customer_id=query.name.customer_id,
+                resource_id=query.name.resource_id,
             ).delete()
 
     @pytest.mark.asyncio
     async def test_start(
-        self, restapi_client: adsdatahub.restapi.Client, customer_id: int
+        self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
     ):
         query = restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
@@ -98,7 +111,8 @@ class TestAnalysisQuery:
         try:
             restapi_client.request(
                 "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
-                **parse_query_name(query.name),
+                customer_id=query.name.customer_id,
+                resource_id=query.name.resource_id,
             ).start(
                 spec={
                     "startDate": "2021-01-01",
@@ -110,15 +124,6 @@ class TestAnalysisQuery:
         finally:
             restapi_client.request(
                 "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
-                **parse_query_name(query.name),
+                customer_id=query.name.customer_id,
+                resource_id=query.name.resource_id,
             ).delete()
-
-
-class AnalysisQueryNameParams(TypedDict):
-    customer_id: int
-    resource_id: str
-
-
-def parse_query_name(name: str) -> AnalysisQueryNameParams:
-    parts = name.split("/")
-    return AnalysisQueryNameParams(customer_id=int(parts[1]), resource_id=parts[3])

@@ -15,6 +15,7 @@ from adsdatahub.restapi.resources.analysis_queries.validate import (
     AnalysisQueriesValidateQueryParams,
     AnalysisQueriesValidateResponseBody,
 )
+from adsdatahub.restapi.schemas._newtype import CustomerId
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
     AnalysisQueryRequest,
@@ -35,7 +36,7 @@ RESOURCE_NAME: ResourceName = (
 
 
 class PathParameters(TypedDict):
-    customer_id: int
+    customer_id: CustomerId
 
 
 class Resource:
