@@ -10,7 +10,7 @@ GenericQueryMetadataModel = TypeVar(
 )
 
 
-class OperationModel(Generic[GenericQueryMetadataModel], Model):
+class OperationModel(Model, Generic[GenericQueryMetadataModel]):
     """
     このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
 
