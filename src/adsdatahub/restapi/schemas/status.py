@@ -1,3 +1,6 @@
+from typing import Annotated
+
+from pydantic import Field
 from typing_extensions import TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
@@ -37,5 +40,7 @@ class StatusDict(TypedDict):
 
 class StatusModel(ExtraForbidModel):
     code: int
+
     message: str
-    details: list[dict]
+
+    details: Annotated[list[dict], Field(default_factory=list)]

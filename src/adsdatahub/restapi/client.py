@@ -12,7 +12,12 @@ from google.auth.credentials import AnonymousCredentials, Credentials
 from google.cloud.client import ClientWithProject
 from typing_extensions import Unpack, overload, override
 
-from adsdatahub.restapi.resources import analysis_queries, analysis_query, operation
+from adsdatahub.restapi.resources import (
+    analysis_queries,
+    analysis_query,
+    operation,
+    operations,
+)
 
 _marker: object = object()
 
@@ -105,7 +110,8 @@ class Client(ClientWithProject):
             self._http_internal = httpx.Client(
                 headers={
                     "Authorization": f"Bearer {self._credentials.token}",
-                }
+                },
+                timeout=30,
             )
 
         if no_project:
@@ -145,6 +151,19 @@ class Client(ClientWithProject):
     @overload
     def request(
         self,
+        resource_name: operations.ResourceName,
+        **params: Unpack[operations.PathParameters],
+    ) -> operations.Resource:
+        """
+        このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
+
+        Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations?hl=ja
+        """
+        ...
+
+    @overload
+    def request(
+        self,
         resource_name: operation.ResourceName,
         **params: Unpack[operation.PathParameters],
     ) -> operation.Resource:
@@ -160,12 +179,14 @@ class Client(ClientWithProject):
         resource_name: Union[
             analysis_queries.ResourceName,
             analysis_query.ResourceName,
+            operations.ResourceName,
             operation.ResourceName,
         ],
         **params: Any,
     ) -> Union[
         analysis_queries.Resource,
         analysis_query.Resource,
+        operations.Resource,
         operation.Resource,
     ]:
         match resource_name:
@@ -177,6 +198,11 @@ class Client(ClientWithProject):
             case "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}":
                 return analysis_query.Resource(
                     self._http, cast(analysis_query.PathParameters, params)
+                )
+
+            case "https://adsdatahub.googleapis.com/v1/operations":
+                return operations.Resource(
+                    self._http, cast(operations.PathParameters, params)
                 )
 
             case "https://adsdatahub.googleapis.com/v1/operations/{unique_id}":

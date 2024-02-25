@@ -2,7 +2,10 @@ from typing import Literal, TypedDict, Unpack
 
 import httpx
 
-from adsdatahub.restapi._helpers import parse_response_body
+from adsdatahub.restapi._helpers import (
+    parse_response_body,
+    validate_response_status_code,
+)
 from adsdatahub.restapi.resources.analysis_query.start import (
     AnalysisQueryStartRequestBody,
 )
@@ -39,8 +42,7 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/delete?hl=ja
         """
-        return parse_response_body(
-            None,
+        return validate_response_status_code(
             self._http.request("DELETE", self._base_url),
         )
 

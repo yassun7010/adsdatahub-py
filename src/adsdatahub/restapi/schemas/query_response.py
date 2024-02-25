@@ -15,6 +15,17 @@ class QueryResponseModel(Model):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/QueryResponse?hl=ja
     """
 
-    row_count: Annotated[int, Field(alias="rowCount")]
-    outputArtifacts: OutputArtifactsModel
-    privacyMessages: PrivacyMessageModel
+    row_count: Annotated[
+        int,
+        Field(alias="rowCount"),
+    ]
+
+    output_artifacts: Annotated[
+        OutputArtifactsModel,
+        Field(alias="outputArtifacts"),
+    ]
+
+    privacy_messages: Annotated[
+        list[PrivacyMessageModel],
+        Field(alias="privacyMessages", default_factory=list),
+    ]

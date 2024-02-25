@@ -1,8 +1,12 @@
-from typing import Any, TypeVar, overload
+import json
+from typing import Any, TypeVar
 
 import httpx
 
-from adsdatahub.exceptions import ResponseStatusCodeError
+from adsdatahub.exceptions import (
+    AdsDataHubResponseStatusCodeError,
+    AdsDataHubUnimplementedError,
+)
 from adsdatahub.restapi.schemas._model import Model
 
 GenericResponseBody = TypeVar("GenericResponseBody", bound=Model)
@@ -25,26 +29,26 @@ def snake2camel(**origin: Any) -> dict[str, Any]:
     return data
 
 
-@overload
-def parse_response_body(response_body_type: None, response: httpx.Response) -> None:
-    ...
-
-
-@overload
-def parse_response_body(
-    response_body_type: type[GenericResponseBody], response: httpx.Response
-) -> GenericResponseBody:
-    ...
-
-
-def parse_response_body(
-    response_body_type: type[GenericResponseBody] | None, response: httpx.Response
-) -> GenericResponseBody | None:
+def validate_response_status_code(response: httpx.Response) -> None:
     if response.status_code != 200:
-        raise ResponseStatusCodeError(response)
+        match response.status_code:
+            case 501:
+                try:
+                    if (
+                        response.json().get("error", {}).get("status")
+                        == "UNIMPLEMENTED"
+                    ):
+                        raise AdsDataHubUnimplementedError(response)
+                except json.JSONDecodeError:
+                    pass
 
-    if response_body_type is None:
-        return None
+        raise AdsDataHubResponseStatusCodeError(response)
 
-    else:
-        return response_body_type.model_validate_json(response.content)
+
+def parse_response_body(
+    response_body_type: type[GenericResponseBody],
+    response: httpx.Response,
+) -> GenericResponseBody:
+    validate_response_status_code(response)
+
+    return response_body_type.model_validate_json(response.content)

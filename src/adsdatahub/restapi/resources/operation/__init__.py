@@ -1,12 +1,18 @@
 import datetime
-from typing import Annotated, Literal, TypedDict
+from typing import Any, Literal, TypedDict, Unpack
 
 import httpx
-from typing_extensions import Doc
 
-from adsdatahub.restapi._helpers import parse_response_body
+from adsdatahub.restapi._helpers import (
+    parse_response_body,
+    validate_response_status_code,
+)
+from adsdatahub.restapi.resources.operation.wait import OperationWaitRequestBody
 from adsdatahub.restapi.schemas.operation import OperationModel
-from adsdatahub.restapi.schemas.query_metadata import QueryMetadataWithQueryTextModel
+from adsdatahub.restapi.schemas.query_metadata import (
+    QueryMetadataModel,
+    QueryMetadataWithQueryTextModel,
+)
 
 ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{unique_id}"]
 RESOURCE_NAME: ResourceName = (
@@ -19,7 +25,9 @@ class PathParameters(TypedDict):
 
 
 class Resource:
-    """このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。"""
+    """
+    このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
+    """
 
     def __init__(self, client: httpx.Client, path_parameters: PathParameters) -> None:
         self._client = client
@@ -36,12 +44,11 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/cancel?hl=ja
         """
-        return parse_response_body(
-            None,
+        return validate_response_status_code(
             self._client.request("POST", f"{self._base_url}:cancel"),
         )
 
-    def delete(self, name: str):
+    def delete(self) -> None:
         """
         長時間実行オペレーションを削除します。
         このメソッドは、クライアントがそのオペレーション結果に関心がなくなったことを表しています。
@@ -50,46 +57,27 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/delete?hl=ja
         """
-        raise NotImplementedError()
 
-    def get(self, name: str) -> OperationModel[QueryMetadataWithQueryTextModel]:
+        return validate_response_status_code(
+            self._client.request("DELETE", self._base_url),
+        )
+
+    def get(self) -> OperationModel[QueryMetadataWithQueryTextModel]:
         """
         長時間実行オペレーションの最新の状態を取得します。
         クライアントはこのメソッドを使用して、API サービスで推奨される間隔でオペレーションの結果をポーリングできます。
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/get?hl=ja
         """
-        raise NotImplementedError()
 
-    def list(self, name: str):
-        """
-        リクエストで指定されたフィルタに一致するオペレーションをリストします。
-        このメソッドがサーバーでサポートされていない場合は、UNIMPLEMENTED を返します。
-
-        注: name バインディングを使用すると、users/*/operations などの異なるリソース名スキームを使用するために、API サービスがバインディングをオーバーライドできます。
-        バインディングをオーバーライドするときに、API サービスは "/v1/{name=users/*}/operations" のようなバインディングをサービス構成に追加する場合があります。
-        下位互換性を維持するため、デフォルトの名前にはオペレーションのコレクション ID が含まれています。
-        ただし、オーバーライドを行うユーザーは、名前のバインディングが親リソースであり、オペレーション コレクション ID がないことを確認する必要があります。
-
-        Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/list?hl=ja
-        """
-        raise NotImplementedError()
+        return parse_response_body(
+            OperationModel[QueryMetadataWithQueryTextModel],
+            self._client.request("GET", self._base_url),
+        )
 
     def wait(
-        self,
-        timeout: Annotated[
-            datetime.timedelta | str | int | float | None,
-            Doc(
-                """
-                タイムアウトするまでの最大待機時間。
-
-                空白のままにした場合、待機時間は基になる HTTP/RPC プロトコルによって許可される最長の時間になります。
-                RPC コンテキストの期限も指定されている場合は、短い方が使用されます。
-                小数点以下 9 桁まで、「s」で終わる秒単位の期間（例: "3.5s"）。
-                """
-            ),
-        ] = None,
-    ):
+        self, **request_body: Unpack[OperationWaitRequestBody]
+    ) -> OperationModel[QueryMetadataModel]:
         """
         指定した長時間実行オペレーションが完了するか、指定したタイムアウトに達するまで待機し、最新の状態を返します。
 
@@ -102,4 +90,19 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/wait?hl=ja
         """
-        raise NotImplementedError()
+        json_value: dict[str, Any] = {}
+
+        if timeout := request_body.get("timeout"):
+            match timeout:
+                case str():
+                    timeout_sec = timeout
+                case int() | float():
+                    timeout_sec = f"{timeout}s"
+                case datetime.timedelta():
+                    timeout_sec = f"{timeout.total_seconds()}s"
+            json_value["timeout"] = timeout_sec
+
+        return parse_response_body(
+            OperationModel[QueryMetadataModel],
+            self._client.request("POST", f"{self._base_url}:wait", json=json_value),
+        )

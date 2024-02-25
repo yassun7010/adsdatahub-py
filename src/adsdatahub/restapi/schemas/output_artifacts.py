@@ -1,3 +1,7 @@
+from typing import Annotated
+
+from pydantic import Field
+
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.temp_table import TempTableModel
 
@@ -10,4 +14,6 @@ class OutputArtifactsModel(Model):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/OutputArtifacts?hl=ja
     """
 
-    tempTables: list[TempTableModel]
+    temp_tables: Annotated[
+        list[TempTableModel], Field(alias="tempTables", default_factory=list)
+    ]

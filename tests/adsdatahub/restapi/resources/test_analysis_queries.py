@@ -1,6 +1,6 @@
 import adsdatahub.restapi
 import pytest
-from adsdatahub.exceptions import ResponseStatusCodeError
+from adsdatahub.exceptions import AdsDataHubResponseStatusCodeError
 from adsdatahub.restapi.resources import analysis_queries
 
 
@@ -19,7 +19,7 @@ class TestAnalysisQueries:
     def test_create(
         self, analysis_queries_resource: analysis_queries.Resource, customer_id: int
     ):
-        with pytest.raises(ResponseStatusCodeError):
+        with pytest.raises(AdsDataHubResponseStatusCodeError):
             analysis_queries_resource.create(
                 {
                     "title": "ads-data-hub-test",

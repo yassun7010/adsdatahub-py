@@ -4,7 +4,7 @@ import httpx
 from typing_extensions import override
 
 
-class AdsdatahubException(Exception):
+class AdsDataHubException(Exception):
     """Base exception for adsdatahub."""
 
     @property
@@ -17,11 +17,11 @@ class AdsdatahubException(Exception):
         return self.message
 
 
-class AdsdatahubError(AdsdatahubException):
+class AdsDataHubError(AdsDataHubException):
     """Base error for adsdatahub."""
 
 
-class ResponseStatusCodeError(AdsdatahubError):
+class AdsDataHubResponseStatusCodeError(AdsDataHubError):
     """Response status code error for adsdatahub."""
 
     def __init__(self, response: httpx.Response) -> None:
@@ -35,3 +35,14 @@ class ResponseStatusCodeError(AdsdatahubError):
     @override
     def message(self) -> str:
         return f"Response Status Code Error {self.response}: {self.response_body}"
+
+
+class AdsDataHubUnimplementedError(AdsDataHubResponseStatusCodeError):
+    """
+    このメソッドがサーバーでサポートされていないため、google.rpc.Code.UNIMPLEMENTED を返した場合のエラー。
+
+    See: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/delete?hl=ja
+    """
+
+    def __init__(self, response: httpx.Response) -> None:
+        super().__init__(response)
