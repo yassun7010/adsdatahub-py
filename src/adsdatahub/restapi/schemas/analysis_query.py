@@ -165,7 +165,7 @@ class AnalysisQueryModel(ExtraForbidModel):
         PlainSerializer(_serialize_name),
     ]
 
-    title: str | None = None
+    title: str
 
     query_text: Annotated[str | None, Field(alias="queryText")] = None
 

@@ -5,6 +5,7 @@ import httpx
 
 from adsdatahub.exceptions import (
     AdsDataHubResponseStatusCodeError,
+    AdsDataHubUnavailableError,
     AdsDataHubUnimplementedError,
 )
 from adsdatahub.restapi.schemas._model import Model
@@ -41,6 +42,9 @@ def validate_response_status_code(response: httpx.Response) -> None:
                         raise AdsDataHubUnimplementedError(response)
                 except json.JSONDecodeError:
                     pass
+
+            case 503:
+                raise AdsDataHubUnavailableError(response)
 
         raise AdsDataHubResponseStatusCodeError(response)
 

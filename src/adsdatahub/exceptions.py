@@ -46,3 +46,14 @@ class AdsDataHubUnimplementedError(AdsDataHubResponseStatusCodeError):
 
     def __init__(self, response: httpx.Response) -> None:
         super().__init__(response)
+
+
+class AdsDataHubUnavailableError(AdsDataHubResponseStatusCodeError):
+    """
+    このメソッドがサーバーで利用できないため、google.rpc.Code.UNAVAILABLE を返した場合のエラー。
+
+    See: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/delete?hl=ja
+    """
+
+    def __init__(self, response: httpx.Response) -> None:
+        super().__init__(response)
