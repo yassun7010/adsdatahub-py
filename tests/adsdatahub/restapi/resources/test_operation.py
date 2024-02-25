@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 from typing import Callable, TypedDict
 
@@ -50,11 +51,13 @@ class TestOperation:
             dest_table="operation_test",
         )
 
-    def test_cancel(
+    @pytest.mark.asyncio
+    async def test_cancel(
         self,
         restapi_client: adsdatahub.restapi.Client,
         operation_response: OperationModel[QueryMetadataModel],
     ):
+        await asyncio.sleep(1)
         restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
             unique_id=operation_response.name.unique_id,

@@ -1,7 +1,9 @@
+import asyncio
 import uuid
 from typing import TypedDict
 
 import adsdatahub.restapi
+import pytest
 
 
 class TestAnalysisQuery:
@@ -20,7 +22,10 @@ class TestAnalysisQuery:
             **parse_query_name(query.name),
         ).delete()
 
-    def test_get(self, restapi_client: adsdatahub.restapi.Client, customer_id: int):
+    @pytest.mark.asyncio
+    async def test_get(
+        self, restapi_client: adsdatahub.restapi.Client, customer_id: int
+    ):
         query = restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
@@ -30,6 +35,8 @@ class TestAnalysisQuery:
                 "queryText": "SELECT 1",
             }
         )
+
+        await asyncio.sleep(1)
 
         try:
             restapi_client.request(
@@ -72,7 +79,10 @@ class TestAnalysisQuery:
                 **parse_query_name(query.name),
             ).delete()
 
-    def test_start(self, restapi_client: adsdatahub.restapi.Client, customer_id: int):
+    @pytest.mark.asyncio
+    async def test_start(
+        self, restapi_client: adsdatahub.restapi.Client, customer_id: int
+    ):
         query = restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
@@ -82,6 +92,8 @@ class TestAnalysisQuery:
                 "queryText": "SELECT 1",
             }
         )
+
+        await asyncio.sleep(1)
 
         try:
             restapi_client.request(
