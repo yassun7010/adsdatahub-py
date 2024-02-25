@@ -3,4 +3,4 @@ response_body.json
 credentials.json
 .env
 coverage.xml
-.coverage
+.coverage*
