@@ -3,6 +3,7 @@ import uuid
 from typing import Callable
 
 import adsdatahub.restapi
+import adsdatahub.restapi.resources.operation
 import pytest
 from adsdatahub.exceptions import (
     AdsDataHubUnimplementedError,
@@ -54,28 +55,29 @@ class TestOperation:
             dest_table="operation_test",
         )
 
-    @pytest.mark.asyncio
-    async def test_cancel(
+    @pytest.fixture
+    def operation_resource(
         self,
         restapi_client: adsdatahub.restapi.Client,
         operation_response: OperationModel[QueryMetadataModel],
-    ):
-        await asyncio.sleep(SLEEP_TIME_SEC)
-        restapi_client.request(
+    ) -> adsdatahub.restapi.resources.operation.Resource:
+        return restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
             unique_id=operation_response.name.unique_id,
-        ).cancel()
+        )
+
+    @pytest.mark.asyncio
+    async def test_cancel(
+        self, operation_resource: adsdatahub.restapi.resources.operation.Resource
+    ):
+        await asyncio.sleep(SLEEP_TIME_SEC)
+        operation_resource.cancel()
 
     def test_delete(
-        self,
-        restapi_client: adsdatahub.restapi.Client,
-        operation_response: OperationModel[QueryMetadataModel],
+        self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
         try:
-            restapi_client.request(
-                "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-                unique_id=operation_response.name.unique_id,
-            ).delete()
+            operation_resource.delete()
 
         except AdsDataHubUnimplementedError:
             # NOTE: サーバーによっては google.rpc.Code.UNIMPLEMENTED を返すことがある。
@@ -83,21 +85,11 @@ class TestOperation:
             pass
 
     def test_get(
-        self,
-        restapi_client: adsdatahub.restapi.Client,
-        operation_response: OperationModel[QueryMetadataModel],
+        self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
-        restapi_client.request(
-            "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-            unique_id=operation_response.name.unique_id,
-        ).get()
+        operation_resource.get()
 
     def test_wait(
-        self,
-        restapi_client: adsdatahub.restapi.Client,
-        operation_response: OperationModel[QueryMetadataModel],
+        self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
-        restapi_client.request(
-            "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-            unique_id=operation_response.name.unique_id,
-        ).wait()
+        operation_resource.wait()
