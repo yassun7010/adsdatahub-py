@@ -12,12 +12,6 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "editor.comments.insertSpace": true,
-    "go.lintTool": "golangci-lint",
-    "go.lintFlags": [
-        "--config=${workspaceFolder}/.golangci.yaml",
-        "--fix",
-        "--fast",
-    ],
     "python.analysis.addImport.exactMatchOnly": false,
     "python.analysis.autoImportCompletions": true,
     "python.analysis.completeFunctionParens": false,
