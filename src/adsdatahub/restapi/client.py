@@ -10,6 +10,7 @@ import httpx
 from google.auth import environment_vars
 from google.auth.credentials import AnonymousCredentials, Credentials
 from google.cloud.client import ClientWithProject
+from httpx._types import TimeoutTypes
 from typing_extensions import Unpack, overload, override
 
 from adsdatahub.restapi.resources import (
@@ -46,7 +47,6 @@ class Client(ClientWithProject):
             dict[str, Any],
             None,
         ] = None,
-        use_auth_w_custom_endpoint: bool = True,
         _http: Any = None,
     ) -> None:
         if project is None:
@@ -87,7 +87,7 @@ class Client(ClientWithProject):
         # (1) STORAGE_EMULATOR_HOST is set (for backwards compatibility), OR
         # (2) use_auth_w_custom_endpoint is set to False.
         if kw_args["api_endpoint"] is not None:
-            if _is_emulator_set or not use_auth_w_custom_endpoint:
+            if _is_emulator_set:
                 if credentials is None:
                     credentials = AnonymousCredentials()
                 if project is None:
@@ -111,7 +111,7 @@ class Client(ClientWithProject):
                 headers={
                     "Authorization": f"Bearer {self._credentials.token}",
                 },
-                timeout=30,
+                timeout=60,
             )
 
         if no_project:
@@ -121,6 +121,14 @@ class Client(ClientWithProject):
     @override
     def _http(self) -> httpx.Client:
         return cast(httpx.Client, super()._http)
+
+    @property
+    def timeout(self) -> TimeoutTypes:
+        return self._http.timeout
+
+    @timeout.setter
+    def timeout(self, value: TimeoutTypes) -> None:
+        self._http.timeout = value
 
     @overload
     def request(
