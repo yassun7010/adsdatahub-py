@@ -20,18 +20,35 @@ class QueryResponseModel(Model):
         int,
         Field(alias="rowCount"),
     ]
+    """
+    最終出力テーブルの行数。
+
+    ラップされた値は、行数が 0 のケースと、この情報が利用できないケースを区別するために使用されます。
+    """
 
     destination_tables: Annotated[
         list[DestinationTableInfoModel],
         Field(alias="destinationTables", default_factory=list),
     ]
+    """
+    実行結果のテーブル情報。
+
+    ドキュメントには記載されていないが、実際のレスポンスには含まれる。
+    ノイズなどの情報が含まれている。
+    """
 
     output_artifacts: Annotated[
         OutputArtifactsModel,
         Field(alias="outputArtifacts"),
     ]
+    """
+    クエリ実行中に生成された出力アーティファクト。
+    """
 
     privacy_messages: Annotated[
         list[PrivacyMessageModel],
         Field(alias="privacyMessages", default_factory=list),
     ]
+    """
+    プライバシー関連の情報または警告メッセージのリスト。
+    """
