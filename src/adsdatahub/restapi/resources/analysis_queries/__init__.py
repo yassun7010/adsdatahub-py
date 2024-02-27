@@ -99,7 +99,7 @@ class Resource:
                 f"{self._base_url}:startTransient",
                 json={
                     "query": (
-                        AnalysisQueryRequestModel.model_validate(query)
+                        AnalysisQueryRequestOptionalTitleModel.model_validate(query)
                         if isinstance(query, dict)
                         else query
                     ).model_dump(),

@@ -1,6 +1,6 @@
 from typing_extensions import TypedDict
 
-from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryRequest
+from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryOptionalTitleRequest
 from adsdatahub.restapi.schemas.query_execution_spec import QueryExecutionSpecRequest
 
 
@@ -9,7 +9,7 @@ class AnalysisQueriesStartTransientQueryParams(TypedDict):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja#request-body
     """
 
-    query: AnalysisQueryRequest
+    query: AnalysisQueryOptionalTitleRequest
     """
     実行するクエリ。
     """

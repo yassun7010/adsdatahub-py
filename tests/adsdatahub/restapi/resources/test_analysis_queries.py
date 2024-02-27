@@ -41,7 +41,6 @@ class TestAnalysisQueries:
     ):
         analysis_queries_resource.start_transient(
             query={
-                "title": "ads-data-hub-test",
                 "queryText": "SELECT * FROM project.dataset.table",
             },
             spec={

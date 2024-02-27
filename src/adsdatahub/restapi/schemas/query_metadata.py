@@ -26,7 +26,7 @@ class QueryMetadataModel(Model):
     格納されているクエリ実行に対してのみ存在します。
     """
 
-    query_title: Annotated[str, Field(alias="queryTitle")]
+    query_title: Annotated[str | None, Field(alias="queryTitle")] = None
     """
     実行されたクエリのタイトル。
     """

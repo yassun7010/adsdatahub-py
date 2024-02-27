@@ -1,5 +1,4 @@
 import asyncio
-import uuid
 from textwrap import dedent
 from typing import Callable
 
@@ -31,7 +30,6 @@ class TestOperation:
             customer_id=customer_id,
         ).start_transient(
             query={
-                "title": f"ads-data-hub-test-{uuid.uuid4()}",
                 "queryText": dedent(
                     """
                     SELECT
