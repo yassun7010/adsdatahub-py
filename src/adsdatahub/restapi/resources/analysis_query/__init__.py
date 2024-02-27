@@ -1,4 +1,4 @@
-from typing import Literal, TypedDict, Unpack
+from typing import Literal, TypedDict
 
 import httpx
 
@@ -86,7 +86,7 @@ class Resource:
         )
 
     def start(
-        self, **request_body: Unpack[AnalysisQueryStartRequestBody]
+        self, request_body: AnalysisQueryStartRequestBody
     ) -> OperationModel[QueryMetadataModel]:
         """
         保存された分析クエリの実行を開始します。
@@ -103,10 +103,10 @@ class Resource:
                 if isinstance(spec, dict)
                 else spec
             ).model_dump(),
-            "destTable": request_body["dest_table"],
+            "destTable": request_body["destTable"],
         }
 
-        if customer_id := request_body.get("customer_id"):
+        if customer_id := request_body.get("customerId"):
             json_value["customerId"] = customer_id
 
         return parse_response_body(

@@ -2,7 +2,7 @@ from typing import Any, Literal, TypedDict, Unpack
 
 import httpx
 
-from adsdatahub.restapi._helpers import parse_response_body
+from adsdatahub.restapi._helpers import parse_response_body, snake2camel
 from adsdatahub.restapi.resources.operations.list import (
     OperationsListQueryParams,
     OperationsListResponseBody,
@@ -39,9 +39,7 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/list?hl=ja
         """
-        params: dict[str, Any] = {
-            k: v for k, v in query_params.items() if v is not None
-        }
+        params: dict[str, Any] = snake2camel(**query_params)
 
         return parse_response_body(
             OperationsListResponseBody,

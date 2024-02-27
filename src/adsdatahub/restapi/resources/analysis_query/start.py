@@ -9,7 +9,7 @@ class AnalysisQueryStartRequestBody(TypedDict):
     クエリ実行パラメータを定義します。
     """
 
-    dest_table: str
+    destTable: str
     """
     'project.dataset.table_name' 形式のクエリ結果の宛先 BigQuery テーブル。
 
@@ -18,7 +18,7 @@ class AnalysisQueryStartRequestBody(TypedDict):
     プロジェクトもデータセットも指定しない場合、デフォルトのプロジェクトとデータセットが使用されます。
     """
 
-    customer_id: NotRequired[int]
+    customerId: NotRequired[int]
     """
     （省略可）Ads Data Hub のお客様がクエリを実行します。
 

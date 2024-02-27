@@ -84,11 +84,13 @@ class TestAnalysisQuery:
 
         try:
             analysis_query_resource.start(
-                spec={
-                    "startDate": "2021-01-01",
-                    "endDate": "2021-12-31",
-                },
-                dest_table="project.dataset.table",
+                {
+                    "spec": {
+                        "startDate": "2021-01-01",
+                        "endDate": "2021-12-31",
+                    },
+                    "destTable": "project.dataset.table",
+                }
             )
 
         finally:
