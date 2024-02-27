@@ -70,12 +70,16 @@ class QueryMetadataModel(Model):
 
     dest_table: Annotated[str | None, Field(alias="destTable")] = None
     """
-    クエリ結果の宛先テーブル。分析クエリに使用されます。
+    クエリ結果の宛先テーブル。
+
+    分析クエリに使用されます。
     """
 
     user_list_id: Annotated[str | None, Field(alias="userListId")] = None
     """
-    クエリ結果を入力するユーザーリスト。ユーザーリストのクエリに使用されます。
+    クエリ結果を入力するユーザーリスト。
+
+    ユーザーリストのクエリに使用されます。
     """
 
 

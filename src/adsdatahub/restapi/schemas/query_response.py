@@ -3,6 +3,7 @@ from typing import Annotated
 from pydantic import Field
 
 from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas.destination_table_info import DestinationTableInfoModel
 from adsdatahub.restapi.schemas.output_artifacts import OutputArtifactsModel
 from adsdatahub.restapi.schemas.privacy_message import PrivacyMessageModel
 
@@ -18,6 +19,11 @@ class QueryResponseModel(Model):
     row_count: Annotated[
         int,
         Field(alias="rowCount"),
+    ]
+
+    destination_tables: Annotated[
+        list[DestinationTableInfoModel],
+        Field(alias="destinationTables", default_factory=list),
     ]
 
     output_artifacts: Annotated[
