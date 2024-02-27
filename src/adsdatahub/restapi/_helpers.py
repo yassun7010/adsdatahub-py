@@ -1,5 +1,5 @@
 import json
-from typing import Any, TypeVar
+from typing import Any, Mapping, TypeVar
 
 import httpx
 
@@ -13,21 +13,15 @@ from adsdatahub.restapi.schemas._model import Model
 GenericResponseBody = TypeVar("GenericResponseBody", bound=Model)
 
 
-def snake2camel(**origin: Any) -> dict[str, Any]:
-    data = {}
-    for k, v in origin.items():
-        if v is None:
-            continue
-
-        if "_" in k:
-            camel_key = "".join(map(lambda s: s.capitalize(), k.split("_")))
-            camel_key = camel_key[0].lower() + camel_key[1:]
-
-            data[camel_key] = v
-        else:
-            data[k] = v
-
-    return data
+def convert_json_value(data: Mapping[str, Any], *, model_map: dict[str, type[Model]]):
+    return {
+        k: (
+            (model_map[k].model_validate(v) if isinstance(v, dict) else v).model_dump()
+            if k in model_map
+            else v
+        )
+        for k, v in data.items()
+    }
 
 
 def validate_response_status_code(response: httpx.Response) -> None:

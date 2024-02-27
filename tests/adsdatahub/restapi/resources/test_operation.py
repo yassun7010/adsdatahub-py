@@ -29,31 +29,33 @@ class TestOperation:
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
         ).start_transient(
-            query={
-                "queryText": dedent(
-                    """
-                    SELECT
-                        COUNT(DISTINCT user_id) AS total_users,
-                        COUNT(DISTINCT event.site_id) AS total_sites,
-                        COUNT(DISTINCT device_id_md5) AS total_devices,
-                        COUNT(event.placement_id) AS impressions
-                    FROM
-                        adh.cm_dt_impressions
-                    WHERE
-                        user_id != '0'
-                        AND event.advertiser_id IN UNNEST(@advertiser_ids)
-                        AND event.campaign_id IN UNNEST(@campaign_ids)
-                        AND event.placement_id IN UNNEST(@placement_ids)
-                        AND event.country_domain_name = 'US'
-                        ;
-                    """
-                ),
-            },
-            spec={
-                "startDate": "2023-01-01",
-                "endDate": "2023-01-01",
-            },
-            dest_table="operation_test",
+            {
+                "query": {
+                    "queryText": dedent(
+                        """
+                        SELECT
+                            COUNT(DISTINCT user_id) AS total_users,
+                            COUNT(DISTINCT event.site_id) AS total_sites,
+                            COUNT(DISTINCT device_id_md5) AS total_devices,
+                            COUNT(event.placement_id) AS impressions
+                        FROM
+                            adh.cm_dt_impressions
+                        WHERE
+                            user_id != '0'
+                            AND event.advertiser_id IN UNNEST(@advertiser_ids)
+                            AND event.campaign_id IN UNNEST(@campaign_ids)
+                            AND event.placement_id IN UNNEST(@placement_ids)
+                            AND event.country_domain_name = 'US'
+                            ;
+                        """
+                    ),
+                },
+                "spec": {
+                    "startDate": "2023-01-01",
+                    "endDate": "2023-01-01",
+                },
+                "destTable": "operation_test",
+            }
         )
 
     @pytest.fixture

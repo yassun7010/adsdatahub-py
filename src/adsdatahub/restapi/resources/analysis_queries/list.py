@@ -7,10 +7,10 @@ from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
 
 
 class AnalysisQueryListQueryParams(TypedDict):
-    page_size: NotRequired[int | None]
+    pageSize: NotRequired[int | None]
     """返される最大アイテム数。0 の場合、サーバーは返されるクエリの数を決定します。"""
 
-    page_token: NotRequired[str | None]
+    pageToken: NotRequired[str | None]
     """前の呼び出しによって返されたページトークン。次のページの結果を返すために使用されます。"""
 
     filter: NotRequired[str | None]

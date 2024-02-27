@@ -40,14 +40,16 @@ class TestAnalysisQueries:
         analysis_queries_resource: analysis_queries.Resource,
     ):
         analysis_queries_resource.start_transient(
-            query={
-                "queryText": "SELECT * FROM project.dataset.table",
-            },
-            spec={
-                "startDate": "2021-01-01",
-                "endDate": "2021-12-31",
-            },
-            dest_table="project.dataset.table",
+            {
+                "query": {
+                    "queryText": "SELECT * FROM project.dataset.table",
+                },
+                "spec": {
+                    "startDate": "2021-01-01",
+                    "endDate": "2021-12-31",
+                },
+                "destTable": "project.dataset.table",
+            }
         )
 
     def test_validate(
@@ -55,19 +57,21 @@ class TestAnalysisQueries:
         analysis_queries_resource: analysis_queries.Resource,
     ):
         analysis_queries_resource.validate(
-            query={
-                "queryText": dedent(
-                    """
-                    SELECT
-                        campaign_id,
-                        date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') AS date,
-                        count(query_id.time_usec) AS imp
-                    FROM
-                        adh.google_ads_impressions
-                    GROUP BY
-                        campaign_id,
-                        date
-                    """
-                ),
-            },
+            {
+                "query": {
+                    "queryText": dedent(
+                        """
+                        SELECT
+                            campaign_id,
+                            date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') AS date,
+                            count(query_id.time_usec) AS imp
+                        FROM
+                            adh.google_ads_impressions
+                        GROUP BY
+                            campaign_id,
+                            date
+                        """
+                    ),
+                },
+            }
         )

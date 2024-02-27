@@ -3,6 +3,7 @@ from typing import Literal, TypedDict
 import httpx
 
 from adsdatahub.restapi._helpers import (
+    convert_json_value,
     parse_response_body,
     validate_response_status_code,
 )
@@ -95,25 +96,17 @@ class Resource:
 
         Refarence: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/start?hl=ja
         """
-        spec = request_body["spec"]
-
-        json_value = {
-            "spec": (
-                QueryExecutionSpecRequestModel.model_validate(spec)
-                if isinstance(spec, dict)
-                else spec
-            ).model_dump(),
-            "destTable": request_body["destTable"],
-        }
-
-        if customer_id := request_body.get("customerId"):
-            json_value["customerId"] = customer_id
 
         return parse_response_body(
             OperationModel[QueryMetadataModel],
             self._http.request(
                 "POST",
                 f"{self._base_url}:start",
-                json=json_value,
+                json=convert_json_value(
+                    request_body,
+                    model_map={
+                        "spec": QueryExecutionSpecRequestModel,
+                    },
+                ),
             ),
         )

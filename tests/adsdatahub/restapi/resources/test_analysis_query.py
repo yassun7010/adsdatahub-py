@@ -59,11 +59,14 @@ class TestAnalysisQuery:
         finally:
             analysis_query_resource.delete()
 
-    def test_patch(
+    @pytest.mark.asyncio
+    async def test_patch(
         self,
         analysis_query: AnalysisQueryModel,
         analysis_query_resource: adsdatahub.restapi.resources.analysis_query.Resource,
     ):
+        await asyncio.sleep(SLEEP_TIME_SEC)
+
         try:
             analysis_query_resource.patch(
                 {

@@ -1,8 +1,8 @@
-from typing import Any, Literal, TypedDict, Unpack
+from typing import Literal, TypedDict
 
 import httpx
 
-from adsdatahub.restapi._helpers import parse_response_body, snake2camel
+from adsdatahub.restapi._helpers import parse_response_body
 from adsdatahub.restapi.resources.operations.list import (
     OperationsListQueryParams,
     OperationsListResponseBody,
@@ -26,7 +26,7 @@ class Resource:
         self._base_url = RESOURCE_NAME.format(**path_params)
 
     def list(
-        self, **query_params: Unpack[OperationsListQueryParams]
+        self, query_params: OperationsListQueryParams | None = None
     ) -> OperationsListResponseBody:
         """
         リクエストで指定されたフィルタに一致するオペレーションをリストします。
@@ -39,9 +39,12 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/list?hl=ja
         """
-        params: dict[str, Any] = snake2camel(**query_params)
 
         return parse_response_body(
             OperationsListResponseBody,
-            self._client.request("GET", self._base_url, params=params),
+            self._client.request(
+                "GET",
+                self._base_url,
+                params={k: v for k, v in (query_params or {}) if v is not None},
+            ),
         )

@@ -9,8 +9,8 @@ from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 
 class OperationsListQueryParams(TypedDict):
     filter: NotRequired[str | None]
-    page_size: NotRequired[int | None]
-    page_token: NotRequired[str | None]
+    pageSize: NotRequired[int | None]
+    pageToken: NotRequired[str | None]
 
 
 class OperationsListResponseBody(Model):

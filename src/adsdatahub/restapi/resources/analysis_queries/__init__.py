@@ -1,9 +1,8 @@
-from typing import Any, Literal, TypedDict
+from typing import Literal, TypedDict
 
 import httpx
-from typing_extensions import Unpack
 
-from adsdatahub.restapi._helpers import parse_response_body, snake2camel
+from adsdatahub.restapi._helpers import convert_json_value, parse_response_body
 from adsdatahub.restapi.resources.analysis_queries.list import (
     AnalysisQueryListQueryParams,
     AnalysisQueryListResponse,
@@ -65,7 +64,7 @@ class Resource:
 
     def list(
         self,
-        **query_params: Unpack[AnalysisQueryListQueryParams],
+        query_params: AnalysisQueryListQueryParams | None = None,
     ) -> AnalysisQueryListResponse:
         """
         指定した顧客が所有する分析クエリを一覧表示します。
@@ -75,12 +74,14 @@ class Resource:
         return parse_response_body(
             AnalysisQueryListResponse,
             self._http.request(
-                "GET", self._base_url, params=snake2camel(**query_params)
+                "GET",
+                self._base_url,
+                params={k: v for k, v in (query_params or {}) if v is not None},
             ),
         )
 
     def start_transient(
-        self, **request_body: Unpack[AnalysisQueriesStartTransientQueryParams]
+        self, request_body: AnalysisQueriesStartTransientQueryParams
     ) -> OperationModel[QueryMetadataModel]:
         """
         一時的な分析クエリで実行を開始します。
@@ -89,68 +90,41 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
         """
-        query = request_body["query"]
-        spec = request_body["spec"]
 
         return parse_response_body(
             OperationModel[QueryMetadataModel],
             self._http.request(
                 "POST",
                 f"{self._base_url}:startTransient",
-                json={
-                    "query": (
-                        AnalysisQueryRequestOptionalTitleModel.model_validate(query)
-                        if isinstance(query, dict)
-                        else query
-                    ).model_dump(),
-                    "spec": (
-                        QueryExecutionSpecRequestModel.model_validate(spec)
-                        if isinstance(spec, dict)
-                        else spec
-                    ).model_dump(),
-                    "destTable": request_body["dest_table"],
-                },
+                json=convert_json_value(
+                    request_body,
+                    model_map={
+                        "query": AnalysisQueryRequestOptionalTitleModel,
+                        "spec": QueryExecutionSpecRequestModel,
+                    },
+                ),
             ),
         )
 
     def validate(
-        self, **request_body: Unpack[AnalysisQueriesValidateQueryParams]
+        self, request_body: AnalysisQueriesValidateQueryParams
     ) -> AnalysisQueriesValidateResponseBody:
         """
         提供された分析クエリに対して静的検証チェックを実行します。
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/validate?hl=ja
         """
-        query = request_body["query"]
-        json_value: dict[str, Any] = {
-            "query": (
-                AnalysisQueryRequestOptionalTitleModel.model_validate(query)
-                if isinstance(query, dict)
-                else query
-            ).model_dump(),
-        }
-
-        if ads_data_customer_id := request_body.get("ads_data_customer_id"):
-            json_value["adsDataCustomerId"] = ads_data_customer_id
-
-        if match_data_customer_id := request_body.get("match_data_customer_id"):
-            json_value["matchDataCustomerId"] = match_data_customer_id
-
-        if spec := request_body.get("spec"):
-            json_value["spec"] = (
-                QueryExecutionSpecRequestModel.model_validate(spec)
-                if isinstance(spec, dict)
-                else spec
-            ).model_dump()
-
-        if include_performance_info := request_body.get("include_performance_info"):
-            json_value["includePerformanceInfo"] = include_performance_info
-
         return parse_response_body(
             AnalysisQueriesValidateResponseBody,
             self._http.request(
                 "POST",
                 f"{self._base_url}:validate",
-                json=json_value,
+                json=convert_json_value(
+                    request_body,
+                    model_map={
+                        "query": AnalysisQueryRequestOptionalTitleModel,
+                        "spec": QueryExecutionSpecRequestModel,
+                    },
+                ),
             ),
         )

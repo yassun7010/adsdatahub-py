@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, Literal, TypedDict, Unpack
+from typing import Literal, TypedDict
 
 import httpx
 
@@ -77,7 +77,7 @@ class Resource:
         )
 
     def wait(
-        self, **request_body: Unpack[OperationWaitRequestBody]
+        self, request_body: OperationWaitRequestBody | None = None
     ) -> OperationModel[QueryMetadataModel]:
         """
         指定した長時間実行オペレーションが完了するか、指定したタイムアウトに達するまで待機し、最新の状態を返します。
@@ -91,7 +91,7 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/wait?hl=ja
         """
-        json_value: dict[str, Any] = {}
+        request_body = request_body or {}
 
         if timeout := request_body.get("timeout"):
             match timeout:
@@ -101,9 +101,9 @@ class Resource:
                     timeout_sec = f"{timeout}s"
                 case datetime.timedelta():
                     timeout_sec = f"{timeout.total_seconds()}s"
-            json_value["timeout"] = timeout_sec
+            request_body["timeout"] = timeout_sec
 
         return parse_response_body(
             OperationModel[QueryMetadataModel],
-            self._client.request("POST", f"{self._base_url}:wait", json=json_value),
+            self._client.request("POST", f"{self._base_url}:wait", json=request_body),
         )

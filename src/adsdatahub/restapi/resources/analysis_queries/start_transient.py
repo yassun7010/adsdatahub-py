@@ -19,7 +19,7 @@ class AnalysisQueriesStartTransientQueryParams(TypedDict):
     クエリ実行パラメータを定義します。
     """
 
-    dest_table: str
+    destTable: str
     """
     'project.dataset.table_name' 形式のクエリ結果の宛先 BigQuery テーブル。
 
