@@ -18,14 +18,14 @@ class QueryExecutionSpecRequestDict(TypedDict):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/QueryExecutionSpec?hl=ja
     """
 
-    adsDataCustomerId: NotRequired[str]
+    adsDataCustomerId: NotRequired[str | None]
     """
     クエリで使用されている広告データを所有している、
     リンクされた Ads Data Hub お客様 ID。
     指定されていない場合、クエリは、Ads Data Hub ユーザーが所有する広告データを使用して実行されます。
     """
 
-    matchDataCustomerId: NotRequired[str]
+    matchDataCustomerId: NotRequired[str | None]
     """
     クエリの一致データを所有している、リンクされた Ads Data Hub お客様 ID。
     指定されていない場合、クエリは、該当する場合は Ads Data Hub お客様 ID が所有するマッチデータを使用して実行されます。
@@ -42,10 +42,10 @@ class QueryExecutionSpecRequestDict(TypedDict):
     timeZone: NotRequired[str | None]
     """クエリの開始日と終了日のタイムゾーン。指定しない場合、デフォルトは 'UTC' です。"""
 
-    parameterValues: NotRequired[dict[str, ParameterValueDict]]
+    parameterValues: NotRequired[dict[str, ParameterValueDict] | None]
     """クエリで想定されるその他のパラメータ。各パラメータ名をそのバインドされた値にマッピングします。"""
 
-    jobId: NotRequired[str]
+    jobId: NotRequired[str | None]
     """
     クエリ オペレーションのジョブ ID。
     結果として得られるオペレーションは、"operations/[jobId]" という名前になります（例: "operations/job_123"）。

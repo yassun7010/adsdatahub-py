@@ -19,7 +19,7 @@ class AnalysisQueriesValidateQueryParams(TypedDict):
     検証するクエリ。
     """
 
-    adsDataCustomerId: NotRequired[str]
+    adsDataCustomerId: NotRequired[str | None]
     """
     （省略可）広告データの検証と一時テーブル アクセスに使用する、リンクされた Ads Ads Hub お客様 ID。
 
@@ -27,7 +27,7 @@ class AnalysisQueriesValidateQueryParams(TypedDict):
     非推奨です。query_execution_spec 内で adsDataCustomerId を使用します。
     """
 
-    matchDataCustomerId: NotRequired[str]
+    matchDataCustomerId: NotRequired[str | None]
     """
     （省略可）マッチデータと検証テーブルへのアクセスの検証に使用する、リンクされた Ads Ads Hub お客様 ID。
 
@@ -35,12 +35,12 @@ class AnalysisQueriesValidateQueryParams(TypedDict):
     非推奨です。query_execution_spec 内の match_table_customer_id を使用します。
     """
 
-    spec: NotRequired[QueryExecutionSpecRequest]
+    spec: NotRequired[QueryExecutionSpecRequest | None]
     """
     （省略可）query_execution_spec 内の重複するフィールドが、外側のフィールドより優先されます。
     """
 
-    includePerformanceInfo: NotRequired[bool]
+    includePerformanceInfo: NotRequired[bool | None]
     """
     （省略可）true の場合、BigQuery を呼び出してクエリをドライランして、パフォーマンス情報を収集します。
 

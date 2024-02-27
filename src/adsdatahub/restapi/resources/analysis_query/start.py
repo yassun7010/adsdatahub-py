@@ -18,7 +18,7 @@ class AnalysisQueryStartRequestBody(TypedDict):
     プロジェクトもデータセットも指定しない場合、デフォルトのプロジェクトとデータセットが使用されます。
     """
 
-    customerId: NotRequired[int]
+    customerId: NotRequired[int | None]
     """
     （省略可）Ads Data Hub のお客様がクエリを実行します。
 

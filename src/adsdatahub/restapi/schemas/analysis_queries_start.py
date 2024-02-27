@@ -27,7 +27,7 @@ class AnalysisQueriesStartDict(TypedDict):
     プロジェクトもデータセットも指定しない場合、デフォルトのプロジェクトとデータセットが使用されます。
     """
 
-    customerId: NotRequired[str]
+    customerId: NotRequired[str | None]
     """
     Ads Data Hub のお客様がクエリを実行します。
     指定しない場合は、デフォルトでクエリを所有する顧客が対象となります。
