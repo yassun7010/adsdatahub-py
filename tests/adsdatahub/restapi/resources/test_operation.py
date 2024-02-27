@@ -10,8 +10,10 @@ from adsdatahub.exceptions import (
 )
 from adsdatahub.restapi.resources import operation
 from adsdatahub.restapi.schemas._newtype import CustomerId
+from adsdatahub.restapi.schemas.analysis_query_metadata import (
+    AnalysisQueryMetadataModel,
+)
 from adsdatahub.restapi.schemas.operation import OperationModel
-from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 
 from tests.conftest import SLEEP_TIME_SEC
 
@@ -24,7 +26,7 @@ class TestOperation:
     @pytest.fixture
     def operation_response(
         self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
-    ) -> OperationModel[QueryMetadataModel]:
+    ) -> OperationModel[AnalysisQueryMetadataModel]:
         return restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
@@ -62,7 +64,7 @@ class TestOperation:
     def operation_resource(
         self,
         restapi_client: adsdatahub.restapi.Client,
-        operation_response: OperationModel[QueryMetadataModel],
+        operation_response: OperationModel[AnalysisQueryMetadataModel],
     ) -> adsdatahub.restapi.resources.operation.Resource:
         return restapi_client.request(
             "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",

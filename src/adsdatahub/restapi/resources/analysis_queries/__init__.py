@@ -21,11 +21,13 @@ from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryRequestModel,
     AnalysisQueryRequestOptionalTitleModel,
 )
+from adsdatahub.restapi.schemas.analysis_query_metadata import (
+    AnalysisQueryMetadataModel,
+)
 from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_execution_spec import (
     QueryExecutionSpecRequestModel,
 )
-from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
 
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"
@@ -82,7 +84,7 @@ class Resource:
 
     def start_transient(
         self, request_body: AnalysisQueriesStartTransientQueryParams
-    ) -> OperationModel[QueryMetadataModel]:
+    ) -> OperationModel[AnalysisQueryMetadataModel]:
         """
         一時的な分析クエリで実行を開始します。
         結果は、指定した BigQuery 宛先テーブルに書き込まれます。
@@ -92,7 +94,7 @@ class Resource:
         """
 
         return parse_response_body(
-            OperationModel[QueryMetadataModel],
+            OperationModel[AnalysisQueryMetadataModel],
             self._http.request(
                 "POST",
                 f"{self._base_url}:startTransient",

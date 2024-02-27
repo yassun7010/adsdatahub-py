@@ -9,11 +9,11 @@ from adsdatahub.restapi._helpers import (
 )
 from adsdatahub.restapi.resources.operation.wait import OperationWaitRequestBody
 from adsdatahub.restapi.schemas._newtype import UniqueId
-from adsdatahub.restapi.schemas.operation import OperationModel
-from adsdatahub.restapi.schemas.query_metadata import (
-    QueryMetadataModel,
-    QueryMetadataWithQueryTextModel,
+from adsdatahub.restapi.schemas.analysis_query_metadata import (
+    AnalysisQueryMetadataModel,
+    AnalysisQueryMetadataWithQueryTextModel,
 )
+from adsdatahub.restapi.schemas.operation import OperationModel
 
 ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{unique_id}"]
 RESOURCE_NAME: ResourceName = (
@@ -63,7 +63,7 @@ class Resource:
             self._client.request("DELETE", self._base_url),
         )
 
-    def get(self) -> OperationModel[QueryMetadataWithQueryTextModel]:
+    def get(self) -> OperationModel[AnalysisQueryMetadataWithQueryTextModel]:
         """
         長時間実行オペレーションの最新の状態を取得します。
         クライアントはこのメソッドを使用して、API サービスで推奨される間隔でオペレーションの結果をポーリングできます。
@@ -72,13 +72,13 @@ class Resource:
         """
 
         return parse_response_body(
-            OperationModel[QueryMetadataWithQueryTextModel],
+            OperationModel[AnalysisQueryMetadataWithQueryTextModel],
             self._client.request("GET", self._base_url),
         )
 
     def wait(
         self, request_body: OperationWaitRequestBody | None = None
-    ) -> OperationModel[QueryMetadataModel]:
+    ) -> OperationModel[AnalysisQueryMetadataModel]:
         """
         指定した長時間実行オペレーションが完了するか、指定したタイムアウトに達するまで待機し、最新の状態を返します。
 
@@ -104,6 +104,6 @@ class Resource:
             request_body["timeout"] = timeout_sec
 
         return parse_response_body(
-            OperationModel[QueryMetadataModel],
+            OperationModel[AnalysisQueryMetadataModel],
             self._client.request("POST", f"{self._base_url}:wait", json=request_body),
         )

@@ -7,7 +7,7 @@ from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.parameter_value import ParameterValueModel
 
 
-class QueryMetadataModel(Model):
+class QueryMetadataBaseModel(Model):
     """
     クエリ実行ジョブに関するメタデータ。
     これは、クエリ実行リクエストによって返される google.longrunning.Operation のメタデータフィールドに保存されます。
@@ -73,21 +73,4 @@ class QueryMetadataModel(Model):
     クエリ結果の宛先テーブル。
 
     分析クエリに使用されます。
-    """
-
-    user_list_id: Annotated[str | None, Field(alias="userListId")] = None
-    """
-    クエリ結果を入力するユーザーリスト。
-
-    ユーザーリストのクエリに使用されます。
-    """
-
-
-class QueryMetadataWithQueryTextModel(QueryMetadataModel):
-    query_text: Annotated[str | None, Field(alias="queryText")] = None
-    """
-    実行されたクエリのテキスト。
-
-    このフィールドは、google.longrunning.Operations.GetOperation 呼び出しのレスポンスでのみ設定されます。
-    google.longrunning.Operations.ListOperations の呼び出しや他の呼び出しのレスポンスでは省略されます。
     """

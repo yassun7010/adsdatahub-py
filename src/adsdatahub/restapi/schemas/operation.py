@@ -4,12 +4,14 @@ from pydantic import BeforeValidator, PlainSerializer, ValidationInfo
 
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas._newtype import UniqueId
-from adsdatahub.restapi.schemas.query_metadata import QueryMetadataModel
+from adsdatahub.restapi.schemas.analysis_query_metadata import (
+    AnalysisQueryMetadataModel,
+)
 from adsdatahub.restapi.schemas.query_response import QueryResponseModel
 from adsdatahub.restapi.schemas.status import StatusModel
 
-GenericQueryMetadataModel = TypeVar(
-    "GenericQueryMetadataModel", bound=QueryMetadataModel
+GenericAnalysisQueryMetadataModel = TypeVar(
+    "GenericAnalysisQueryMetadataModel", bound=AnalysisQueryMetadataModel
 )
 
 
@@ -31,7 +33,7 @@ def _serialize_name(model: OperationNameModel) -> str:
     return f"operations/{model.unique_id}"
 
 
-class OperationModel(Model, Generic[GenericQueryMetadataModel]):
+class OperationModel(Model, Generic[GenericAnalysisQueryMetadataModel]):
     """
     このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
 
@@ -50,7 +52,7 @@ class OperationModel(Model, Generic[GenericQueryMetadataModel]):
     デフォルトの HTTP マッピングを使用している場合は、name を operations/{unique_id} で終わるリソース名にします。
     """
 
-    metadata: GenericQueryMetadataModel | None
+    metadata: GenericAnalysisQueryMetadataModel | None
     """
     オペレーションに関連付けられたサービス固有のデータを含む QueryMetadata オブジェクト。
 
