@@ -1,8 +1,6 @@
-from typing import Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
-import httpx
-
-from adsdatahub.restapi._helpers import convert_json_value, parse_response_body
+from adsdatahub.restapi._helpers import convert_json_value
 from adsdatahub.restapi.resources.analysis_queries.list import (
     AnalysisQueryListQueryParams,
     AnalysisQueryListResponse,
@@ -36,13 +34,18 @@ RESOURCE_NAME: ResourceName = (
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"
 )
 
+if TYPE_CHECKING:
+    import adsdatahub.restapi.http
+
 
 class PathParameters(TypedDict):
     customer_id: CustomerId
 
 
 class Resource:
-    def __init__(self, http: httpx.Client, path_parameters: PathParameters) -> None:
+    def __init__(
+        self, http: "adsdatahub.restapi.http.Client", path_parameters: PathParameters
+    ) -> None:
         self._http = http
         self._base_url = RESOURCE_NAME.format(**path_parameters)
 
@@ -59,9 +62,11 @@ class Resource:
         if isinstance(request_body, dict):
             request_body = AnalysisQueryRequestModel.model_validate(request_body)
 
-        return parse_response_body(
+        return self._http.request(
+            "POST",
+            self._base_url,
             AnalysisQueryModel,
-            self._http.request("POST", self._base_url, json=request_body.model_dump()),
+            json=request_body.model_dump(),
         )
 
     def list(
@@ -73,13 +78,11 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/list?hl=ja
         """
-        return parse_response_body(
+        return self._http.request(
+            "GET",
+            self._base_url,
             AnalysisQueryListResponse,
-            self._http.request(
-                "GET",
-                self._base_url,
-                params={k: v for k, v in (query_params or {}) if v is not None},
-            ),
+            params={k: v for k, v in (query_params or {}) if v is not None},
         )
 
     def start_transient(
@@ -93,18 +96,16 @@ class Resource:
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/startTransient?hl=ja
         """
 
-        return parse_response_body(
+        return self._http.request(
+            "POST",
+            f"{self._base_url}:startTransient",
             OperationModel[AnalysisQueryMetadataModel],
-            self._http.request(
-                "POST",
-                f"{self._base_url}:startTransient",
-                json=convert_json_value(
-                    request_body,
-                    model_map={
-                        "query": AnalysisQueryRequestOptionalTitleModel,
-                        "spec": QueryExecutionSpecRequestModel,
-                    },
-                ),
+            json=convert_json_value(
+                request_body,
+                model_map={
+                    "query": AnalysisQueryRequestOptionalTitleModel,
+                    "spec": QueryExecutionSpecRequestModel,
+                },
             ),
         )
 
@@ -116,17 +117,15 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/validate?hl=ja
         """
-        return parse_response_body(
+        return self._http.request(
+            "POST",
+            f"{self._base_url}:validate",
             AnalysisQueriesValidateResponseBody,
-            self._http.request(
-                "POST",
-                f"{self._base_url}:validate",
-                json=convert_json_value(
-                    request_body,
-                    model_map={
-                        "query": AnalysisQueryRequestOptionalTitleModel,
-                        "spec": QueryExecutionSpecRequestModel,
-                    },
-                ),
+            json=convert_json_value(
+                request_body,
+                model_map={
+                    "query": AnalysisQueryRequestOptionalTitleModel,
+                    "spec": QueryExecutionSpecRequestModel,
+                },
             ),
         )

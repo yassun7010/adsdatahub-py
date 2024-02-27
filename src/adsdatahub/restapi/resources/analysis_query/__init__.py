@@ -1,11 +1,7 @@
-from typing import Literal, TypedDict
-
-import httpx
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 from adsdatahub.restapi._helpers import (
     convert_json_value,
-    parse_response_body,
-    validate_response_status_code,
 )
 from adsdatahub.restapi.resources.analysis_query.start import (
     AnalysisQueryStartRequestBody,
@@ -24,6 +20,9 @@ from adsdatahub.restapi.schemas.query_execution_spec import (
     QueryExecutionSpecRequestModel,
 )
 
+if TYPE_CHECKING:
+    import adsdatahub.restapi.http
+
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}"
 ]
@@ -36,7 +35,9 @@ class PathParameters(TypedDict):
 
 
 class Resource:
-    def __init__(self, http: httpx.Client, path_parameters: PathParameters) -> None:
+    def __init__(
+        self, http: "adsdatahub.restapi.http.Client", path_parameters: PathParameters
+    ) -> None:
         self._http = http
         self._base_url = RESOURCE_NAME.format(**path_parameters)
 
@@ -46,9 +47,7 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/delete?hl=ja
         """
-        return validate_response_status_code(
-            self._http.request("DELETE", self._base_url),
-        )
+        return self._http.request("DELETE", self._base_url)
 
     def get(self) -> AnalysisQueryModel:
         """
@@ -56,9 +55,10 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/get?hl=ja
         """
-        return parse_response_body(
+        return self._http.request(
+            "GET",
+            self._base_url,
             AnalysisQueryModel,
-            self._http.request("GET", self._base_url),
         )
 
     def patch(
@@ -75,17 +75,15 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/patch?hl=ja
         """
-        return parse_response_body(
+        return self._http.request(
+            "PATCH",
+            self._base_url,
             AnalysisQueryModel,
-            self._http.request(
-                "PATCH",
-                self._base_url,
-                json=(
-                    AnalysisQueryRequestModel.model_validate(request_body)
-                    if isinstance(request_body, dict)
-                    else request_body
-                ).model_dump(),
-            ),
+            json=(
+                AnalysisQueryRequestModel.model_validate(request_body)
+                if isinstance(request_body, dict)
+                else request_body
+            ).model_dump(),
         )
 
     def start(
@@ -99,16 +97,14 @@ class Resource:
         Refarence: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/start?hl=ja
         """
 
-        return parse_response_body(
+        return self._http.request(
+            "POST",
+            f"{self._base_url}:start",
             OperationModel[AnalysisQueryMetadataModel],
-            self._http.request(
-                "POST",
-                f"{self._base_url}:start",
-                json=convert_json_value(
-                    request_body,
-                    model_map={
-                        "spec": QueryExecutionSpecRequestModel,
-                    },
-                ),
+            json=convert_json_value(
+                request_body,
+                model_map={
+                    "spec": QueryExecutionSpecRequestModel,
+                },
             ),
         )

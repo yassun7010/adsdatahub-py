@@ -1,12 +1,6 @@
 import datetime
-from typing import Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
-import httpx
-
-from adsdatahub.restapi._helpers import (
-    parse_response_body,
-    validate_response_status_code,
-)
 from adsdatahub.restapi.resources.operation.wait import OperationWaitRequestBody
 from adsdatahub.restapi.schemas._newtype import UniqueId
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
@@ -14,6 +8,9 @@ from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataWithQueryTextModel,
 )
 from adsdatahub.restapi.schemas.operation import OperationModel
+
+if TYPE_CHECKING:
+    import adsdatahub.restapi.http
 
 ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{unique_id}"]
 RESOURCE_NAME: ResourceName = (
@@ -30,7 +27,9 @@ class Resource:
     このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
     """
 
-    def __init__(self, client: httpx.Client, path_parameters: PathParameters) -> None:
+    def __init__(
+        self, client: "adsdatahub.restapi.http.Client", path_parameters: PathParameters
+    ) -> None:
         self._client = client
         self._base_url = RESOURCE_NAME.format(**path_parameters)
 
@@ -45,9 +44,7 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/cancel?hl=ja
         """
-        return validate_response_status_code(
-            self._client.request("POST", f"{self._base_url}:cancel"),
-        )
+        return (self._client.request("POST", f"{self._base_url}:cancel"),)
 
     def delete(self) -> None:
         """
@@ -59,9 +56,7 @@ class Resource:
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/delete?hl=ja
         """
 
-        return validate_response_status_code(
-            self._client.request("DELETE", self._base_url),
-        )
+        return self._client.request("DELETE", self._base_url)
 
     def get(self) -> OperationModel[AnalysisQueryMetadataWithQueryTextModel]:
         """
@@ -71,9 +66,10 @@ class Resource:
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/get?hl=ja
         """
 
-        return parse_response_body(
+        return self._client.request(
+            "GET",
+            self._base_url,
             OperationModel[AnalysisQueryMetadataWithQueryTextModel],
-            self._client.request("GET", self._base_url),
         )
 
     def wait(
@@ -103,7 +99,9 @@ class Resource:
                     timeout_sec = f"{timeout.total_seconds()}s"
             request_body["timeout"] = timeout_sec
 
-        return parse_response_body(
+        return self._client.request(
+            "POST",
+            f"{self._base_url}:wait",
             OperationModel[AnalysisQueryMetadataModel],
-            self._client.request("POST", f"{self._base_url}:wait", json=request_body),
+            json=request_body,
         )

@@ -1,12 +1,11 @@
 import os
-from typing import Any, Union, assert_never, cast
+from typing import TYPE_CHECKING, Any, Union, assert_never, cast
 
 import google.api_core.client_info
 import google.api_core.client_options
 import google.api_core.exceptions
 import google.auth.credentials
 import google.auth.transport.requests
-import httpx
 from google.auth import environment_vars
 from google.auth.credentials import AnonymousCredentials, Credentials
 from google.cloud.client import ClientWithProject
@@ -19,6 +18,9 @@ from adsdatahub.restapi.resources import (
     operation,
     operations,
 )
+
+if TYPE_CHECKING:
+    import adsdatahub.restapi.http
 
 _marker: object = object()
 
@@ -107,7 +109,9 @@ class Client(ClientWithProject):
             if not self._credentials.valid:
                 self._credentials.refresh(google.auth.transport.requests.Request())
 
-            self._http_internal = httpx.Client(
+            import adsdatahub.restapi.http
+
+            self._http_internal = adsdatahub.restapi.http.RealClient(
                 headers={
                     "Authorization": f"Bearer {self._credentials.token}",
                 },
@@ -119,8 +123,8 @@ class Client(ClientWithProject):
 
     @property
     @override
-    def _http(self) -> httpx.Client:
-        return cast(httpx.Client, super()._http)
+    def _http(self) -> "adsdatahub.restapi.http.Client":
+        return self._http_internal
 
     @property
     def timeout(self) -> TimeoutTypes:

@@ -1,12 +1,14 @@
-from typing import Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
-import httpx
-
-from adsdatahub.restapi._helpers import parse_response_body
+import adsdatahub.restapi.http
 from adsdatahub.restapi.resources.operations.list import (
     OperationsListQueryParams,
     OperationsListResponseBody,
 )
+
+if TYPE_CHECKING:
+    import adsdatahub.restapi.http
+
 
 ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations"]
 RESOURCE_NAME: ResourceName = "https://adsdatahub.googleapis.com/v1/operations"
@@ -21,7 +23,9 @@ class Resource:
     このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
     """
 
-    def __init__(self, client: httpx.Client, path_params: PathParameters) -> None:
+    def __init__(
+        self, client: "adsdatahub.restapi.http.Client", path_params: PathParameters
+    ) -> None:
         self._client = client
         self._base_url = RESOURCE_NAME.format(**path_params)
 
@@ -40,11 +44,9 @@ class Resource:
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/list?hl=ja
         """
 
-        return parse_response_body(
+        return self._client.request(
+            "GET",
+            self._base_url,
             OperationsListResponseBody,
-            self._client.request(
-                "GET",
-                self._base_url,
-                params={k: v for k, v in (query_params or {}) if v is not None},
-            ),
+            params={k: v for k, v in (query_params or {}) if v is not None},
         )
