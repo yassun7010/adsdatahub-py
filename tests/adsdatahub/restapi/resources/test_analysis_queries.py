@@ -1,3 +1,5 @@
+from textwrap import dedent
+
 import adsdatahub.restapi
 import pytest
 from adsdatahub.exceptions import AdsDataHubResponseStatusCodeError
@@ -40,7 +42,7 @@ class TestAnalysisQueries:
         analysis_queries_resource.start_transient(
             query={
                 "title": "ads-data-hub-test",
-                "queryText": "SELECT * FROM `project.dataset.table`",
+                "queryText": "SELECT * FROM project.dataset.table",
             },
             spec={
                 "startDate": "2021-01-01",
@@ -55,17 +57,18 @@ class TestAnalysisQueries:
     ):
         analysis_queries_resource.validate(
             query={
-                "title": "ads-data-hub-test",
-                "queryText": """
-                    select
+                "queryText": dedent(
+                    """
+                    SELECT
                         campaign_id,
-                        date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') as date,
-                        count(query_id.time_usec) as imp
-                    from
+                        date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') AS date,
+                        count(query_id.time_usec) AS imp
+                    FROM
                         adh.google_ads_impressions
-                    group by
+                    GROUP BY
                         campaign_id,
                         date
-                    """,
+                    """
+                ),
             },
         )

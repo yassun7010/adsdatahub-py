@@ -20,6 +20,7 @@ from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
     AnalysisQueryRequest,
     AnalysisQueryRequestModel,
+    AnalysisQueryRequestOptionalTitleModel,
 )
 from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_execution_spec import (
@@ -123,7 +124,7 @@ class Resource:
         query = request_body["query"]
         json_value: dict[str, Any] = {
             "query": (
-                AnalysisQueryRequestModel.model_validate(query)
+                AnalysisQueryRequestOptionalTitleModel.model_validate(query)
                 if isinstance(query, dict)
                 else query
             ).model_dump(),

@@ -1,5 +1,6 @@
 import asyncio
 import uuid
+from textwrap import dedent
 from typing import Callable
 
 import adsdatahub.restapi
@@ -31,7 +32,8 @@ class TestOperation:
         ).start_transient(
             query={
                 "title": f"ads-data-hub-test-{uuid.uuid4()}",
-                "queryText": """
+                "queryText": dedent(
+                    """
                     SELECT
                         COUNT(DISTINCT user_id) AS total_users,
                         COUNT(DISTINCT event.site_id) AS total_sites,
@@ -46,7 +48,8 @@ class TestOperation:
                         AND event.placement_id IN UNNEST(@placement_ids)
                         AND event.country_domain_name = 'US'
                         ;
-                """,
+                    """
+                ),
             },
             spec={
                 "startDate": "2023-01-01",

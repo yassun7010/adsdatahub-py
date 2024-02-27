@@ -3,7 +3,7 @@ from typing import Annotated, NotRequired, TypedDict
 from pydantic import Field
 
 from adsdatahub.restapi.schemas._model import Model
-from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryRequest
+from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryOptionalTitleRequest
 from adsdatahub.restapi.schemas.filtered_row_summary import FilteredRowSummaryModel
 from adsdatahub.restapi.schemas.query_execution_spec import QueryExecutionSpecRequest
 from adsdatahub.restapi.schemas.query_performance_info import QueryPerformanceInfoModel
@@ -14,7 +14,7 @@ class AnalysisQueriesValidateQueryParams(TypedDict):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/validate?hl=ja#request-body
     """
 
-    query: AnalysisQueryRequest
+    query: AnalysisQueryOptionalTitleRequest
     """
     検証するクエリ。
     """

@@ -103,7 +103,56 @@ class AnalysisQueryRequestDict(TypedDict):
     """
 
 
-class AnalysisQueryRequestModel(ExtraForbidModel):
+class AnalysisQueryRequestOptionalTitleDict(TypedDict):
+    """
+    Ads Data Hub 内で実行できる分析クエリを定義します。
+
+    Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#AnalysisQuery
+    """
+
+    name: NotRequired[str]
+    """クエリを一意に識別する名前。"""
+
+    title: NotRequired[str]
+    """クエリのタイトル。Ads Data Hub の単一顧客とクエリタイプ内で一意です。"""
+
+    queryText: str
+    """標準 SQL で記述されたクエリテキスト。"""
+
+    parameterTypes: NotRequired[dict[str, ParameterTypeDict]]
+    """クエリで想定されるその他のパラメータ。各引数名をその引数タイプにマッピングします。"""
+
+    mergeSpec: NotRequired[MergeSpecDict]
+    """
+    行をマージする手順。
+    存在する場合、プライバシー上の理由でドロップされるはずの行が 1 つに結合されます。
+    マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に表示されます。
+    """
+
+    queryState: NotRequired[QueryState | str]
+    """クエリの状態。"""
+
+    queryShare: Annotated[
+        NotRequired[list[QueryShareDict]], Field(default_factory=list)
+    ]
+    """所有する Ads Data Hub ユーザー以外のクエリも共有する方法を紹介します。"""
+
+    filteredRowSummary: NotRequired[FilteredRowSummaryDict]
+    """
+    プライバシー上の理由によってドロップされた行を 1 つの結合行に統合する方法を定義します。
+    マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に含められます。
+
+    generateFilteredRowSummaryAutomatically と同時に使えません。"""
+
+    generateFilteredRowSummaryAutomatically: NotRequired[bool]
+    """
+    true の場合、フィルタリングされた行の概要が自動的に生成されます。
+
+    filteredRowSummary と同時に使えません。
+    """
+
+
+class AnalysisQueryRequestBaseModel(ExtraForbidModel):
     """
     Ads Data Hub 内で実行できる分析クエリを定義します。
 
@@ -115,8 +164,6 @@ class AnalysisQueryRequestModel(ExtraForbidModel):
         BeforeValidator(_deserialize_name),
         PlainSerializer(_serialize_name),
     ] = None
-
-    title: str
 
     query_text: Annotated[str, Field(alias="queryText")]
 
@@ -150,6 +197,14 @@ class AnalysisQueryRequestModel(ExtraForbidModel):
     generate_filtered_row_summary_automatically: Annotated[
         bool | None, Field(alias="generateFilteredRowSummaryAutomatically")
     ] = None
+
+
+class AnalysisQueryRequestModel(AnalysisQueryRequestBaseModel):
+    title: str
+
+
+class AnalysisQueryRequestOptionalTitleModel(AnalysisQueryRequestBaseModel):
+    title: str | None = None
 
 
 class AnalysisQueryModel(ExtraForbidModel):
@@ -212,3 +267,6 @@ class AnalysisQueryModel(ExtraForbidModel):
 
 
 AnalysisQueryRequest = AnalysisQueryRequestModel | AnalysisQueryRequestDict
+AnalysisQueryOptionalTitleRequest = (
+    AnalysisQueryRequestOptionalTitleModel | AnalysisQueryRequestOptionalTitleDict
+)
