@@ -14,7 +14,7 @@ class TestAnalysisQueries:
         restapi_client: adsdatahub.restapi.Client,
         customer_id: CustomerId,
     ) -> analysis_queries.Resource:
-        return restapi_client.request(
+        return restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
         )

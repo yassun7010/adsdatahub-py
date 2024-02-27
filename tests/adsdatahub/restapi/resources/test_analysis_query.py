@@ -15,7 +15,7 @@ class TestAnalysisQuery:
     def analysis_query(
         self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
     ) -> AnalysisQueryModel:
-        return restapi_client.request(
+        return restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
         ).create(
@@ -31,7 +31,7 @@ class TestAnalysisQuery:
         analysis_query: AnalysisQueryModel,
         restapi_client: adsdatahub.restapi.Client,
     ) -> adsdatahub.restapi.resources.analysis_query.Resource:
-        return restapi_client.request(
+        return restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
             customer_id=analysis_query.name.customer_id,
             resource_id=analysis_query.name.resource_id,

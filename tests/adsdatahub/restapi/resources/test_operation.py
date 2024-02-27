@@ -27,7 +27,7 @@ class TestOperation:
     def operation_response(
         self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
     ) -> OperationModel[AnalysisQueryMetadataModel]:
-        return restapi_client.request(
+        return restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
         ).start_transient(
@@ -66,7 +66,7 @@ class TestOperation:
         restapi_client: adsdatahub.restapi.Client,
         operation_response: OperationModel[AnalysisQueryMetadataModel],
     ) -> adsdatahub.restapi.resources.operation.Resource:
-        return restapi_client.request(
+        return restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
             unique_id=operation_response.name.unique_id,
         )

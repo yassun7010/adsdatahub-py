@@ -18,7 +18,7 @@ class Operations(Model):
 class TestOperations:
     def test_list(self, restapi_client: adsdatahub.restapi.Client):
         try:
-            restapi_client.request(
+            restapi_client.resource(
                 "https://adsdatahub.googleapis.com/v1/operations"
             ).list()
 

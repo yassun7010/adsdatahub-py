@@ -135,7 +135,7 @@ class Client(ClientWithProject):
         self._http.timeout = value
 
     @overload
-    def request(
+    def resource(
         self,
         resource_name: analysis_queries.ResourceName,
         **params: Unpack[analysis_queries.PathParameters],
@@ -148,7 +148,7 @@ class Client(ClientWithProject):
         ...
 
     @overload
-    def request(
+    def resource(
         self,
         resource_name: analysis_query.ResourceName,
         **params: Unpack[analysis_query.PathParameters],
@@ -161,7 +161,7 @@ class Client(ClientWithProject):
         ...
 
     @overload
-    def request(
+    def resource(
         self,
         resource_name: operations.ResourceName,
         **params: Unpack[operations.PathParameters],
@@ -174,7 +174,7 @@ class Client(ClientWithProject):
         ...
 
     @overload
-    def request(
+    def resource(
         self,
         resource_name: operation.ResourceName,
         **params: Unpack[operation.PathParameters],
@@ -186,7 +186,7 @@ class Client(ClientWithProject):
         """
         ...
 
-    def request(
+    def resource(
         self,
         resource_name: Union[
             analysis_queries.ResourceName,

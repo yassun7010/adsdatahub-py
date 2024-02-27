@@ -36,7 +36,7 @@ class Client:
         end_date: str | datetime.date,
         dest_table: str,
     ) -> QueryResult:
-        operation = self.restapi.request(
+        operation = self.restapi.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=self._customer_id,
         ).start_transient(
@@ -53,7 +53,7 @@ class Client:
         )
 
         while (
-            not self.restapi.request(
+            not self.restapi.resource(
                 "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
                 unique_id=operation.name.unique_id,
             )

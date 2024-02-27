@@ -19,7 +19,7 @@ class DestinationTableInfoModel(Model):
     Table path in the customer BigQuery project.
     """
 
-    row_count: Annotated[int, Field(alias="rowCount")]
+    row_count: Annotated[int, Field(alias="rowCount")] = 0
     """
     Number of rows in the result.
     """
