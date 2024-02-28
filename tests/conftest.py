@@ -17,6 +17,11 @@ def restapi_client():
 
 
 @pytest.fixture
+def mock_restapi_client():
+    return adsdatahub.restapi.MockClient()
+
+
+@pytest.fixture
 def customer_id() -> CustomerId:
     return os.environ["ADS_DATA_HUB_CUSTOMER_ID"]
 

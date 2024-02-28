@@ -1,7 +1,10 @@
 from typing import Callable
 
 import adsdatahub.restapi
-from adsdatahub.exceptions import AdsDataHubUnimplementedError
+from adsdatahub.exceptions import (
+    AdsDataHubUnavailableError,
+    AdsDataHubUnimplementedError,
+)
 from adsdatahub.restapi.resources import operation
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.operation import OperationModel
@@ -22,6 +25,6 @@ class TestOperations:
                 "https://adsdatahub.googleapis.com/v1/operations"
             ).list()
 
-        except AdsDataHubUnimplementedError:
+        except (AdsDataHubUnimplementedError, AdsDataHubUnavailableError):
             # NOTE: たまに 503 が返ってくることがある。
             pass

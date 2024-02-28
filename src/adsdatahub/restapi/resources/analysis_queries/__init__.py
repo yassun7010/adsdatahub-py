@@ -34,6 +34,8 @@ RESOURCE_NAME: ResourceName = (
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"
 )
 
+Method = Literal["CREATE", "LIST", "START_TRANSIENT", "VALIDATE"]
+
 if TYPE_CHECKING:
     import adsdatahub.restapi.http
 
@@ -129,3 +131,13 @@ class Resource:
                 },
             ),
         )
+
+
+class MockResource:
+    def __init__(self, mock_client: "adsdatahub.restapi.http.MockClient") -> None:
+        self._mock_client = mock_client
+
+    def create(
+        self, response: AnalysisQueryModel | Exception
+    ) -> "adsdatahub.restapi.http.MockClient":
+        return self._mock_client
