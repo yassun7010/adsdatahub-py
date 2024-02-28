@@ -1,11 +1,5 @@
 import importlib.metadata
 
-from .client import Client
+from .client import Client as Client
 
 __version__ = importlib.metadata.version(__name__)
-
-
-__all__ = [
-    "Client",
-    "__version__",
-]

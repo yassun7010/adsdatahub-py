@@ -57,3 +57,16 @@ class AdsDataHubUnavailableError(AdsDataHubResponseStatusCodeError):
 
     def __init__(self, response: httpx.Response) -> None:
         super().__init__(response)
+
+
+class AdsDataHubMockDataTypeError(AdsDataHubError):
+    """Mock data type error for adsdatahub."""
+
+    def __init__(self, response_type: type, expected_type: type) -> None:
+        self.response_type = response_type
+        self.expected_type = expected_type
+
+    @property
+    @override
+    def message(self) -> str:
+        return f"Mock Data Type Error {self.response_type.__name__}: expected {self.expected_type.__name__}"

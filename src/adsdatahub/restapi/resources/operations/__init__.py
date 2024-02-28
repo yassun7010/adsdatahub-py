@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Literal, TypedDict
 
-import adsdatahub.restapi.http
 from adsdatahub.restapi.resources.operations.list import (
     OperationsListQueryParams,
     OperationsListResponseBody,

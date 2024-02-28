@@ -9,9 +9,9 @@ import google.auth.transport.requests
 from google.auth import environment_vars
 from google.auth.credentials import AnonymousCredentials, Credentials
 from google.cloud.client import ClientWithProject
-from httpx._types import TimeoutTypes
 from typing_extensions import Unpack, overload, override
 
+from adsdatahub._types import TimeoutTypes
 from adsdatahub.restapi.resources import (
     analysis_queries,
     analysis_query,

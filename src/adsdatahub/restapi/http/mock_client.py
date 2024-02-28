@@ -1,36 +1,41 @@
 import typing
+from typing import Any, override
 
-import httpx
-from httpx._types import (
-    HeaderTypes,
-    URLTypes,
-)
-from typing_extensions import override
-
-from adsdatahub._types import TimeoutTypes
+import adsdatahub.restapi.http
+from adsdatahub._types import TimeoutTypes, URLTypes
+from adsdatahub.exceptions import AdsDataHubMockDataTypeError
 from adsdatahub.restapi._helpers import (
     GenericResponseBody,
-    parse_response_body,
-    validate_response_status_code,
 )
-from adsdatahub.restapi.http.client import Client, HttpRequestKwargs
+from adsdatahub.restapi.http.client import HttpRequestKwargs
 
 
-class RealClient(Client):
-    def __init__(
-        self, headers: typing.Optional[HeaderTypes] = None, timeout: TimeoutTypes = None
-    ):
-        self._client = httpx.Client(headers=headers, timeout=timeout)
+class StoreKey(typing.NamedTuple):
+    url: URLTypes
+    method: str
+
+
+class MockClient(adsdatahub.restapi.http.Client):
+    _store: dict[StoreKey, Any]
+
+    __slots__ = ("_store",)
+
+    @property
+    def store(self) -> dict[StoreKey, Any]:
+        if self._store is None:
+            self._store = {}
+
+        return self._store
 
     @property
     @override
     def timeout(self) -> TimeoutTypes:
-        return self._client.timeout
+        return 0
 
     @timeout.setter
     @override
     def timeout(self, value: TimeoutTypes) -> None:
-        self._client.timeout = value
+        pass
 
     @typing.overload
     def request(
@@ -60,13 +65,15 @@ class RealClient(Client):
         response_body_type: typing.Optional[type[GenericResponseBody]] = None,
         **kwargs: typing.Unpack[HttpRequestKwargs],
     ) -> typing.Optional[GenericResponseBody]:
-        response = self._client.request(method, url, **kwargs)
+        response = self.store.pop(StoreKey(url, method))
 
-        if response_body_type is None:
-            validate_response_status_code(response)
+        if isinstance(response, Exception):
+            raise response
+
+        if response_body_type is not None and not isinstance(
+            response, response_body_type
+        ):
+            raise AdsDataHubMockDataTypeError(response.__class__, response_body_type)
 
         else:
-            return parse_response_body(
-                response_body_type,
-                response,
-            )
+            return response
