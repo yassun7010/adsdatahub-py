@@ -14,11 +14,11 @@ from adsdatahub.restapi.resources import (
 if TYPE_CHECKING:
     import adsdatahub.restapi.http
 
-    from .real_client import _RealClientConstructerKwargs
+    from .real_client import RealClientConstructerKwargs
 
 
 class Client:
-    def __new__(cls, **kwargs: "Unpack[_RealClientConstructerKwargs]") -> "Client":
+    def __new__(cls, **kwargs: "Unpack[RealClientConstructerKwargs]") -> "Client":
         if cls is Client:
             from .real_client import RealClient
 

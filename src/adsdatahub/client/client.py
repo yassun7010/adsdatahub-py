@@ -1,10 +1,12 @@
 import datetime
 from time import sleep
+from typing import Unpack
 
 from google.cloud import bigquery
 
 import adsdatahub.restapi
 from adsdatahub.client.query_result import QueryResult
+from adsdatahub.restapi.real_client import RealClientConstructerKwargs
 from adsdatahub.restapi.schemas._newtype import CustomerId
 
 
@@ -12,15 +14,15 @@ class Client:
     def __init__(
         self,
         customer_id: CustomerId,
-        project: str | None = None,
         restapi_client: adsdatahub.restapi.Client | None = None,
         bigquery_client: bigquery.Client | None = None,
+        **kwargs: Unpack[RealClientConstructerKwargs],
     ) -> None:
         if not restapi_client:
-            restapi_client = adsdatahub.restapi.Client(project=project)
+            restapi_client = adsdatahub.restapi.Client(**kwargs)
 
         if not bigquery_client:
-            bigquery_client = bigquery.Client(project=project)
+            bigquery_client = bigquery.Client(**kwargs)
 
         self._customer_id = customer_id
         self.restapi = restapi_client
@@ -60,7 +62,7 @@ class Client:
             .wait()
             .done
         ):
-            sleep(1)
+            sleep(3)
 
         return QueryResult(
             operation=operation,
