@@ -38,4 +38,4 @@ result = client.query(
     dest_table=f"{project}.{dataset}.sample",
 )
 
-print(result.job.to_dataframe())
+print(result.table_info.columns)

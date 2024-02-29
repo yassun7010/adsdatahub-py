@@ -38,3 +38,10 @@ class DestinationTableInfoModel(Model):
     """
     If applicable, the percent of cells in this table which are not greatly affected by noise.
     """
+
+    def get_column(self, column_name: str) -> ColumnInfoModel | None:
+        for column in self.columns:
+            if column.name == column_name:
+                return column
+
+        return None

@@ -54,17 +54,16 @@ class Client:
             }
         )
 
-        while (
-            not self.restapi.resource(
+        while not (
+            operation := self.restapi.resource(
                 "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
                 unique_id=operation.name.unique_id,
-            )
-            .wait()
-            .done
-        ):
+            ).wait()
+        ).done:
             sleep(3)
 
         return QueryResult(
+            dest_table=dest_table,
             operation=operation,
             job=self.bigquery_client.query(f"SELECT * FROM {dest_table}"),
         )

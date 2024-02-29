@@ -3,6 +3,8 @@ from abc import abstractmethod
 import httpx
 from typing_extensions import override
 
+from tests.adsdatahub.restapi.resources.test_operation import OperationId
+
 
 class AdsDataHubException(Exception):
     """Base exception for adsdatahub."""
@@ -70,3 +72,13 @@ class AdsDataHubMockDataTypeError(AdsDataHubError):
     @override
     def message(self) -> str:
         return f"Mock Data Type Error {self.response_type.__name__}: expected {self.expected_type.__name__}"
+
+
+class DestinationTableInfoNotFound(AdsDataHubError):
+    def __init__(self, operation_id: OperationId) -> None:
+        self.operation_id = operation_id
+
+    @property
+    @override
+    def message(self) -> str:
+        return f"Destination Table Info Not Found: operation_id={self.operation_id}"
