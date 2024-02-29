@@ -24,7 +24,7 @@ def convert_json_value(data: Mapping[str, Any], *, model_map: dict[str, type[Mod
     }
 
 
-def validate_response_status_code(response: httpx.Response) -> None:
+def validate_status_code(response: httpx.Response) -> None:
     if response.status_code != 200:
         match response.status_code:
             case 501:
@@ -47,6 +47,6 @@ def parse_response_body(
     response_body_type: type[GenericResponseBody],
     response: httpx.Response,
 ) -> GenericResponseBody:
-    validate_response_status_code(response)
+    validate_status_code(response)
 
     return response_body_type.model_validate_json(response.content)

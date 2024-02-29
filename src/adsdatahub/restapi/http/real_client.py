@@ -11,7 +11,7 @@ from adsdatahub._types import TimeoutTypes
 from adsdatahub.restapi._helpers import (
     GenericResponseBody,
     parse_response_body,
-    validate_response_status_code,
+    validate_status_code,
 )
 from adsdatahub.restapi.http.client import Client, HttpRequestKwargs
 
@@ -63,7 +63,7 @@ class RealClient(Client):
         response = self._client.request(method, url, **kwargs)
 
         if response_body_type is None:
-            validate_response_status_code(response)
+            validate_status_code(response)
 
         else:
             return parse_response_body(
