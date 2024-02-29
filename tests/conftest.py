@@ -1,4 +1,5 @@
 import os
+from textwrap import dedent
 
 import adsdatahub.restapi
 import pytest
@@ -34,3 +35,20 @@ def project() -> str:
 @pytest.fixture
 def dataset() -> str:
     return os.environ["DATASET"]
+
+
+@pytest.fixture
+def imp_query_text() -> str:
+    return dedent(
+        """
+        SELECT
+            campaign_id,
+            date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') AS date,
+            count(query_id.time_usec) AS imp
+        FROM
+            adh.google_ads_impressions
+        GROUP BY
+            campaign_id,
+            date
+        """
+    )

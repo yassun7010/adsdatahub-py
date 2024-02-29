@@ -33,7 +33,7 @@ class Resource:
         self._client = client
         self._base_url = RESOURCE_NAME.format(**path_parameters)
 
-    def cancel(self):
+    def cancel(self) -> None:
         """
         長時間実行オペレーションの非同期キャンセルを開始します。
         サーバーは操作のキャンセルに全力を尽くしますが、成功は保証されません。
@@ -44,7 +44,7 @@ class Resource:
 
         Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/operations/cancel?hl=ja
         """
-        return (self._client.request("POST", f"{self._base_url}:cancel"),)
+        return self._client.request("POST", f"{self._base_url}:cancel")
 
     def delete(self) -> None:
         """
@@ -105,3 +105,25 @@ class Resource:
             OperationModel[AnalysisQueryMetadataModel],
             json=request_body,
         )
+
+
+class MockResource:
+    def __init__(self, mock_client: "adsdatahub.restapi.MockClient") -> None:
+        self._mock_client = mock_client
+
+    def cancel(self, response: Exception) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def delete(self, response: Exception) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def get(
+        self,
+        response: OperationModel[AnalysisQueryMetadataWithQueryTextModel] | Exception,
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def wait(
+        self, response: OperationModel[AnalysisQueryMetadataModel] | Exception
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client

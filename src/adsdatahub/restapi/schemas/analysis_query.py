@@ -27,10 +27,15 @@ class AnalysisQueryNameModel(ExtraForbidModel):
 
 
 def _deserialize_name(
-    value: str | None, info: ValidationInfo
+    value: AnalysisQueryNameModel | str | None, info: ValidationInfo
 ) -> dict[str, str | int] | None:
     if value is None:
         return None
+    if isinstance(value, AnalysisQueryNameModel):
+        return {
+            "customer_id": value.customer_id,
+            "resource_id": value.resource_id,
+        }
 
     splited_value = value.split("/")
 
@@ -230,7 +235,7 @@ class AnalysisQueryModel(ExtraForbidModel):
 
     merge_spec: Annotated[
         MergeSpecModel,
-        Field(alias="mergeSpec", default_factory=MergeSpecDict),
+        Field(alias="mergeSpec", default_factory=lambda: MergeSpecDict(columns={})),
     ]
     """
     行をマージする手順。

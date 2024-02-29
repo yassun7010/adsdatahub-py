@@ -49,3 +49,13 @@ class Resource:
             OperationsListResponseBody,
             params={k: v for k, v in (query_params or {}) if v is not None},
         )
+
+
+class MockResource:
+    def __init__(self, mock_client: "adsdatahub.restapi.MockClient") -> None:
+        self._mock_client = mock_client
+
+    def list(
+        self, response_body: OperationsListResponseBody
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client

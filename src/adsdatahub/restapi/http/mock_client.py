@@ -9,9 +9,6 @@ from adsdatahub.restapi._helpers import (
     GenericResponseBody,
 )
 from adsdatahub.restapi.http.client import HttpRequestKwargs
-from adsdatahub.restapi.resources import (
-    analysis_queries,
-)
 
 from .client import Client
 
@@ -83,8 +80,3 @@ class MockClient(Client):
 
         else:
             return response
-
-    def inject_response(
-        self, resource_name: analysis_queries.ResourceName
-    ) -> analysis_queries.MockResource:
-        return analysis_queries.MockResource(self)

@@ -108,3 +108,26 @@ class Resource:
                 },
             ),
         )
+
+
+class MockResource:
+    def __init__(self, mock_client: "adsdatahub.restapi.MockClient") -> None:
+        self._mock_client = mock_client
+
+    def delete(self, response: Exception) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def get(
+        self, response: AnalysisQueryModel | Exception
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def patch(
+        self, response: AnalysisQueryModel | Exception
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def start(
+        self, response: OperationModel[AnalysisQueryMetadataModel] | Exception
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client

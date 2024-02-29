@@ -1,8 +1,7 @@
-from textwrap import dedent
+import uuid
 
 import adsdatahub.restapi
 import pytest
-from adsdatahub.exceptions import AdsDataHubResponseStatusCodeError
 from adsdatahub.restapi.resources import analysis_queries
 from adsdatahub.restapi.schemas._newtype import CustomerId
 
@@ -22,14 +21,27 @@ class TestAnalysisQueries:
     def test_create(
         self,
         analysis_queries_resource: analysis_queries.Resource,
+        restapi_client: adsdatahub.restapi.Client,
+        imp_query_text: str,
     ):
-        with pytest.raises(AdsDataHubResponseStatusCodeError):
-            analysis_queries_resource.create(
+        analysis_query = None
+        try:
+            analysis_query = analysis_queries_resource.create(
                 {
-                    "title": "ads-data-hub-test",
-                    "queryText": "SELECT * FROM `project.dataset.table`",
+                    "title": f"ads-data-hub-test-{uuid.uuid4()}",
+                    "queryText": imp_query_text,
                 }
             )
+
+            with open("response_body.json", "w") as f:
+                f.write(analysis_query.model_dump_json(indent=2, by_alias=True))
+        finally:
+            if analysis_query:
+                restapi_client.resource(
+                    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
+                    customer_id=analysis_query.name.customer_id,
+                    resource_id=analysis_query.name.resource_id,
+                )
 
     def test_list(self, analysis_queries_resource: analysis_queries.Resource):
         response = analysis_queries_resource.list()
@@ -55,23 +67,10 @@ class TestAnalysisQueries:
     def test_validate(
         self,
         analysis_queries_resource: analysis_queries.Resource,
+        imp_query_text: str,
     ):
         analysis_queries_resource.validate(
             {
-                "query": {
-                    "queryText": dedent(
-                        """
-                        SELECT
-                            campaign_id,
-                            date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') AS date,
-                            count(query_id.time_usec) AS imp
-                        FROM
-                            adh.google_ads_impressions
-                        GROUP BY
-                            campaign_id,
-                            date
-                        """
-                    ),
-                },
+                "query": {"queryText": imp_query_text},
             }
         )

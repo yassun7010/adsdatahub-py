@@ -134,10 +134,25 @@ class Resource:
 
 
 class MockResource:
-    def __init__(self, mock_client: "adsdatahub.restapi.http.MockClient") -> None:
+    def __init__(self, mock_client: "adsdatahub.restapi.MockClient") -> None:
         self._mock_client = mock_client
 
     def create(
         self, response: AnalysisQueryModel | Exception
-    ) -> "adsdatahub.restapi.http.MockClient":
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def list(
+        self, response: AnalysisQueryListResponse | Exception
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def start_transient(
+        self, response: OperationModel[AnalysisQueryMetadataModel] | Exception
+    ) -> "adsdatahub.restapi.MockClient":
+        return self._mock_client
+
+    def validate(
+        self, response: AnalysisQueriesValidateResponseBody | Exception
+    ) -> "adsdatahub.restapi.MockClient":
         return self._mock_client
