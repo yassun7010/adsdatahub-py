@@ -2,4 +2,4 @@
 
 ## 使い方
 
-`examples` を参考にすること。
+[examples](https://github.com/yassun7010/adsdatahub-py/tree/main/examples) を参考にすること。
