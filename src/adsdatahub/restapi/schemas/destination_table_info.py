@@ -1,10 +1,43 @@
-from typing import Annotated
+from collections import UserList
+from typing import Annotated, Generic, TypeVar
 
 from pydantic import Field
 
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.column_info import ColumnInfoModel
 from adsdatahub.restapi.schemas.table_noise_impact import TableNoiseImpact
+
+T = TypeVar("T", bound=ColumnInfoModel)
+
+
+class ColumnInfoList(UserList, Generic[T]):
+    def __getitem__(self, key: int | str) -> ColumnInfoModel:
+        if column := self.get(key):
+            return column
+
+        elif isinstance(key, int):
+            raise IndexError(f"Column not found: {key}")
+
+        else:
+            raise KeyError(f"Column not found: {key}")
+
+    def get(
+        self, key: int | str, default: ColumnInfoModel | None = None
+    ) -> ColumnInfoModel | None:
+        if isinstance(key, int):
+            if len(self) > key:
+                return self[key]
+
+            else:
+                return default
+
+        else:
+            for column in self:
+                if column.name == key:
+                    return column
+
+            else:
+                return default
 
 
 class DestinationTableInfoModel(Model):
@@ -24,7 +57,7 @@ class DestinationTableInfoModel(Model):
     Number of rows in the result.
     """
 
-    columns: Annotated[list[ColumnInfoModel], Field(default_factory=list)]
+    columns: Annotated[ColumnInfoList[ColumnInfoModel], Field(default_factory=list)]
     """
     Information about columns in result.
     """
@@ -38,10 +71,3 @@ class DestinationTableInfoModel(Model):
     """
     If applicable, the percent of cells in this table which are not greatly affected by noise.
     """
-
-    def get_column(self, column_name: str) -> ColumnInfoModel | None:
-        for column in self.columns:
-            if column.name == column_name:
-                return column
-
-        return None

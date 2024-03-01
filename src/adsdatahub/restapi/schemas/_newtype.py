@@ -20,3 +20,5 @@ UniqueId: TypeAlias = str
 
 ex. "e3646136d4b14f92b5560286c20306f0"
 """
+
+OperationId: TypeAlias = str
