@@ -1,8 +1,8 @@
 import datetime
 from typing import TYPE_CHECKING, Literal, TypedDict
 
+from adsdatahub._types import UniqueId
 from adsdatahub.restapi.resources.operation.wait import OperationWaitRequestBody
-from adsdatahub.restapi.schemas._newtype import UniqueId
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
     AnalysisQueryMetadataWithQueryTextModel,

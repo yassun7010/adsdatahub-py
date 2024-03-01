@@ -32,4 +32,4 @@ class QueryResult:
                 if table.table_path == self.dest_table:
                     return table
 
-        raise DestinationTableInfoNotFound()
+        raise DestinationTableInfoNotFound(operation_id=self.operation.name.unique_id)

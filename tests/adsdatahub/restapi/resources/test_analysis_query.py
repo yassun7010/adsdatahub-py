@@ -4,7 +4,7 @@ import uuid
 import adsdatahub.restapi
 import adsdatahub.restapi.resources.analysis_query
 import pytest
-from adsdatahub.restapi.schemas._newtype import CustomerId
+from adsdatahub._types import CustomerId
 from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
 
 from tests.conftest import SLEEP_TIME_SEC

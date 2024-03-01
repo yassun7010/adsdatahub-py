@@ -2,8 +2,8 @@ import uuid
 
 import adsdatahub.restapi
 import pytest
+from adsdatahub._types import CustomerId
 from adsdatahub.restapi.resources import analysis_queries
-from adsdatahub.restapi.schemas._newtype import CustomerId
 
 
 class TestAnalysisQueries:

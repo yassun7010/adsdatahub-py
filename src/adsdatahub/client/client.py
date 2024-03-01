@@ -5,9 +5,9 @@ from typing import Unpack
 from google.cloud import bigquery
 
 import adsdatahub.restapi
+from adsdatahub._types import CustomerId
 from adsdatahub.client.query_result import QueryResult
 from adsdatahub.restapi.real_client import RealClientConstructerKwargs
-from adsdatahub.restapi.schemas._newtype import CustomerId
 
 
 class Client:

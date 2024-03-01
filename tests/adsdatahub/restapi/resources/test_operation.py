@@ -5,11 +5,11 @@ from typing import Callable
 import adsdatahub.restapi
 import adsdatahub.restapi.resources.operation
 import pytest
+from adsdatahub._types import CustomerId
 from adsdatahub.exceptions import (
     AdsDataHubUnimplementedError,
 )
 from adsdatahub.restapi.resources import operation
-from adsdatahub.restapi.schemas._newtype import CustomerId
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )

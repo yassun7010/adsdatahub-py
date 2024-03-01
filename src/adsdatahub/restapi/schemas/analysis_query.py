@@ -3,8 +3,8 @@ import datetime
 from pydantic import BeforeValidator, Field, PlainSerializer, ValidationInfo
 from typing_extensions import Annotated, NotRequired, TypedDict
 
+from adsdatahub._types import CustomerId, ResourceId
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
-from adsdatahub.restapi.schemas._newtype import CustomerId, ResourceId
 from adsdatahub.restapi.schemas.filtered_row_summary import (
     FilteredRowSummaryDict,
     FilteredRowSummaryModel,

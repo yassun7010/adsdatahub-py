@@ -2,8 +2,8 @@ from typing import Annotated, Generic, TypeVar
 
 from pydantic import BeforeValidator, PlainSerializer, ValidationInfo
 
+from adsdatahub._types import UniqueId
 from adsdatahub.restapi.schemas._model import Model
-from adsdatahub.restapi.schemas._newtype import UniqueId
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )

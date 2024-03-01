@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Literal, TypedDict
 
+from adsdatahub._types import CustomerId, ResourceId
 from adsdatahub.restapi._helpers import (
     convert_json_value,
 )
 from adsdatahub.restapi.resources.analysis_query.start import (
     AnalysisQueryStartRequestBody,
 )
-from adsdatahub.restapi.schemas._newtype import CustomerId, ResourceId
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
     AnalysisQueryRequestDict,
