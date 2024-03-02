@@ -27,6 +27,10 @@ class Client:
         self.bigquery_client = bigquery_client
 
     def customer(self, customer_id: CustomerId) -> "CustomerClient":
+        """
+        クエリを実行するためのクライアントを生成する。
+        """
+
         from adsdatahub.client.customer import CustomerClient
 
         return CustomerClient(self, customer_id)
