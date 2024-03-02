@@ -37,4 +37,4 @@ result = client.query(
     dest_table=f"{project}.{dataset}.sample",
 )
 
-print(result.table_info.columns)
+print(result.table_info.columns.get("campaign_id"))

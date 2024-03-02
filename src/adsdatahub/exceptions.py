@@ -1,4 +1,6 @@
+import json
 from abc import abstractmethod
+from typing import Any
 
 import httpx
 from typing_extensions import override
@@ -82,3 +84,14 @@ class DestinationTableInfoNotFound(AdsDataHubError):
     @override
     def message(self) -> str:
         return f"Destination Table Info Not Found: operation_id={self.operation_id}"
+
+
+class ResponseBodyHasError(AdsDataHubError):
+    def __init__(self, response: httpx.Response, error: dict[str, Any]) -> None:
+        self.response = response
+        self.error = error
+
+    @property
+    @override
+    def message(self) -> str:
+        return f"ResponseBody has error: {json.dumps(self.error, ensure_ascii=False)}"

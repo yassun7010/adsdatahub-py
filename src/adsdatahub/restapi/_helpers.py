@@ -7,6 +7,7 @@ from adsdatahub.exceptions import (
     AdsDataHubResponseStatusCodeError,
     AdsDataHubUnavailableError,
     AdsDataHubUnimplementedError,
+    ResponseBodyHasError,
 )
 from adsdatahub.restapi.schemas._model import Model
 
@@ -49,7 +50,12 @@ def parse_response_body(
 ) -> GenericResponseBody:
     validate_status_code(response)
 
-    return response_body_type.model_validate_json(response.content)
+    data = response.json()
+
+    if error := data.get("error"):
+        raise ResponseBodyHasError(response, error)
+
+    return response_body_type.model_validate(data)
 
 
 def get_extra_fields(model: Model) -> dict[str, Any]:
