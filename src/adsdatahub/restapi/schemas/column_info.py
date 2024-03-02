@@ -2,11 +2,11 @@ from typing import Annotated
 
 from pydantic import Field
 
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.noise_impact import NoiseImpact
 
 
-class ColumnInfoModel(Model):
+class ColumnInfoModel(ExtraAllowModel):
     """
     Metadata of a destination table column.
 

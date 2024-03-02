@@ -1,9 +1,9 @@
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.column import ColumnModel
 from adsdatahub.restapi.schemas.query_type import QueryType
 
 
-class TempTableModel(Model):
+class TempTableModel(ExtraAllowModel):
     """
     Ads Data Hub クエリによって作成された一時テーブルを定義します。
     一時テーブルは、Ads Data Hub クエリで CREATE TABLE temp_table AS (...) を使用して作成されます。
@@ -16,7 +16,7 @@ class TempTableModel(Model):
     """
     テーブルを一意に識別する名前。
 
-    形式は customer/[お客様 ID]/tempTables/[resource_id] です。
+    形式は customer/[お客様 ID]/tempTables/[analysis_query_id] です。
     リソース ID はサーバーによって生成されます。
     """
 

@@ -50,8 +50,8 @@ operation = client.resource(
 # クエリの完了を待つ。
 while not (
     operation := client.resource(
-        "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-        unique_id=operation.name.unique_id,
+        "https://adsdatahub.googleapis.com/v1/operations/{operation_id}",
+        operation_id=operation.name.operation_id,
     ).wait()
 ).done:
     sleep(1)

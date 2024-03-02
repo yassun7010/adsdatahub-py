@@ -3,11 +3,11 @@ from typing import Annotated
 
 from pydantic import Field
 
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.parameter_value import ParameterValueModel
 
 
-class QueryMetadataBaseModel(Model):
+class QueryMetadataBaseModel(ExtraAllowModel):
     """
     クエリ実行ジョブに関するメタデータ。
     これは、クエリ実行リクエストによって返される google.longrunning.Operation のメタデータフィールドに保存されます。

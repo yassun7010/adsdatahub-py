@@ -3,7 +3,7 @@ from abc import abstractmethod
 import httpx
 from typing_extensions import override
 
-from adsdatahub.restapi.schemas._newtype import OperationId
+from adsdatahub._types import OperationId
 
 
 class AdsDataHubException(Exception):

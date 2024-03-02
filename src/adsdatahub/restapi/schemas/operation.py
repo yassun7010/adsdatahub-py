@@ -2,8 +2,8 @@ from typing import Annotated, Generic, TypeVar
 
 from pydantic import BeforeValidator, PlainSerializer, ValidationInfo
 
-from adsdatahub.restapi.schemas._model import Model
-from adsdatahub.restapi.schemas._newtype import UniqueId
+from adsdatahub._types import OperationId
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )
@@ -15,25 +15,25 @@ GenericAnalysisQueryMetadataModel = TypeVar(
 )
 
 
-class OperationNameModel(Model):
-    unique_id: UniqueId
+class OperationNameModel(ExtraAllowModel):
+    operation_id: OperationId
 
     def __str__(self) -> str:
-        return f"operations/{self.unique_id}"
+        return f"operations/{self.operation_id}"
 
 
 def _deserialize_name(value: str, info: ValidationInfo) -> dict[str, str]:
     if not value.startswith("operations/"):
         raise ValueError(f"Invalid operation name: {value}")
 
-    return {"unique_id": value[len("operations/") :]}
+    return {"operation_id": value[len("operations/") :]}
 
 
 def _serialize_name(model: OperationNameModel) -> str:
-    return f"operations/{model.unique_id}"
+    return f"operations/{model.operation_id}"
 
 
-class OperationModel(Model, Generic[GenericAnalysisQueryMetadataModel]):
+class OperationModel(ExtraAllowModel, Generic[GenericAnalysisQueryMetadataModel]):
     """
     このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
 
@@ -49,7 +49,7 @@ class OperationModel(Model, Generic[GenericAnalysisQueryMetadataModel]):
     サーバーによって割り当てられる名前。
 
     最初にその名前を返すサービスと同じサービス内でのみ一意になります。
-    デフォルトの HTTP マッピングを使用している場合は、name を operations/{unique_id} で終わるリソース名にします。
+    デフォルトの HTTP マッピングを使用している場合は、name を operations/{operation_id} で終わるリソース名にします。
     """
 
     metadata: GenericAnalysisQueryMetadataModel | None

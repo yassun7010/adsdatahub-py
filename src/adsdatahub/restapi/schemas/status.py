@@ -3,7 +3,7 @@ from typing import Annotated
 from pydantic import Field
 from typing_extensions import TypedDict
 
-from adsdatahub.restapi.schemas._model import ExtraForbidModel
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 
 
 class StatusDict(TypedDict):
@@ -38,7 +38,7 @@ class StatusDict(TypedDict):
     """
 
 
-class StatusModel(ExtraForbidModel):
+class StatusModel(ExtraAllowModel):
     code: int
 
     message: str

@@ -2,7 +2,7 @@ from typing import Annotated, NotRequired, TypedDict
 
 from pydantic import Field
 
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryOptionalTitleRequest
 from adsdatahub.restapi.schemas.filtered_row_summary import FilteredRowSummaryModel
 from adsdatahub.restapi.schemas.query_execution_spec import QueryExecutionSpecRequest
@@ -49,7 +49,7 @@ class AnalysisQueriesValidateQueryParams(TypedDict):
     """
 
 
-class AnalysisQueriesValidateResponseBody(Model):
+class AnalysisQueriesValidateResponseBody(ExtraAllowModel):
     """
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/validate?hl=ja#response-body
     """

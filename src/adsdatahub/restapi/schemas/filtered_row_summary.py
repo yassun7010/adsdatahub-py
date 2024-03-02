@@ -3,7 +3,7 @@ from typing import Annotated
 from pydantic import Field
 from typing_extensions import TypedDict
 
-from adsdatahub.restapi.schemas._model import ExtraForbidModel
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.column_summary_rule import (
     ColumnSummaryRuleDict,
     ColumnSummaryRuleModel,
@@ -20,7 +20,7 @@ class FilteredRowSummaryDict(TypedDict):
     columns: dict[str, ColumnSummaryRuleDict]
 
 
-class FilteredRowSummaryModel(ExtraForbidModel):
+class FilteredRowSummaryModel(ExtraAllowModel):
     """
     分析クエリ結果のスキーマの手順を結合します。
 

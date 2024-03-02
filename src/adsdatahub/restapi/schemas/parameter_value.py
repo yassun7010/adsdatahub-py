@@ -34,15 +34,15 @@ class ArrayValueModel(ExtraForbidModel):
     arrayValue: "ArrayValueValuesModel"
 
 
-class ArrayValueValuesModel(TypedDict):
+class ArrayValueValuesModel(ExtraForbidModel):
     values: list["ParameterValueModel"]
 
 
-class StructValueModel(TypedDict):
+class StructValueModel(ExtraForbidModel):
     structValue: "StructValueValuesModel"
 
 
-class StructValueValuesModel(TypedDict):
+class StructValueValuesModel(ExtraForbidModel):
     values: dict[str, "ParameterValueModel"]
 
 

@@ -197,7 +197,7 @@ class RealClient(Client, ClientWithProject):
                     self._http, cast(analysis_queries.PathParameters, params)
                 )
 
-            case "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}":
+            case "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}":
                 return analysis_query.Resource(
                     self._http, cast(analysis_query.PathParameters, params)
                 )
@@ -207,7 +207,7 @@ class RealClient(Client, ClientWithProject):
                     self._http, cast(operations.PathParameters, params)
                 )
 
-            case "https://adsdatahub.googleapis.com/v1/operations/{unique_id}":
+            case "https://adsdatahub.googleapis.com/v1/operations/{operation_id}":
                 return operation.Resource(
                     self._http, cast(operation.PathParameters, params)
                 )

@@ -4,7 +4,7 @@ from typing import Annotated
 from pydantic import Field, field_serializer
 from typing_extensions import NotRequired, TypedDict
 
-from adsdatahub.restapi.schemas._model import ExtraForbidModel
+from adsdatahub.restapi.schemas._model import ExtraAllowModel, ExtraForbidModel
 from adsdatahub.restapi.schemas.date import DateDict, DateModel
 from adsdatahub.restapi.schemas.parameter_value import (
     ParameterValueDict,
@@ -80,7 +80,7 @@ class QueryExecutionSpecRequestModel(ExtraForbidModel):
             return DateDict(year=date.year, month=date.month, day=date.day)
 
 
-class QueryExecutionSpecResponseModel(ExtraForbidModel):
+class QueryExecutionSpecModel(ExtraAllowModel):
     adsDataCustomerId: str
     matchDataCustomerId: str
     startDate: DateModel

@@ -2,10 +2,14 @@ import uuid
 
 import adsdatahub.restapi
 import pytest
+from adsdatahub._types import CustomerId
+from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.resources import analysis_queries
-from adsdatahub.restapi.schemas._newtype import CustomerId
+
+from tests.conftest import synthetic_monitoring_is_disable
 
 
+@pytest.mark.skipif(**synthetic_monitoring_is_disable())
 class TestAnalysisQueries:
     @pytest.fixture
     def analysis_queries_resource(
@@ -33,25 +37,26 @@ class TestAnalysisQueries:
                 }
             )
 
-            with open("response_body.json", "w") as f:
-                f.write(analysis_query.model_dump_json(indent=2, by_alias=True))
+            assert get_extra_fields(analysis_query) == {}
+
         finally:
             if analysis_query:
                 restapi_client.resource(
-                    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
+                    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
                     customer_id=analysis_query.name.customer_id,
-                    resource_id=analysis_query.name.resource_id,
+                    analysis_query_id=analysis_query.name.analysis_query_id,
                 )
 
     def test_list(self, analysis_queries_resource: analysis_queries.Resource):
         response = analysis_queries_resource.list()
-        assert response.queries
+
+        assert get_extra_fields(response) == {}
 
     def test_start_transient(
         self,
         analysis_queries_resource: analysis_queries.Resource,
     ):
-        analysis_queries_resource.start_transient(
+        operation = analysis_queries_resource.start_transient(
             {
                 "query": {
                     "queryText": "SELECT * FROM project.dataset.table",
@@ -64,13 +69,17 @@ class TestAnalysisQueries:
             }
         )
 
+        assert get_extra_fields(operation) == {}
+
     def test_validate(
         self,
         analysis_queries_resource: analysis_queries.Resource,
         imp_query_text: str,
     ):
-        analysis_queries_resource.validate(
+        validation = analysis_queries_resource.validate(
             {
                 "query": {"queryText": imp_query_text},
             }
         )
+
+        assert get_extra_fields(validation) == {}

@@ -3,15 +3,34 @@ from textwrap import dedent
 
 import adsdatahub.restapi
 import pytest
-from adsdatahub.restapi.schemas._newtype import CustomerId
+from adsdatahub._types import CustomerId
 
 SLEEP_TIME_SEC = 3
+
+
+def synthetic_monitoring_is_disable() -> dict:
+    """
+    外形監視が無効であるかどうかを確認する。
+
+    下記の環境変数を設定すると、実際に API を叩いてテストが行われる。
+
+    ```env
+    SYNTHETIC_MONITORING_TEST=true
+    ```
+    """
+
+    return dict(
+        condition=(
+            "SYNTHETIC_MONITORING_TEST" not in os.environ
+            or os.environ["SYNTHETIC_MONITORING_TEST"].lower() != "true"
+        ),
+        reason="外形監視が有効時（環境変数 SYNTHETIC_MONITORING_TEST が true ）に実行されます。",
+    )
 
 
 @pytest.fixture
 def client() -> adsdatahub.Client:
     return adsdatahub.Client(
-        customer_id=os.environ["ADS_DATA_HUB_CUSTOMER_ID"],
         client_options={
             "credentials_file": os.environ["GOOGLE_APPLICATION_CREDENTIALS"],
         },

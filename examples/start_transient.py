@@ -24,11 +24,10 @@ query_text = dedent(
 
 
 client = adsdatahub.Client(
-    customer_id=customer_id,
     client_options={
         "credentials_file": credentials_file,
     },
-)
+).customer(customer_id)
 
 # クエリの問い合わせ
 result = client.query(

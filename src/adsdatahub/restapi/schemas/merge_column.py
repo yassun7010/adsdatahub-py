@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from adsdatahub.restapi.schemas._model import ExtraForbidModel
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.merge_type import MergeType
 from adsdatahub.restapi.schemas.parameter_value import (
     ParameterValueDict,
@@ -26,7 +26,7 @@ class MergeColumnDict(TypedDict):
     """
 
 
-class MergeColumnModel(ExtraForbidModel):
+class MergeColumnModel(ExtraAllowModel):
     """
     単一の出力列の手順をマージします。
 

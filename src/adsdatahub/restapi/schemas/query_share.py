@@ -1,6 +1,6 @@
 from typing_extensions import TypedDict
 
-from adsdatahub.restapi.schemas._model import ExtraForbidModel
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.share_type import ShareType
 
 
@@ -14,5 +14,5 @@ class QueryShareDict(TypedDict):
     shareType: ShareType
 
 
-class QueryShareModel(ExtraForbidModel):
+class QueryShareModel(ExtraAllowModel):
     shareType: ShareType

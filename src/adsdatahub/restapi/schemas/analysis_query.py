@@ -3,8 +3,8 @@ import datetime
 from pydantic import BeforeValidator, Field, PlainSerializer, ValidationInfo
 from typing_extensions import Annotated, NotRequired, TypedDict
 
-from adsdatahub.restapi.schemas._model import ExtraForbidModel
-from adsdatahub.restapi.schemas._newtype import CustomerId, ResourceId
+from adsdatahub._types import AnalysisQueryId, CustomerId
+from adsdatahub.restapi.schemas._model import ExtraAllowModel, ExtraForbidModel
 from adsdatahub.restapi.schemas.filtered_row_summary import (
     FilteredRowSummaryDict,
     FilteredRowSummaryModel,
@@ -14,16 +14,16 @@ from adsdatahub.restapi.schemas.parameter_type import (
     ParameterTypeDict,
     ParameterTypeModel,
 )
-from adsdatahub.restapi.schemas.query_share import QueryShareDict
+from adsdatahub.restapi.schemas.query_share import QueryShareDict, QueryShareModel
 from adsdatahub.restapi.schemas.query_state import QueryState
 
 
-class AnalysisQueryNameModel(ExtraForbidModel):
+class AnalysisQueryNameModel(ExtraAllowModel):
     customer_id: CustomerId
-    resource_id: ResourceId
+    analysis_query_id: AnalysisQueryId
 
     def __str__(self) -> str:
-        return f"customers/{self.customer_id}/analysisQueries/{self.resource_id}"
+        return f"customers/{self.customer_id}/analysisQueries/{self.analysis_query_id}"
 
 
 def _deserialize_name(
@@ -34,7 +34,7 @@ def _deserialize_name(
     if isinstance(value, AnalysisQueryNameModel):
         return {
             "customer_id": value.customer_id,
-            "resource_id": value.resource_id,
+            "analysis_query_id": value.analysis_query_id,
         }
 
     splited_value = value.split("/")
@@ -48,7 +48,7 @@ def _deserialize_name(
 
     return {
         "customer_id": splited_value[1],
-        "resource_id": splited_value[3],
+        "analysis_query_id": splited_value[3],
     }
 
 
@@ -56,7 +56,7 @@ def _serialize_name(model: AnalysisQueryNameModel | None) -> str | None:
     if model is None:
         return None
 
-    return f"customers/{model.customer_id}/analysisQueries/{model.resource_id}"
+    return f"customers/{model.customer_id}/analysisQueries/{model.analysis_query_id}"
 
 
 class AnalysisQueryRequestDict(TypedDict):
@@ -189,7 +189,7 @@ class AnalysisQueryRequestBaseModel(ExtraForbidModel):
     マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に表示されます。
     """
 
-    query_share: Annotated[list[QueryShareDict], Field(default_factory=list)]
+    query_share: Annotated[list[QueryShareModel], Field(default_factory=list)]
 
     filtered_row_summary: Annotated[
         FilteredRowSummaryModel | None, Field(alias="filteredRowSummary")
@@ -208,7 +208,7 @@ class AnalysisQueryRequestOptionalTitleModel(AnalysisQueryRequestBaseModel):
     title: str | None = None
 
 
-class AnalysisQueryModel(ExtraForbidModel):
+class AnalysisQueryModel(ExtraAllowModel):
     """
     Ads Data Hub 内で実行できる分析クエリを定義します。
 

@@ -50,3 +50,24 @@ def parse_response_body(
     validate_status_code(response)
 
     return response_body_type.model_validate_json(response.content)
+
+
+def get_extra_fields(model: Model) -> dict[str, Any]:
+    """
+    Pydanticモデルにある未定義のフィールドを返却する。
+    """
+
+    extras = {}
+    for key, value in model:
+        if isinstance(value, Model):
+            extra = get_extra_fields(value)
+            if len(extra):
+                extras[key] = extra
+
+    for key, value in (model.__pydantic_extra__ or {}).items():
+        if isinstance(value, Model):
+            extras[key] = get_extra_fields(value)
+        else:
+            extras[key] = value
+
+    return extras

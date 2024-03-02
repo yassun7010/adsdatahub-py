@@ -2,10 +2,10 @@ from typing import Annotated
 
 from pydantic import Field
 
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 
 
-class QueryPerformanceInfoModel(Model):
+class QueryPerformanceInfoModel(ExtraAllowModel):
     """
     クエリ実行のパフォーマンス情報。
 
