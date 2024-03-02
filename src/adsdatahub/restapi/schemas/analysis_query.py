@@ -3,7 +3,7 @@ import datetime
 from pydantic import BeforeValidator, Field, PlainSerializer, ValidationInfo
 from typing_extensions import Annotated, NotRequired, TypedDict
 
-from adsdatahub._types import CustomerId, ResourceId
+from adsdatahub._types import AnalysisQueryId, CustomerId
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
 from adsdatahub.restapi.schemas.filtered_row_summary import (
     FilteredRowSummaryDict,
@@ -20,10 +20,10 @@ from adsdatahub.restapi.schemas.query_state import QueryState
 
 class AnalysisQueryNameModel(ExtraForbidModel):
     customer_id: CustomerId
-    resource_id: ResourceId
+    analysis_query_id: AnalysisQueryId
 
     def __str__(self) -> str:
-        return f"customers/{self.customer_id}/analysisQueries/{self.resource_id}"
+        return f"customers/{self.customer_id}/analysisQueries/{self.analysis_query_id}"
 
 
 def _deserialize_name(
@@ -34,7 +34,7 @@ def _deserialize_name(
     if isinstance(value, AnalysisQueryNameModel):
         return {
             "customer_id": value.customer_id,
-            "resource_id": value.resource_id,
+            "analysis_query_id": value.analysis_query_id,
         }
 
     splited_value = value.split("/")
@@ -48,7 +48,7 @@ def _deserialize_name(
 
     return {
         "customer_id": splited_value[1],
-        "resource_id": splited_value[3],
+        "analysis_query_id": splited_value[3],
     }
 
 
@@ -56,7 +56,7 @@ def _serialize_name(model: AnalysisQueryNameModel | None) -> str | None:
     if model is None:
         return None
 
-    return f"customers/{model.customer_id}/analysisQueries/{model.resource_id}"
+    return f"customers/{model.customer_id}/analysisQueries/{model.analysis_query_id}"
 
 
 class AnalysisQueryRequestDict(TypedDict):

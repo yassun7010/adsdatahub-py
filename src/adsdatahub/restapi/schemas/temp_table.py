@@ -16,7 +16,7 @@ class TempTableModel(Model):
     """
     テーブルを一意に識別する名前。
 
-    形式は customer/[お客様 ID]/tempTables/[resource_id] です。
+    形式は customer/[お客様 ID]/tempTables/[analysis_query_id] です。
     リソース ID はサーバーによって生成されます。
     """
 

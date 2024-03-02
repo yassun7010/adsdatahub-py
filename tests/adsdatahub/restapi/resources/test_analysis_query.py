@@ -32,9 +32,9 @@ class TestAnalysisQuery:
         restapi_client: adsdatahub.restapi.Client,
     ) -> adsdatahub.restapi.resources.analysis_query.Resource:
         return restapi_client.resource(
-            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
             customer_id=analysis_query.name.customer_id,
-            resource_id=analysis_query.name.resource_id,
+            analysis_query_id=analysis_query.name.analysis_query_id,
         )
 
     @pytest.mark.asyncio

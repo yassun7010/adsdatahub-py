@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Literal, TypedDict
 
-from adsdatahub._types import CustomerId, ResourceId
+from adsdatahub._types import AnalysisQueryId, CustomerId
 from adsdatahub.restapi._helpers import (
     convert_json_value,
 )
@@ -24,14 +24,14 @@ if TYPE_CHECKING:
     import adsdatahub.restapi.http
 
 ResourceName = Literal[
-    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}"
+    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}"
 ]
-RESOURCE_NAME: ResourceName = "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}"
+RESOURCE_NAME: ResourceName = "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}"
 
 
 class PathParameters(TypedDict):
     customer_id: CustomerId
-    resource_id: ResourceId
+    analysis_query_id: AnalysisQueryId
 
 
 class Resource:

@@ -38,9 +38,9 @@ class TestAnalysisQueries:
         finally:
             if analysis_query:
                 restapi_client.resource(
-                    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{resource_id}",
+                    "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
                     customer_id=analysis_query.name.customer_id,
-                    resource_id=analysis_query.name.resource_id,
+                    analysis_query_id=analysis_query.name.analysis_query_id,
                 )
 
     def test_list(self, analysis_queries_resource: analysis_queries.Resource):

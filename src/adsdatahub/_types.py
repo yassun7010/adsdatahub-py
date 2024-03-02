@@ -10,7 +10,7 @@ CustomerId: TypeAlias = str
 ex. "1234567890", "global"
 """
 
-ResourceId: TypeAlias = str
+AnalysisQueryId: TypeAlias = str
 """
 クエリのリソースID。
 
