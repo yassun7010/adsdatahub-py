@@ -67,8 +67,8 @@ class TestOperation:
         operation_response: OperationModel[AnalysisQueryMetadataModel],
     ) -> adsdatahub.restapi.resources.operation.Resource:
         return restapi_client.resource(
-            "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-            unique_id=operation_response.name.unique_id,
+            "https://adsdatahub.googleapis.com/v1/operations/{operation_id}",
+            operation_id=operation_response.name.operation_id,
         )
 
     @pytest.mark.asyncio

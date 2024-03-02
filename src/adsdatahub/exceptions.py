@@ -3,7 +3,7 @@ from abc import abstractmethod
 import httpx
 from typing_extensions import override
 
-from adsdatahub._types import UniqueId
+from adsdatahub._types import OperationId
 
 
 class AdsDataHubException(Exception):
@@ -75,7 +75,7 @@ class AdsDataHubMockDataTypeError(AdsDataHubError):
 
 
 class DestinationTableInfoNotFound(AdsDataHubError):
-    def __init__(self, operation_id: UniqueId) -> None:
+    def __init__(self, operation_id: OperationId) -> None:
         self.operation_id = operation_id
 
     @property

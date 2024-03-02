@@ -56,8 +56,8 @@ class Client:
 
         while not (
             operation := self.restapi.resource(
-                "https://adsdatahub.googleapis.com/v1/operations/{unique_id}",
-                unique_id=operation.name.unique_id,
+                "https://adsdatahub.googleapis.com/v1/operations/{operation_id}",
+                operation_id=operation.name.operation_id,
             ).wait()
         ).done:
             sleep(3)

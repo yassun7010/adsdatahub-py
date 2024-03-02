@@ -1,7 +1,7 @@
 import datetime
 from typing import TYPE_CHECKING, Literal, TypedDict
 
-from adsdatahub._types import UniqueId
+from adsdatahub._types import OperationId
 from adsdatahub.restapi.resources.operation.wait import OperationWaitRequestBody
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
@@ -12,14 +12,14 @@ from adsdatahub.restapi.schemas.operation import OperationModel
 if TYPE_CHECKING:
     import adsdatahub.restapi.http
 
-ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{unique_id}"]
+ResourceName = Literal["https://adsdatahub.googleapis.com/v1/operations/{operation_id}"]
 RESOURCE_NAME: ResourceName = (
-    "https://adsdatahub.googleapis.com/v1/operations/{unique_id}"
+    "https://adsdatahub.googleapis.com/v1/operations/{operation_id}"
 )
 
 
 class PathParameters(TypedDict):
-    unique_id: UniqueId
+    operation_id: OperationId
 
 
 class Resource:

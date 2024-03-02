@@ -17,7 +17,7 @@ ResourceId: TypeAlias = str
 ex. "00d30ae989fa487d9a96e15afc244770"
 """
 
-UniqueId: TypeAlias = str
+OperationId: TypeAlias = str
 """
 オペレーションの一意なID。
 
