@@ -3,7 +3,10 @@ import pytest
 from adsdatahub._types import CustomerId
 from google.cloud import bigquery
 
+from tests.conftest import synthetic_monitoring_is_disable
 
+
+@pytest.mark.skipif(**synthetic_monitoring_is_disable())
 class TestClient:
     @pytest.mark.long
     def test_query(
