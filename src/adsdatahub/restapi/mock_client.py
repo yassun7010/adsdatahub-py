@@ -1,6 +1,9 @@
 from typing import Union, assert_never, overload
 
+from typing_extensions import override
+
 from adsdatahub.restapi import http
+from adsdatahub.restapi.client import Client
 from adsdatahub.restapi.resources import (
     analysis_queries,
     analysis_query,
@@ -9,9 +12,14 @@ from adsdatahub.restapi.resources import (
 )
 
 
-class MockClient:
+class MockClient(Client):
     def __init__(self) -> None:
-        self._http = http.MockClient()
+        self._http_internal = http.MockClient()
+
+    @property
+    @override
+    def _http(self) -> http.MockClient:
+        return self._http_internal
 
     @overload
     def inject_response(

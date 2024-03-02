@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any, Union, assert_never, cast
 
 from typing_extensions import Unpack, overload
 
@@ -31,12 +31,12 @@ class Client:
     def _http(self) -> "adsdatahub.restapi.http.Client": ...
 
     @property
-    @abstractmethod
-    def timeout(self) -> TimeoutTypes: ...
+    def timeout(self) -> TimeoutTypes:
+        return self._http.timeout
 
     @timeout.setter
-    @abstractmethod
-    def timeout(self, value: TimeoutTypes) -> None: ...
+    def timeout(self, value: TimeoutTypes) -> None:
+        self._http.timeout = value
 
     @overload
     def resource(
@@ -104,4 +104,27 @@ class Client:
         analysis_query.Resource,
         operations.Resource,
         operation.Resource,
-    ]: ...
+    ]:
+        match resource_name:
+            case "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries":
+                return analysis_queries.Resource(
+                    self._http, cast(analysis_queries.PathParameters, params)
+                )
+
+            case "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}":
+                return analysis_query.Resource(
+                    self._http, cast(analysis_query.PathParameters, params)
+                )
+
+            case "https://adsdatahub.googleapis.com/v1/operations":
+                return operations.Resource(
+                    self._http, cast(operations.PathParameters, params)
+                )
+
+            case "https://adsdatahub.googleapis.com/v1/operations/{operation_id}":
+                return operation.Resource(
+                    self._http, cast(operation.PathParameters, params)
+                )
+
+            case _:
+                assert_never(resource_name)
