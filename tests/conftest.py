@@ -3,7 +3,7 @@ from textwrap import dedent
 
 import adsdatahub.restapi
 import pytest
-from adsdatahub._types import CustomerId
+from adsdatahub.types import CustomerId
 
 SLEEP_TIME_SEC = 3
 

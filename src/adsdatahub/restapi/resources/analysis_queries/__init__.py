@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Literal, TypedDict
 
-from adsdatahub._types import CustomerId
 from adsdatahub.restapi._helpers import convert_json_value
 from adsdatahub.restapi.resources.analysis_queries.list import (
     AnalysisQueryListQueryParams,
@@ -26,6 +25,7 @@ from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_execution_spec import (
     QueryExecutionSpecRequestModel,
 )
+from adsdatahub.types import CustomerId
 
 ResourceName = Literal[
     "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries"

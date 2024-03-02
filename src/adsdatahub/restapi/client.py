@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING, Any, Union, assert_never, cast
 
 from typing_extensions import Unpack, overload
 
-from adsdatahub._types import TimeoutTypes
 from adsdatahub.restapi.resources import (
     analysis_queries,
     analysis_query,
     operation,
     operations,
 )
+from adsdatahub.types import TimeoutTypes
 
 if TYPE_CHECKING:
     import adsdatahub.restapi.http

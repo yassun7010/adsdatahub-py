@@ -1,6 +1,6 @@
 import adsdatahub
 import pytest
-from adsdatahub._types import CustomerId
+from adsdatahub.types import CustomerId
 from google.cloud import bigquery
 
 from tests.conftest import synthetic_monitoring_is_disable

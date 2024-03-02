@@ -3,12 +3,12 @@ from typing import Any
 
 from typing_extensions import override
 
-from adsdatahub._types import TimeoutTypes, URLTypes
 from adsdatahub.exceptions import AdsDataHubMockDataTypeError
 from adsdatahub.restapi._helpers import (
     GenericResponseBody,
 )
 from adsdatahub.restapi.http.client import HttpRequestKwargs
+from adsdatahub.types import TimeoutTypes, URLTypes
 
 from .client import Client
 

@@ -2,13 +2,13 @@ from typing import Annotated, Generic, TypeVar
 
 from pydantic import BeforeValidator, PlainSerializer, ValidationInfo
 
-from adsdatahub._types import OperationId
 from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )
 from adsdatahub.restapi.schemas.query_response import QueryResponseModel
 from adsdatahub.restapi.schemas.status import StatusModel
+from adsdatahub.types import OperationId
 
 GenericAnalysisQueryMetadataModel = TypeVar(
     "GenericAnalysisQueryMetadataModel", bound=AnalysisQueryMetadataModel

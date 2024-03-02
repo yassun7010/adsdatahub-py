@@ -4,7 +4,6 @@ from typing import Callable
 import adsdatahub.restapi
 import adsdatahub.restapi.resources.operation
 import pytest
-from adsdatahub._types import CustomerId
 from adsdatahub.exceptions import (
     AdsDataHubResponseStatusCodeError,
     AdsDataHubUnimplementedError,
@@ -15,6 +14,7 @@ from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )
 from adsdatahub.restapi.schemas.operation import OperationModel
+from adsdatahub.types import CustomerId
 
 from tests.conftest import SLEEP_TIME_SEC, synthetic_monitoring_is_disable
 

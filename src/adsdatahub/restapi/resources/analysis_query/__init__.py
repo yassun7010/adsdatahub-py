@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Literal, TypedDict
 
-from adsdatahub._types import AnalysisQueryId, CustomerId
 from adsdatahub.restapi._helpers import (
     convert_json_value,
 )
@@ -19,6 +18,7 @@ from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.restapi.schemas.query_execution_spec import (
     QueryExecutionSpecRequestModel,
 )
+from adsdatahub.types import AnalysisQueryId, CustomerId
 
 if TYPE_CHECKING:
     import adsdatahub.restapi.http

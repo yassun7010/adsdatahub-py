@@ -7,13 +7,13 @@ from httpx._types import (
 )
 from typing_extensions import override
 
-from adsdatahub._types import TimeoutTypes
 from adsdatahub.restapi._helpers import (
     GenericResponseBody,
     parse_response_body,
     validate_status_code,
 )
 from adsdatahub.restapi.http.client import Client, HttpRequestKwargs
+from adsdatahub.types import TimeoutTypes
 
 
 class RealClient(Client):

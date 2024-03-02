@@ -2,9 +2,9 @@ import uuid
 
 import adsdatahub.restapi
 import pytest
-from adsdatahub._types import CustomerId
 from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.resources import analysis_queries
+from adsdatahub.types import CustomerId
 
 from tests.conftest import synthetic_monitoring_is_disable
 

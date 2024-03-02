@@ -5,7 +5,7 @@ from typing import Any
 import httpx
 from typing_extensions import override
 
-from adsdatahub._types import OperationId
+from adsdatahub.types import OperationId
 
 
 class AdsDataHubException(Exception):

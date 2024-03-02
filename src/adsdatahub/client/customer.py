@@ -2,8 +2,8 @@ import datetime
 from time import sleep
 
 import adsdatahub
-from adsdatahub._types import CustomerId
 from adsdatahub.client.query_result import QueryResult
+from adsdatahub.types import CustomerId
 
 
 class CustomerClient:

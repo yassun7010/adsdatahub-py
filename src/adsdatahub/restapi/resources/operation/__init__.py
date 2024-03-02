@@ -1,13 +1,13 @@
 import datetime
 from typing import TYPE_CHECKING, Literal, TypedDict
 
-from adsdatahub._types import OperationId
 from adsdatahub.restapi.resources.operation.wait import OperationWaitRequestBody
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
     AnalysisQueryMetadataWithQueryTextModel,
 )
 from adsdatahub.restapi.schemas.operation import OperationModel
+from adsdatahub.types import OperationId
 
 if TYPE_CHECKING:
     import adsdatahub.restapi.http

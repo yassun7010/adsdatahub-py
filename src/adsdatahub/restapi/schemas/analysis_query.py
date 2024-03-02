@@ -3,7 +3,6 @@ import datetime
 from pydantic import BeforeValidator, Field, PlainSerializer, ValidationInfo
 from typing_extensions import Annotated, NotRequired, TypedDict
 
-from adsdatahub._types import AnalysisQueryId, CustomerId
 from adsdatahub.restapi.schemas._model import ExtraAllowModel, ExtraForbidModel
 from adsdatahub.restapi.schemas.filtered_row_summary import (
     FilteredRowSummaryDict,
@@ -16,6 +15,7 @@ from adsdatahub.restapi.schemas.parameter_type import (
 )
 from adsdatahub.restapi.schemas.query_share import QueryShareDict, QueryShareModel
 from adsdatahub.restapi.schemas.query_state import QueryState
+from adsdatahub.types import AnalysisQueryId, CustomerId
 
 
 class AnalysisQueryNameModel(ExtraAllowModel):

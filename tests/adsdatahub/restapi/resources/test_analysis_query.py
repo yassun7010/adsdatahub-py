@@ -4,9 +4,9 @@ import uuid
 import adsdatahub.restapi
 import adsdatahub.restapi.resources.analysis_query
 import pytest
-from adsdatahub._types import CustomerId
 from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
+from adsdatahub.types import CustomerId
 
 from tests.conftest import SLEEP_TIME_SEC, synthetic_monitoring_is_disable
 

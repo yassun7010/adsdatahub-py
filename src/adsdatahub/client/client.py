@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Unpack
 from google.cloud import bigquery
 
 import adsdatahub.restapi
-from adsdatahub._types import CustomerId
 from adsdatahub.restapi.real_client import RealClientConstructerKwargs
+from adsdatahub.types import CustomerId
 
 if TYPE_CHECKING:
     from adsdatahub.client.customer import CustomerClient
