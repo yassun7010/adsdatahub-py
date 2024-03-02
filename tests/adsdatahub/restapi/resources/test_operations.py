@@ -1,6 +1,7 @@
 from typing import Callable
 
 import adsdatahub.restapi
+import pytest
 from adsdatahub.exceptions import (
     AdsDataHubUnavailableError,
     AdsDataHubUnimplementedError,
@@ -9,6 +10,8 @@ from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.resources import operation
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.operation import OperationModel
+
+from tests.conftest import synthetic_monitoring_is_disable
 
 OperationId = str
 
@@ -19,6 +22,7 @@ class Operations(Model):
     operations: list[OperationModel]
 
 
+@pytest.mark.skipif(**synthetic_monitoring_is_disable())
 class TestOperations:
     def test_list(self, restapi_client: adsdatahub.restapi.Client):
         try:

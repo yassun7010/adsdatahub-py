@@ -1,9 +1,13 @@
 import adsdatahub.restapi
+import pytest
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
 )
 
+from tests.conftest import synthetic_monitoring_is_disable
 
+
+@pytest.mark.skipif(**synthetic_monitoring_is_disable())
 class TestMockAnalysisQueries:
     def test_create(
         self,
