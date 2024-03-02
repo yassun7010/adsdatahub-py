@@ -1,4 +1,5 @@
 import asyncio
+from textwrap import dedent
 from typing import Callable
 
 import adsdatahub.restapi
@@ -36,7 +37,22 @@ class TestOperation:
             customer_id=customer_id,
         ).start_transient(
             {
-                "query": {"queryText": imp_query_text},
+                "query": {
+                    "queryText": dedent(
+                        """
+                        SELECT
+                            imp.event.campaign_id,
+                            temp.u1_val,
+                            COUNT(*) AS cnt
+                        FROM
+                            adh.cm_dt_impressions AS imp
+                        JOIN
+                            tmp.temp_table AS temp USING (user_id)
+                        GROUP BY
+                            1, 2
+                        """
+                    )
+                },
                 "spec": {
                     "startDate": "2023-01-01",
                     "endDate": "2023-01-01",
