@@ -1,8 +1,8 @@
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.privacy_message_type import PrivacyMessageType
 
 
-class PrivacyMessageModel(Model):
+class PrivacyMessageModel(ExtraAllowModel):
     """
     プライバシー関連の情報、または警告メッセージ。
 

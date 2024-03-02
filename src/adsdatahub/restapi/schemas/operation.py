@@ -3,7 +3,7 @@ from typing import Annotated, Generic, TypeVar
 from pydantic import BeforeValidator, PlainSerializer, ValidationInfo
 
 from adsdatahub._types import OperationId
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )
@@ -15,7 +15,7 @@ GenericAnalysisQueryMetadataModel = TypeVar(
 )
 
 
-class OperationNameModel(Model):
+class OperationNameModel(ExtraAllowModel):
     operation_id: OperationId
 
     def __str__(self) -> str:
@@ -33,7 +33,7 @@ def _serialize_name(model: OperationNameModel) -> str:
     return f"operations/{model.operation_id}"
 
 
-class OperationModel(Model, Generic[GenericAnalysisQueryMetadataModel]):
+class OperationModel(ExtraAllowModel, Generic[GenericAnalysisQueryMetadataModel]):
     """
     このリソースは、ネットワーク API 呼び出しの結果である長時間実行オペレーションを表します。
 

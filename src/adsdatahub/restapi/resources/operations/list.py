@@ -2,7 +2,7 @@ from typing import Annotated, NotRequired, TypedDict
 
 from pydantic import Field
 
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )
@@ -15,7 +15,7 @@ class OperationsListQueryParams(TypedDict):
     pageToken: NotRequired[str | None]
 
 
-class OperationsListResponseBody(Model):
+class OperationsListResponseBody(ExtraAllowModel):
     operations: Annotated[
         list[OperationModel[AnalysisQueryMetadataModel]], Field(default_factory=list)
     ]

@@ -2,12 +2,12 @@ from typing import Annotated
 
 from pydantic import Field
 
-from adsdatahub.restapi.schemas._model import Model
+from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.column_info import ColumnInfoModel
 from adsdatahub.restapi.schemas.table_noise_impact import TableNoiseImpact
 
 
-class DestinationTableInfoModel(Model):
+class DestinationTableInfoModel(ExtraAllowModel):
     """
     Metadata of an exported query output table.
 
