@@ -2,7 +2,7 @@ from functools import cache
 
 from google.cloud import bigquery
 
-from adsdatahub.exceptions import DestinationTableInfoNotFound
+from adsdatahub.exceptions import AdsDataHubDestinationTableInfoNotFound
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )
@@ -32,6 +32,6 @@ class QueryResult:
                 if table.table_path == self.dest_table:
                     return table
 
-        raise DestinationTableInfoNotFound(
+        raise AdsDataHubDestinationTableInfoNotFound(
             operation_id=self.operation.name.operation_id
         )

@@ -1,9 +1,11 @@
 import adsdatahub
+import pytest
 from adsdatahub._types import CustomerId
 from google.cloud import bigquery
 
 
 class TestClient:
+    @pytest.mark.long
     def test_query(
         self,
         client: adsdatahub.Client,

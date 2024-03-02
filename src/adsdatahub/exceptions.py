@@ -76,7 +76,7 @@ class AdsDataHubMockDataTypeError(AdsDataHubError):
         return f"Mock Data Type Error {self.response_type.__name__}: expected {self.expected_type.__name__}"
 
 
-class DestinationTableInfoNotFound(AdsDataHubError):
+class AdsDataHubDestinationTableInfoNotFound(AdsDataHubError):
     def __init__(self, operation_id: OperationId) -> None:
         self.operation_id = operation_id
 
@@ -86,7 +86,7 @@ class DestinationTableInfoNotFound(AdsDataHubError):
         return f"Destination Table Info Not Found: operation_id={self.operation_id}"
 
 
-class ResponseBodyHasError(AdsDataHubError):
+class AdsDataHubResponseBodyHasError(AdsDataHubError):
     def __init__(self, response: httpx.Response, error: dict[str, Any]) -> None:
         self.response = response
         self.error = error

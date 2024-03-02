@@ -4,10 +4,10 @@ from typing import Any, Mapping, TypeVar
 import httpx
 
 from adsdatahub.exceptions import (
+    AdsDataHubResponseBodyHasError,
     AdsDataHubResponseStatusCodeError,
     AdsDataHubUnavailableError,
     AdsDataHubUnimplementedError,
-    ResponseBodyHasError,
 )
 from adsdatahub.restapi.schemas._model import Model
 
@@ -53,7 +53,7 @@ def parse_response_body(
     data = response.json()
 
     if error := data.get("error"):
-        raise ResponseBodyHasError(response, error)
+        raise AdsDataHubResponseBodyHasError(response, error)
 
     return response_body_type.model_validate(data)
 

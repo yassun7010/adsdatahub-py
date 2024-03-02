@@ -1,5 +1,4 @@
 import asyncio
-from textwrap import dedent
 from typing import Callable
 
 import adsdatahub.restapi
@@ -7,6 +6,7 @@ import adsdatahub.restapi.resources.operation
 import pytest
 from adsdatahub._types import CustomerId
 from adsdatahub.exceptions import (
+    AdsDataHubResponseStatusCodeError,
     AdsDataHubUnimplementedError,
 )
 from adsdatahub.restapi._helpers import get_extra_fields
@@ -37,22 +37,7 @@ class TestOperation:
             customer_id=customer_id,
         ).start_transient(
             {
-                "query": {
-                    "queryText": dedent(
-                        """
-                        SELECT
-                            imp.event.campaign_id,
-                            temp.u1_val,
-                            COUNT(*) AS cnt
-                        FROM
-                            adh.cm_dt_impressions AS imp
-                        JOIN
-                            tmp.temp_table AS temp USING (user_id)
-                        GROUP BY
-                            1, 2
-                        """
-                    )
-                },
+                "query": {"queryText": imp_query_text},
                 "spec": {
                     "startDate": "2023-01-01",
                     "endDate": "2023-01-01",
@@ -78,7 +63,8 @@ class TestOperation:
     ):
         await asyncio.sleep(SLEEP_TIME_SEC)
 
-        assert operation_resource.cancel() is None
+        with pytest.raises(AdsDataHubResponseStatusCodeError):
+            operation_resource.cancel()
 
     def test_delete(
         self, operation_resource: adsdatahub.restapi.resources.operation.Resource
