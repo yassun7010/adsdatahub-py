@@ -64,6 +64,7 @@ class TestOperation:
         await asyncio.sleep(SLEEP_TIME_SEC)
 
         with pytest.raises(AdsDataHubResponseStatusCodeError):
+            # NOTE: raise FAILED_PRECONDITION error.
             operation_resource.cancel()
 
     def test_delete(
