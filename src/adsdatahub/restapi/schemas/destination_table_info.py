@@ -1,24 +1,21 @@
 from collections import UserList
-from typing import Annotated, Generic, TypeVar
+from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, PlainSerializer, PlainValidator
 
 from adsdatahub.restapi.schemas._model import ExtraAllowModel
 from adsdatahub.restapi.schemas.column_info import ColumnInfoModel
 from adsdatahub.restapi.schemas.table_noise_impact import TableNoiseImpact
 
-T = TypeVar("T", bound=ColumnInfoModel)
 
-
-class ColumnInfoList(UserList, Generic[T]):
-    def __getitem__(self, key: int | str) -> ColumnInfoModel:
-        if column := self.get(key):
-            return column
-
-        elif isinstance(key, int):
-            raise IndexError(f"Column not found: {key}")
+class ColumnInfoModelList(UserList[ColumnInfoModel]):
+    def __getitem__(self, key: int | str) -> ColumnInfoModel:  # type: ignore[override]
+        if isinstance(key, int):
+            return super().__getitem__(key)
 
         else:
+            if column := self.get(key):
+                return column
             raise KeyError(f"Column not found: {key}")
 
     def get(
@@ -40,6 +37,16 @@ class ColumnInfoList(UserList, Generic[T]):
                 return default
 
 
+def _validate_column_info_list(value: list[ColumnInfoModel]) -> ColumnInfoModelList:
+    return ColumnInfoModelList(
+        [ColumnInfoModel.model_validate(model) for model in value]
+    )
+
+
+def _serialize_column_info_list(value: ColumnInfoModelList):
+    return [v for v in value]
+
+
 class DestinationTableInfoModel(ExtraAllowModel):
     """
     Metadata of an exported query output table.
@@ -57,7 +64,12 @@ class DestinationTableInfoModel(ExtraAllowModel):
     Number of rows in the result.
     """
 
-    columns: Annotated[ColumnInfoList[ColumnInfoModel], Field(default_factory=list)]
+    columns: Annotated[
+        ColumnInfoModelList,
+        Field(default_factory=list),
+        PlainValidator(_validate_column_info_list),
+        PlainSerializer(_serialize_column_info_list),
+    ]
     """
     Information about columns in result.
     """
