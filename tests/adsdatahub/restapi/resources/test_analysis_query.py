@@ -5,11 +5,13 @@ import adsdatahub.restapi
 import adsdatahub.restapi.resources.analysis_query
 import pytest
 from adsdatahub._types import CustomerId
+from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
 
-from tests.conftest import SLEEP_TIME_SEC
+from tests.conftest import SLEEP_TIME_SEC, synthetic_monitoring_is_disable
 
 
+@pytest.mark.skipif(**synthetic_monitoring_is_disable())
 class TestAnalysisQuery:
     @pytest.fixture
     def analysis_query(
@@ -44,7 +46,7 @@ class TestAnalysisQuery:
     ):
         await asyncio.sleep(SLEEP_TIME_SEC)
 
-        analysis_query_resource.delete()
+        assert analysis_query_resource.delete() is None
 
     @pytest.mark.asyncio
     async def test_get(
@@ -54,7 +56,9 @@ class TestAnalysisQuery:
         await asyncio.sleep(SLEEP_TIME_SEC)
 
         try:
-            analysis_query_resource.get()
+            analysis_query = analysis_query_resource.get()
+
+            assert get_extra_fields(analysis_query) == {}
 
         finally:
             analysis_query_resource.delete()
@@ -68,12 +72,14 @@ class TestAnalysisQuery:
         await asyncio.sleep(SLEEP_TIME_SEC)
 
         try:
-            analysis_query_resource.patch(
+            analysis_query = analysis_query_resource.patch(
                 {
                     "title": analysis_query.title,
                     "queryText": "SELECT 2",
                 }
             )
+
+            assert get_extra_fields(analysis_query) == {}
 
         finally:
             analysis_query_resource.delete()
@@ -86,7 +92,7 @@ class TestAnalysisQuery:
         await asyncio.sleep(SLEEP_TIME_SEC)
 
         try:
-            analysis_query_resource.start(
+            operation = analysis_query_resource.start(
                 {
                     "spec": {
                         "startDate": "2021-01-01",
@@ -95,6 +101,8 @@ class TestAnalysisQuery:
                     "destTable": "project.dataset.table",
                 }
             )
+
+            assert get_extra_fields(operation) == {}
 
         finally:
             analysis_query_resource.delete()

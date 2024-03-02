@@ -1,5 +1,4 @@
 import asyncio
-from textwrap import dedent
 from typing import Callable
 
 import adsdatahub.restapi
@@ -9,49 +8,35 @@ from adsdatahub._types import CustomerId
 from adsdatahub.exceptions import (
     AdsDataHubUnimplementedError,
 )
+from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.resources import operation
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )
 from adsdatahub.restapi.schemas.operation import OperationModel
 
-from tests.conftest import SLEEP_TIME_SEC
+from tests.conftest import SLEEP_TIME_SEC, synthetic_monitoring_is_disable
 
 OperationId = str
 
 OperationResourceGetter = Callable[[OperationId], operation.Resource]
 
 
+@pytest.mark.skipif(**synthetic_monitoring_is_disable())
 class TestOperation:
     @pytest.fixture
     def operation_response(
-        self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
+        self,
+        restapi_client: adsdatahub.restapi.Client,
+        customer_id: CustomerId,
+        imp_query_text: str,
     ) -> OperationModel[AnalysisQueryMetadataModel]:
         return restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
         ).start_transient(
             {
-                "query": {
-                    "queryText": dedent(
-                        """
-                        SELECT
-                            COUNT(DISTINCT user_id) AS total_users,
-                            COUNT(DISTINCT event.site_id) AS total_sites,
-                            COUNT(DISTINCT device_id_md5) AS total_devices,
-                            COUNT(event.placement_id) AS impressions
-                        FROM
-                            adh.cm_dt_impressions
-                        WHERE
-                            user_id != '0'
-                            AND event.advertiser_id IN UNNEST(@advertiser_ids)
-                            AND event.campaign_id IN UNNEST(@campaign_ids)
-                            AND event.placement_id IN UNNEST(@placement_ids)
-                            AND event.country_domain_name = 'US'
-                            ;
-                        """
-                    ),
-                },
+                "query": {"queryText": imp_query_text},
                 "spec": {
                     "startDate": "2023-01-01",
                     "endDate": "2023-01-01",
@@ -76,13 +61,14 @@ class TestOperation:
         self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
         await asyncio.sleep(SLEEP_TIME_SEC)
-        operation_resource.cancel()
+
+        assert operation_resource.cancel() is None
 
     def test_delete(
         self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
         try:
-            operation_resource.delete()
+            assert operation_resource.delete() is None
 
         except AdsDataHubUnimplementedError:
             # NOTE: サーバーによっては google.rpc.Code.UNIMPLEMENTED を返すことがある。
@@ -92,9 +78,18 @@ class TestOperation:
     def test_get(
         self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
-        operation_resource.get()
+        assert get_extra_fields(operation_resource.get()) == {}
 
     def test_wait(
         self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
-        operation_resource.wait()
+        assert get_extra_fields(operation_resource.wait()) == {}
+
+    @pytest.mark.long
+    def test_wait_until_done(
+        self, operation_resource: adsdatahub.restapi.resources.operation.Resource
+    ):
+        while not (operation := operation_resource.wait()).done:
+            pass
+
+        assert get_extra_fields(operation) == {}

@@ -16,6 +16,14 @@ class QueryResponseModel(ExtraAllowModel):
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/QueryResponse?hl=ja
     """
 
+    type: Annotated[
+        str,
+        Field(alias="@type"),
+    ]
+    """
+    タイプを識別する URI を含むフィールド。
+    """
+
     row_count: Annotated[
         int,
         Field(alias="rowCount"),

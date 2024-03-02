@@ -5,6 +5,7 @@ from adsdatahub.exceptions import (
     AdsDataHubUnavailableError,
     AdsDataHubUnimplementedError,
 )
+from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.resources import operation
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.operation import OperationModel
@@ -21,9 +22,11 @@ class Operations(Model):
 class TestOperations:
     def test_list(self, restapi_client: adsdatahub.restapi.Client):
         try:
-            restapi_client.resource(
+            response = restapi_client.resource(
                 "https://adsdatahub.googleapis.com/v1/operations"
             ).list()
+
+            assert get_extra_fields(response) == {}
 
         except (AdsDataHubUnimplementedError, AdsDataHubUnavailableError):
             # NOTE: たまに 503 が返ってくることがある。
