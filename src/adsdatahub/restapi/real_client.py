@@ -149,32 +149,28 @@ class RealClient(Client, ClientWithProject):
         self,
         resource_name: analysis_queries.ResourceName,
         **params: Unpack[analysis_queries.PathParameters],
-    ) -> analysis_queries.Resource:
-        ...
+    ) -> analysis_queries.Resource: ...
 
     @overload
     def resource(
         self,
         resource_name: analysis_query.ResourceName,
         **params: Unpack[analysis_query.PathParameters],
-    ) -> analysis_query.Resource:
-        ...
+    ) -> analysis_query.Resource: ...
 
     @overload
     def resource(
         self,
         resource_name: operations.ResourceName,
         **params: Unpack[operations.PathParameters],
-    ) -> operations.Resource:
-        ...
+    ) -> operations.Resource: ...
 
     @overload
     def resource(
         self,
         resource_name: operation.ResourceName,
         **params: Unpack[operation.PathParameters],
-    ) -> operation.Resource:
-        ...
+    ) -> operation.Resource: ...
 
     def resource(
         self,

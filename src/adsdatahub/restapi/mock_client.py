@@ -16,26 +16,22 @@ class MockClient:
     @overload
     def inject_response(
         self, resource_name: analysis_queries.ResourceName
-    ) -> analysis_queries.MockResource:
-        ...
+    ) -> analysis_queries.MockResource: ...
 
     @overload
     def inject_response(
         self, resource_name: analysis_query.ResourceName
-    ) -> analysis_query.MockResource:
-        ...
+    ) -> analysis_query.MockResource: ...
 
     @overload
     def inject_response(
         self, resource_name: operations.ResourceName
-    ) -> operations.MockResource:
-        ...
+    ) -> operations.MockResource: ...
 
     @overload
     def inject_response(
         self, resource_name: operation.ResourceName
-    ) -> operation.MockResource:
-        ...
+    ) -> operation.MockResource: ...
 
     def inject_response(
         self,

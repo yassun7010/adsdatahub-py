@@ -35,13 +35,11 @@ class HttpRequestKwargs(typing.TypedDict):
 class Client(metaclass=ABCMeta):
     @property
     @abstractmethod
-    def timeout(self) -> TimeoutTypes:
-        ...
+    def timeout(self) -> TimeoutTypes: ...
 
     @timeout.setter
     @abstractmethod
-    def timeout(self, value: TimeoutTypes) -> None:
-        ...
+    def timeout(self, value: TimeoutTypes) -> None: ...
 
     @typing.overload
     @abstractmethod
@@ -51,8 +49,7 @@ class Client(metaclass=ABCMeta):
         url: URLTypes,
         response_body_type: type[GenericResponseBody],
         **kwargs: typing.Unpack[HttpRequestKwargs],
-    ) -> GenericResponseBody:
-        ...
+    ) -> GenericResponseBody: ...
 
     @typing.overload
     @abstractmethod
@@ -62,8 +59,7 @@ class Client(metaclass=ABCMeta):
         url: URLTypes,
         response_body_type: None = None,
         **kwargs: typing.Unpack[HttpRequestKwargs],
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @abstractmethod
     def request(
@@ -72,5 +68,4 @@ class Client(metaclass=ABCMeta):
         url: URLTypes,
         response_body_type: typing.Optional[type[GenericResponseBody]] = None,
         **kwargs: typing.Unpack[HttpRequestKwargs],
-    ) -> typing.Optional[GenericResponseBody]:
-        ...
+    ) -> typing.Optional[GenericResponseBody]: ...

@@ -47,8 +47,7 @@ class MockClient(Client):
         url: URLTypes,
         response_body_type: type[GenericResponseBody],
         **kwargs: typing.Unpack[HttpRequestKwargs],
-    ) -> GenericResponseBody:
-        ...
+    ) -> GenericResponseBody: ...
 
     @typing.overload
     def request(
@@ -57,8 +56,7 @@ class MockClient(Client):
         url: URLTypes,
         response_body_type: None = None,
         **kwargs: typing.Unpack[HttpRequestKwargs],
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @override
     def request(

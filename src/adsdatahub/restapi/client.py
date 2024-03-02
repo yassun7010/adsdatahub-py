@@ -28,18 +28,15 @@ class Client:
 
     @property
     @abstractmethod
-    def _http(self) -> "adsdatahub.restapi.http.Client":
-        ...
+    def _http(self) -> "adsdatahub.restapi.http.Client": ...
 
     @property
     @abstractmethod
-    def timeout(self) -> TimeoutTypes:
-        ...
+    def timeout(self) -> TimeoutTypes: ...
 
     @timeout.setter
     @abstractmethod
-    def timeout(self, value: TimeoutTypes) -> None:
-        ...
+    def timeout(self, value: TimeoutTypes) -> None: ...
 
     @overload
     def resource(
@@ -107,5 +104,4 @@ class Client:
         analysis_query.Resource,
         operations.Resource,
         operation.Resource,
-    ]:
-        ...
+    ]: ...
