@@ -8,33 +8,25 @@ customer_id = os.environ["CUSTOMER_ID"]
 project = os.environ["PROJECT"]
 dataset = os.environ["DATASET"]
 
-query_text = dedent(
-    """
-    SELECT
-        campaign_id,
-        date(timestamp_micros(query_id.time_usec), 'Asia/Tokyo') AS date,
-        count(query_id.time_usec) AS imp
-    FROM
-        adh.google_ads_impressions
-    GROUP BY
-        campaign_id,
-        date
-    """
-)
 
-
-client = adsdatahub.Client(
-    client_options={
-        "credentials_file": credentials_file,
-    },
-).customer(customer_id)
+client = adsdatahub.Client().customer(customer_id)
 
 # クエリの問い合わせ
 result = client.query(
-    query_text,
+    dedent(
+        """
+        SELECT
+            @value as value,
+            @start_date as start_date
+        """
+    ),
+    {"value": 1},
     start_date="2024-01-01",
     end_date="2024-02-02",
     dest_table=f"{project}.{dataset}.sample",
 )
 
-print(result.table_info.columns.get("campaign_id"))
+for column in result.table_info.columns:
+    print(column.model_dump_json(by_alias=True, exclude_unset=True))
+
+print(result.job.to_dataframe())

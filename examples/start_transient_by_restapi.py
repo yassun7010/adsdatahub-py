@@ -24,11 +24,7 @@ query_text = dedent(
 )
 
 
-client = adsdatahub.restapi.Client(
-    client_options={
-        "credentials_file": credentials_file,
-    }
-)
+client = adsdatahub.restapi.Client()
 
 # クエリの問い合わせ
 operation = client.resource(
@@ -60,14 +56,11 @@ while not (
 if operation.response:
     for table in operation.response.destination_tables:
         for column in table.columns:
-            print(
-                {
-                    "name": column.name,
-                    "noise_impact": column.noise_impact,
-                    "impact_percentage": column.impact_percentage,
-                }
-            )
+            print(column.model_dump_json(by_alias=True, exclude_unset=True))
 
 # 失敗した場合
 elif operation.error:
     print(operation.error.message)
+
+else:
+    raise ValueError("Unexpected operation state")
