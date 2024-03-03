@@ -5,7 +5,7 @@ from time import sleep
 import adsdatahub.restapi
 
 credentials_file = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-customer_id = os.environ["ADS_DATA_HUB_CUSTOMER_ID"]
+customer_id = os.environ["CUSTOMER_ID"]
 project = os.environ["PROJECT"]
 dataset = os.environ["DATASET"]
 

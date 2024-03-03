@@ -56,7 +56,11 @@ def mock_restapi_client():
 def customer_id() -> CustomerId:
     # NOTE: Customer ID は複数指定できる。
     #       これは実際に API を叩く際に、1分間に使える Job 数制限を回避するため。
-    return random.choice(os.environ["ADS_DATA_HUB_CUSTOMER_ID"].split(","))
+    if customer_ids := os.environ.get("CUSTOMER_IDS"):
+        return random.choice(customer_ids.split(","))
+
+    else:
+        return os.environ["CUSTOMER_ID"]
 
 
 @pytest.fixture
