@@ -52,6 +52,7 @@ class TestClient:
                 end_date="2021-01-02",
                 dest_table=table_name,
             )
+
         finally:
             bigquery.Client().delete_table(table_name, not_found_ok=True)
 
@@ -82,6 +83,7 @@ class TestClient:
                 end_date="2021-01-02",
                 dest_table=table_name,
             )
+
         finally:
             bigquery.Client().delete_table(table_name, not_found_ok=True)
 
