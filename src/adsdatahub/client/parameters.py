@@ -2,15 +2,40 @@ import datetime
 from typing import assert_never
 
 from adsdatahub.restapi.schemas.field_type import (
+    ArrayTypeDict,
+    FieldTypeDict,
     TypeDict,
 )
 from adsdatahub.restapi.schemas.parameter_type import (
     ParameterTypeDict,
 )
-from adsdatahub.restapi.schemas.parameter_value import ParameterValueDict, ValueDict
+from adsdatahub.restapi.schemas.parameter_value import (
+    ArrayValueDict,
+    ArrayValueValuesDict,
+    ParameterValueDict,
+    ValueDict,
+)
 
 # TODO: 配列の型、デフォルト値などをサポートする必要があるが、後回し。
-PythonParameterType = str | int | float | bool | datetime.date | datetime.datetime
+#
+# TODO: デフォルト値や NULL のサポートをするためには、 dataclass や pydantic を利用する必要がある。
+#
+# NOTE: ドキュメントの記載は一貫性がない。
+#       1. STRING または INT64 のプリミティブ型に加えて、配列と構造体をサポートしているように見える。
+#          https://developers.google.com/ads-data-hub/reference/rest/v1/FieldType?hl=ja
+#
+#       2. AdsDataHub のコンソールからはさらに多くのパラメータの型を扱うことができるようだ。
+#          https://developers.google.com/ads-data-hub/guides/run-queries?hl=ja#parameter_types
+#
+PythonParameterType = (
+    str
+    | int
+    | float
+    | bool
+    | datetime.date
+    | datetime.datetime
+    | list["PythonParameterType"]
+)
 """
 クエリのパラメータとして使える Python の型。
 """
@@ -19,7 +44,10 @@ PythonParameterType = str | int | float | bool | datetime.date | datetime.dateti
 def convert_param_types(
     params: dict[str, PythonParameterType],
 ) -> dict[str, ParameterTypeDict]:
-    return {key: convert_parameter_type(value) for key, value in params.items()}
+    return {
+        key: ParameterTypeDict({"type": convert_parameter_type(value)})
+        for key, value in params.items()
+    }
 
 
 def convert_param_values(
@@ -30,25 +58,36 @@ def convert_param_values(
 
 def convert_parameter_type(
     value: PythonParameterType,
-) -> ParameterTypeDict:
+) -> FieldTypeDict:
     match value:
         case str():
-            return ParameterTypeDict({"type": TypeDict({"type": "STRING"})})
+            return TypeDict({"type": "STRING"})
 
         case int():
-            return ParameterTypeDict({"type": TypeDict({"type": "INT64"})})
+            return TypeDict({"type": "INT64"})
 
         case float():
-            return ParameterTypeDict({"type": TypeDict({"type": "FLOAT64"})})
+            return TypeDict({"type": "FLOAT64"})
 
         case bool():
-            return ParameterTypeDict({"type": TypeDict({"type": "BOOL"})})
+            return TypeDict({"type": "BOOL"})
 
         case datetime.date():
-            return ParameterTypeDict({"type": TypeDict({"type": "DATE"})})
+            return TypeDict({"type": "DATE"})
 
         case datetime.datetime():
-            return ParameterTypeDict({"type": TypeDict({"type": "TIMESTAMP"})})
+            return TypeDict({"type": "TIMESTAMP"})
+
+        case list():
+            return ArrayTypeDict(
+                {
+                    "arrayType": convert_parameter_type(
+                        # NOTE: 配列の要素が空の場合は、型を推測できないため、文字列を仮に入れる。
+                        #       クエリ文の側でパラメータの型が明確である場合、文字列は自動で変換処理されるため、最も安全な選択肢となる。
+                        value[0] if len(value) > 0 else ""
+                    )
+                }
+            )
 
         case _ as unreachable:
             assert_never(unreachable)
@@ -73,6 +112,15 @@ def convert_parameter_value(value: PythonParameterType) -> ParameterValueDict:
 
         case datetime.datetime():
             return ValueDict({"value": value.isoformat()})
+
+        case list():
+            return ArrayValueDict(
+                {
+                    "arrayValue": ArrayValueValuesDict(
+                        {"values": [convert_parameter_value(v) for v in value]}
+                    )
+                }
+            )
 
         case _ as unreachable:
             assert_never(unreachable)

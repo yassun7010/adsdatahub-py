@@ -1,8 +1,13 @@
+import datetime
 import uuid
 
 import adsdatahub
 import pytest
-from adsdatahub.exceptions import AdsDataHubResponseStatusCodeError
+from adsdatahub.client.parameters import PythonParameterType
+from adsdatahub.exceptions import (
+    AdsDataHubResponseBodyHasError,
+    AdsDataHubResponseStatusCodeError,
+)
 from adsdatahub.types import CustomerId
 from google.cloud import bigquery
 
@@ -61,7 +66,7 @@ class TestClient:
         client: adsdatahub.Client,
         customer_id: CustomerId,
     ):
-        with pytest.raises(AdsDataHubResponseStatusCodeError):
+        with pytest.raises(AdsDataHubResponseBodyHasError):
             client.customer(customer_id).query(
                 "SELECT @value as value",
                 start_date="2021-01-01",
@@ -107,12 +112,32 @@ class TestClient:
                 "SELECT @value as value",
             )
 
+    @pytest.mark.parametrize(
+        "value",
+        [
+            pytest.param(1, id="int"),
+            pytest.param(1.1, id="float"),
+            pytest.param("str", id="str"),
+            pytest.param(True, id="bool"),
+            pytest.param(datetime.date.today(), id="date"),
+            pytest.param(datetime.datetime.now(), id="timestamp"),
+            pytest.param(["a", "b", "c"], id="str_list"),
+            pytest.param([1, 2, 3], id="int_list"),
+            pytest.param([1.1, 2.2, 3.3], id="float_list"),
+            pytest.param([True, False], id="bool_list"),
+            pytest.param([datetime.date.today()], id="date_list"),
+            pytest.param([datetime.datetime.now()], id="timestamp_list"),
+            pytest.param([], id="empty_list"),
+            # pytest.param(None, id="None"), # NOTE: None はエラーになる。NULL と言う方はサポートされていない。
+        ],
+    )
     def test_validate_with_parameter(
         self,
         client: adsdatahub.Client,
         customer_id: CustomerId,
+        value: PythonParameterType,
     ):
         client.customer(customer_id).validate(
             "SELECT @value as value",
-            {"value": 1},
+            {"value": value},
         )
