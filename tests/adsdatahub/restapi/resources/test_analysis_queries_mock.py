@@ -13,7 +13,7 @@ from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
 )
 from adsdatahub.restapi.schemas.operation import OperationModel
-from adsdatahub.types import CustomerId
+from adsdatahub.types import AnalysisQueryId, CustomerId, OperationId
 
 
 @pytest.mark.mock
@@ -21,12 +21,13 @@ class TestMockAnalysisQueries:
     @pytest.fixture
     def analysis_query(
         self,
+        mock_analysis_query_id: AnalysisQueryId,
         mock_customer_id: CustomerId,
         imp_query_text: str,
     ):
         return AnalysisQueryModel.model_validate(
             {
-                "name": f"customers/{mock_customer_id}/analysisQueries/123456cdeada4c3aab91a06dd1a90abc",
+                "name": f"customers/{mock_customer_id}/analysisQueries/{mock_analysis_query_id}",
                 "title": f"ads-data-hub-test-{uuid.uuid4()}",
                 "queryText": imp_query_text,
                 "queryState": "RUNNABLE",
@@ -95,12 +96,13 @@ class TestMockAnalysisQueries:
 
     def test_start_transient(
         self,
+        mock_operation_id: OperationId,
         mock_customer_id: CustomerId,
         mock_restapi_client: adsdatahub.restapi.MockClient,
     ):
         expected_response = OperationModel[AnalysisQueryMetadataModel].model_validate(
             {
-                "name": "operations/123456cdeada4c3aab91a06dd1a90abc",
+                "name": f"operations/{mock_operation_id}",
                 "metadata": {
                     "@type": "type.googleapis.com/google.ads.adsdatahub.v1.QueryMetadata",
                     "customerId": mock_customer_id,

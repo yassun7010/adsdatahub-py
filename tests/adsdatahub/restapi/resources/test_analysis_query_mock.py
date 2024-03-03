@@ -17,11 +17,12 @@ class TestMockAnalysisQuery:
     def analysis_query(
         self,
         mock_customer_id: CustomerId,
+        mock_analysis_query_id: AnalysisQueryId,
         imp_query_text: str,
     ):
         return AnalysisQueryModel.model_validate(
             {
-                "name": f"customers/{mock_customer_id}/analysisQueries/123456cdeada4c3aab91a06dd1a90abc",
+                "name": f"customers/{mock_customer_id}/analysisQueries/{mock_analysis_query_id}",
                 "title": f"ads-data-hub-test-{uuid.uuid4()}",
                 "queryText": imp_query_text,
                 "queryState": "RUNNABLE",
@@ -105,12 +106,13 @@ class TestMockAnalysisQuery:
     def test_start(
         self,
         mock_restapi_client: adsdatahub.restapi.MockClient,
+        mock_operation_id: AnalysisQueryId,
         mock_customer_id: CustomerId,
         mock_analysis_query_id: AnalysisQueryId,
     ):
         expected_response = OperationModel[AnalysisQueryMetadataModel].model_validate(
             {
-                "name": "operations/123456cdeada4c3aab91a06dd1a90abc",
+                "name": f"operations/{mock_operation_id}",
                 "metadata": {
                     "@type": "type.googleapis.com/google.ads.adsdatahub.v1.QueryMetadata",
                     "customerId": mock_customer_id,
