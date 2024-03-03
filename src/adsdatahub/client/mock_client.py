@@ -15,6 +15,6 @@ class MockClient(Client):
 
     @override
     def customer(self, customer_id: CustomerId):
-        from adsdatahub.client.customer import MockCustomerClient
+        from adsdatahub.client.mock_customer import MockCustomerClient
 
         return MockCustomerClient(self, customer_id)

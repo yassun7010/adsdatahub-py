@@ -1,19 +1,20 @@
 import datetime
-from abc import ABC, abstractmethod
 
 import adsdatahub
+from adsdatahub.client.customer import CustomerClient
 from adsdatahub.client.query_result import QueryResult
 from adsdatahub.types import CustomerId
 
 
-class CustomerClient(ABC):
+class MockCustomerClient(CustomerClient):
     def __init__(
         self,
-        client: adsdatahub.Client,
+        client: adsdatahub.MockClient,
         customer_id: CustomerId,
-    ): ...
+    ):
+        self._client = client
+        self.customer_id = customer_id
 
-    @abstractmethod
     def query(
         self,
         query: str,
@@ -23,4 +24,5 @@ class CustomerClient(ABC):
         start_date: str | datetime.date,
         end_date: str | datetime.date,
         dest_table: str,
-    ) -> QueryResult: ...
+    ) -> QueryResult:
+        raise NotImplementedError()
