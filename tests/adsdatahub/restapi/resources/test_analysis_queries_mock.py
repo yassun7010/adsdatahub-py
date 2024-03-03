@@ -19,14 +19,18 @@ from adsdatahub.types import CustomerId
 @pytest.mark.mock
 class TestMockAnalysisQueries:
     @pytest.fixture
+    def mock_customer_id(self) -> CustomerId:
+        return "1234567890"
+
+    @pytest.fixture
     def analysis_query(
         self,
-        customer_id: CustomerId,
+        mock_customer_id: CustomerId,
         imp_query_text: str,
     ):
         return AnalysisQueryModel.model_validate(
             {
-                "name": f"customers/{customer_id}/analysisQueries/123456cdeada4c3aab91a06dd1a90abc",
+                "name": f"customers/{mock_customer_id}/analysisQueries/123456cdeada4c3aab91a06dd1a90abc",
                 "title": f"ads-data-hub-test-{uuid.uuid4()}",
                 "queryText": imp_query_text,
                 "queryState": "RUNNABLE",
@@ -40,7 +44,7 @@ class TestMockAnalysisQueries:
     def test_create(
         self,
         mock_restapi_client: adsdatahub.restapi.MockClient,
-        customer_id: CustomerId,
+        mock_customer_id: CustomerId,
         analysis_query: AnalysisQueryModel,
         imp_query_text: str,
     ):
@@ -50,14 +54,14 @@ class TestMockAnalysisQueries:
 
         mock_restapi_client.inject_response(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
+            customer_id=mock_customer_id,
         ).create(
             expected_response,
         )
 
         response = mock_restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
+            customer_id=mock_customer_id,
         ).create(
             {
                 "title": title,
@@ -70,7 +74,7 @@ class TestMockAnalysisQueries:
     def test_list(
         self,
         mock_restapi_client: adsdatahub.restapi.MockClient,
-        customer_id: CustomerId,
+        mock_customer_id: CustomerId,
         analysis_query: AnalysisQueryModel,
     ):
         expected_response = AnalysisQueryListResponse.model_validate(
@@ -83,19 +87,19 @@ class TestMockAnalysisQueries:
 
         mock_restapi_client.inject_response(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
+            customer_id=mock_customer_id,
         ).list(expected_response)
 
         response = mock_restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
+            customer_id=mock_customer_id,
         ).list()
 
         assert response == expected_response
 
     def test_start_transient(
         self,
-        customer_id: CustomerId,
+        mock_customer_id: CustomerId,
         mock_restapi_client: adsdatahub.restapi.MockClient,
     ):
         expected_response = OperationModel[AnalysisQueryMetadataModel].model_validate(
@@ -103,9 +107,9 @@ class TestMockAnalysisQueries:
                 "name": "operations/123456cdeada4c3aab91a06dd1a90abc",
                 "metadata": {
                     "@type": "type.googleapis.com/google.ads.adsdatahub.v1.QueryMetadata",
-                    "customerId": customer_id,
-                    "adsDataCustomerId": customer_id,
-                    "matchDataCustomerId": customer_id,
+                    "customerId": mock_customer_id,
+                    "adsDataCustomerId": mock_customer_id,
+                    "matchDataCustomerId": mock_customer_id,
                     "parameterValues": {
                         "start_date": {"value": "2021-01-01"},
                         "end_date": {"value": "2021-12-31"},
@@ -120,12 +124,12 @@ class TestMockAnalysisQueries:
 
         mock_restapi_client.inject_response(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
+            customer_id=mock_customer_id,
         ).start_transient(expected_response)
 
         response = mock_restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
+            customer_id=mock_customer_id,
         ).start_transient(
             {
                 "query": {
@@ -143,7 +147,7 @@ class TestMockAnalysisQueries:
 
     def test_validate(
         self,
-        customer_id: CustomerId,
+        mock_customer_id: CustomerId,
         mock_restapi_client: adsdatahub.restapi.MockClient,
     ):
         expected_response = AnalysisQueriesValidateResponseBody.model_validate(
@@ -157,12 +161,12 @@ class TestMockAnalysisQueries:
 
         mock_restapi_client.inject_response(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
+            customer_id=mock_customer_id,
         ).validate(expected_response)
 
         response = mock_restapi_client.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
+            customer_id=mock_customer_id,
         ).validate(
             {
                 "query": {
