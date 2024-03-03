@@ -1,20 +1,44 @@
 import datetime
+from abc import ABC, abstractmethod
 from time import sleep
+
+from typing_extensions import override
 
 import adsdatahub
 from adsdatahub.client.query_result import QueryResult
 from adsdatahub.types import CustomerId
 
 
-class CustomerClient:
+class CustomerClient(ABC):
     def __init__(
         self,
         client: adsdatahub.Client,
+        customer_id: CustomerId,
+    ): ...
+
+    @abstractmethod
+    def query(
+        self,
+        query: str,
+        /,
+        parameters: dict[str, str] | None = None,
+        *,
+        start_date: str | datetime.date,
+        end_date: str | datetime.date,
+        dest_table: str,
+    ) -> QueryResult: ...
+
+
+class RealCustomerClient(CustomerClient):
+    def __init__(
+        self,
+        client: adsdatahub.RealClient,
         customer_id: CustomerId,
     ):
         self._client = client
         self.customer_id = customer_id
 
+    @override
     def query(
         self,
         query: str,
@@ -54,3 +78,25 @@ class CustomerClient:
             operation=operation,
             job=self._client.bigquery_client.query(f"SELECT * FROM {dest_table}"),
         )
+
+
+class MockCustomerClient(CustomerClient):
+    def __init__(
+        self,
+        client: adsdatahub.MockClient,
+        customer_id: CustomerId,
+    ):
+        self._client = client
+        self.customer_id = customer_id
+
+    def query(
+        self,
+        query: str,
+        /,
+        parameters: dict[str, str] | None = None,
+        *,
+        start_date: str | datetime.date,
+        end_date: str | datetime.date,
+        dest_table: str,
+    ) -> QueryResult:
+        raise NotImplementedError()

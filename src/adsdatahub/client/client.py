@@ -1,9 +1,10 @@
+from abc import abstractmethod
 from typing import TYPE_CHECKING, Unpack
 
 from google.cloud import bigquery
 
 import adsdatahub.restapi
-from adsdatahub.restapi.real_client import RealClientConstructerKwargs
+from adsdatahub.restapi.real_client import RealRestApiClientConstructerKwargs
 from adsdatahub.types import CustomerId
 
 if TYPE_CHECKING:
@@ -11,26 +12,23 @@ if TYPE_CHECKING:
 
 
 class Client:
-    def __init__(
-        self,
+    def __new__(
+        cls,
         restapi_client: adsdatahub.restapi.Client | None = None,
         bigquery_client: bigquery.Client | None = None,
-        **kwargs: Unpack[RealClientConstructerKwargs],
-    ) -> None:
-        if not restapi_client:
-            restapi_client = adsdatahub.restapi.Client(**kwargs)
+        **kwargs: Unpack[RealRestApiClientConstructerKwargs],
+    ) -> "Client":
+        if cls is Client:
+            from .real_client import RealClient
 
-        if not bigquery_client:
-            bigquery_client = bigquery.Client(**kwargs)
+            return RealClient(restapi_client, bigquery_client, **kwargs)
 
-        self.restapi = restapi_client
-        self.bigquery_client = bigquery_client
+        return super().__new__(cls)
 
+    @abstractmethod
     def customer(self, customer_id: CustomerId) -> "CustomerClient":
         """
         クエリを実行するためのクライアントを生成する。
         """
 
-        from adsdatahub.client.customer import CustomerClient
-
-        return CustomerClient(self, customer_id)
+        raise NotImplementedError

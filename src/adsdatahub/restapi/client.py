@@ -14,11 +14,13 @@ from adsdatahub.types import TimeoutTypes
 if TYPE_CHECKING:
     import adsdatahub.restapi.http
 
-    from .real_client import RealClientConstructerKwargs
+    from .real_client import RealRestApiClientConstructerKwargs
 
 
 class Client:
-    def __new__(cls, **kwargs: "Unpack[RealClientConstructerKwargs]") -> "Client":
+    def __new__(
+        cls, **kwargs: "Unpack[RealRestApiClientConstructerKwargs]"
+    ) -> "Client":
         if cls is Client:
             from .real_client import RealClient
 

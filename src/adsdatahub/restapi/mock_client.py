@@ -13,7 +13,7 @@ from adsdatahub.restapi.resources import (
 
 
 class MockClient(Client):
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         self._http_internal = http.MockClient()
 
     @property

@@ -30,7 +30,7 @@ _DEFAULT_ADSDATAHUB_HOST = os.getenv(
 )
 
 
-class RealClientConstructerKwargs(TypedDict, total=False):
+class RealRestApiClientConstructerKwargs(TypedDict, total=False):
     project: str | object | None
     credentials: Credentials | None
     client_info: google.api_core.client_info.ClientInfo | None
@@ -45,7 +45,7 @@ class RealClientConstructerKwargs(TypedDict, total=False):
 class RealClient(Client, ClientWithProject):
     SCOPE = ("https://www.googleapis.com/auth/adsdatahub",)
 
-    def __init__(self, **kwargs: Unpack[RealClientConstructerKwargs]) -> None:
+    def __init__(self, **kwargs: Unpack[RealRestApiClientConstructerKwargs]) -> None:
         project = kwargs.pop("project", _marker)
         if project is None:
             no_project = True
