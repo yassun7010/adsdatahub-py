@@ -1,5 +1,4 @@
 import os
-from textwrap import dedent
 
 import adsdatahub
 
@@ -13,13 +12,7 @@ client = adsdatahub.Client().customer(customer_id)
 
 # クエリの問い合わせ
 result = client.query(
-    dedent(
-        """
-        SELECT
-            @value as value,
-            @start_date as start_date
-        """
-    ),
+    "SELECT @value as value, @start_date as start_date",
     {"value": 1},
     start_date="2024-01-01",
     end_date="2024-02-02",
