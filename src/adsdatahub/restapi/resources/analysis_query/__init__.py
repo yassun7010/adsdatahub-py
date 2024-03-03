@@ -119,7 +119,9 @@ class MockResource:
         self._mock_client = mock_client
         self._base_url = RESOURCE_NAME.format(**path_parameters)
 
-    def delete(self, response: Exception) -> "adsdatahub.restapi.MockClient":
+    def delete(
+        self, response: None | Exception = None
+    ) -> "adsdatahub.restapi.MockClient":
         self._mock_client._http.inject_response("DELETE", self._base_url, response)
 
         return self._mock_client

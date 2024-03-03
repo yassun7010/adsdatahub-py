@@ -19,10 +19,6 @@ from adsdatahub.types import CustomerId
 @pytest.mark.mock
 class TestMockAnalysisQueries:
     @pytest.fixture
-    def mock_customer_id(self) -> CustomerId:
-        return "1234567890"
-
-    @pytest.fixture
     def analysis_query(
         self,
         mock_customer_id: CustomerId,

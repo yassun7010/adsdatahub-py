@@ -1,108 +1,151 @@
-import asyncio
 import uuid
 
 import adsdatahub.restapi
 import adsdatahub.restapi.resources.analysis_query
 import pytest
-from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
-from adsdatahub.types import CustomerId
-
-from tests.conftest import SLEEP_TIME_SEC
+from adsdatahub.restapi.schemas.analysis_query_metadata import (
+    AnalysisQueryMetadataModel,
+)
+from adsdatahub.restapi.schemas.operation import OperationModel
+from adsdatahub.types import AnalysisQueryId, CustomerId
 
 
 @pytest.mark.mock
 class TestMockAnalysisQuery:
     @pytest.fixture
     def analysis_query(
-        self, restapi_client: adsdatahub.restapi.Client, customer_id: CustomerId
-    ) -> AnalysisQueryModel:
-        return restapi_client.resource(
-            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
-            customer_id=customer_id,
-        ).create(
+        self,
+        mock_customer_id: CustomerId,
+        imp_query_text: str,
+    ):
+        return AnalysisQueryModel.model_validate(
             {
+                "name": f"customers/{mock_customer_id}/analysisQueries/123456cdeada4c3aab91a06dd1a90abc",
                 "title": f"ads-data-hub-test-{uuid.uuid4()}",
-                "queryText": "SELECT 1",
+                "queryText": imp_query_text,
+                "queryState": "RUNNABLE",
+                "updateTime": "2024-02-28T15:50:11.497000Z",
+                "updateEmail": "myaccount@myproject.iam.gserviceaccount.com",
+                "createTime": "2024-02-28T15:50:11.497000Z",
+                "createEmail": "myaccount@myproject.iam.gserviceaccount.com",
             }
         )
 
-    @pytest.fixture
-    def analysis_query_resource(
+    def test_delete(
         self,
-        analysis_query: AnalysisQueryModel,
-        restapi_client: adsdatahub.restapi.Client,
-    ) -> adsdatahub.restapi.resources.analysis_query.Resource:
-        return restapi_client.resource(
+        mock_restapi_client: adsdatahub.restapi.MockClient,
+        mock_customer_id: CustomerId,
+        mock_analysis_query_id: AnalysisQueryId,
+    ):
+        mock_restapi_client.inject_response(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
-            customer_id=analysis_query.name.customer_id,
-            analysis_query_id=analysis_query.name.analysis_query_id,
+            customer_id=mock_customer_id,
+            analysis_query_id=mock_analysis_query_id,
+        ).delete()
+
+        response = mock_restapi_client.resource(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
+            customer_id=mock_customer_id,
+            analysis_query_id=mock_analysis_query_id,
+        ).delete()
+
+        assert response is None
+
+    def test_get(
+        self,
+        mock_restapi_client: adsdatahub.restapi.MockClient,
+        mock_customer_id: CustomerId,
+        mock_analysis_query_id: AnalysisQueryId,
+        analysis_query: AnalysisQueryModel,
+    ):
+        expected_response = analysis_query
+
+        mock_restapi_client.inject_response(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
+            customer_id=mock_customer_id,
+            analysis_query_id=mock_analysis_query_id,
+        ).get(expected_response)
+
+        response = mock_restapi_client.resource(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
+            customer_id=mock_customer_id,
+            analysis_query_id=mock_analysis_query_id,
+        ).get()
+
+        assert response == expected_response
+
+    def test_patch(
+        self,
+        mock_restapi_client: adsdatahub.restapi.MockClient,
+        mock_customer_id: CustomerId,
+        mock_analysis_query_id: AnalysisQueryId,
+        analysis_query: AnalysisQueryModel,
+        imp_query_text: str,
+    ):
+        mock_restapi_client.inject_response(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
+            customer_id=mock_customer_id,
+            analysis_query_id=mock_analysis_query_id,
+        ).patch(analysis_query)
+
+        response = mock_restapi_client.resource(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
+            customer_id=mock_customer_id,
+            analysis_query_id=mock_analysis_query_id,
+        ).patch(
+            {
+                "title": analysis_query.title,
+                "queryText": imp_query_text,
+            }
         )
 
-    @pytest.mark.asyncio
-    async def test_delete(
+        assert response == analysis_query
+
+    def test_start(
         self,
-        analysis_query_resource: adsdatahub.restapi.resources.analysis_query.Resource,
+        mock_restapi_client: adsdatahub.restapi.MockClient,
+        mock_customer_id: CustomerId,
+        mock_analysis_query_id: AnalysisQueryId,
     ):
-        await asyncio.sleep(SLEEP_TIME_SEC)
-
-        assert analysis_query_resource.delete() is None
-
-    @pytest.mark.asyncio
-    async def test_get(
-        self,
-        analysis_query_resource: adsdatahub.restapi.resources.analysis_query.Resource,
-    ):
-        await asyncio.sleep(SLEEP_TIME_SEC)
-
-        try:
-            analysis_query = analysis_query_resource.get()
-
-            assert get_extra_fields(analysis_query) == {}
-
-        finally:
-            analysis_query_resource.delete()
-
-    @pytest.mark.asyncio
-    async def test_patch(
-        self,
-        analysis_query: AnalysisQueryModel,
-        analysis_query_resource: adsdatahub.restapi.resources.analysis_query.Resource,
-    ):
-        await asyncio.sleep(SLEEP_TIME_SEC)
-
-        try:
-            analysis_query = analysis_query_resource.patch(
-                {
-                    "title": analysis_query.title,
-                    "queryText": "SELECT 2",
-                }
-            )
-
-            assert get_extra_fields(analysis_query) == {}
-
-        finally:
-            analysis_query_resource.delete()
-
-    @pytest.mark.asyncio
-    async def test_start(
-        self,
-        analysis_query_resource: adsdatahub.restapi.resources.analysis_query.Resource,
-    ):
-        await asyncio.sleep(SLEEP_TIME_SEC)
-
-        try:
-            operation = analysis_query_resource.start(
-                {
-                    "spec": {
-                        "startDate": "2021-01-01",
-                        "endDate": "2021-12-31",
+        expected_response = OperationModel[AnalysisQueryMetadataModel].model_validate(
+            {
+                "name": "operations/123456cdeada4c3aab91a06dd1a90abc",
+                "metadata": {
+                    "@type": "type.googleapis.com/google.ads.adsdatahub.v1.QueryMetadata",
+                    "customerId": mock_customer_id,
+                    "adsDataCustomerId": mock_customer_id,
+                    "matchDataCustomerId": mock_customer_id,
+                    "parameterValues": {
+                        "start_date": {"value": "2021-01-01"},
+                        "end_date": {"value": "2021-12-31"},
+                        "time_zone": {"value": "UTC"},
                     },
+                    "startTime": "2024-03-03T02:13:32.165710Z",
+                    "endTime": "1970-01-01T00:00:00Z",
                     "destTable": "project.dataset.table",
-                }
-            )
+                },
+            }
+        )
 
-            assert get_extra_fields(operation) == {}
+        mock_restapi_client.inject_response(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
+            customer_id=mock_customer_id,
+            analysis_query_id=mock_analysis_query_id,
+        ).start(expected_response)
 
-        finally:
-            analysis_query_resource.delete()
+        response = mock_restapi_client.resource(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries/{analysis_query_id}",
+            customer_id=mock_customer_id,
+            analysis_query_id=mock_analysis_query_id,
+        ).start(
+            {
+                "spec": {
+                    "startDate": "2021-01-01",
+                    "endDate": "2021-12-31",
+                },
+                "destTable": "project.dataset.table",
+            }
+        )
+
+        assert response == expected_response
