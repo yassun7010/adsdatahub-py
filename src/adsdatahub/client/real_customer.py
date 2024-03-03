@@ -60,7 +60,7 @@ class RealCustomerClient(CustomerClient):
         )
 
     @override
-    def validate(self, query_text: str):
+    def validate(self, query_text: str) -> None:
         self._client.restapi.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=self.customer_id,

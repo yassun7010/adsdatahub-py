@@ -31,6 +31,6 @@ class MockCustomerClient(CustomerClient):
         raise NotImplementedError()
 
     @override
-    def validate(self, query_text: str):
+    def validate(self, query_text: str) -> None:
         # TODO: モックのインターフェースを検討する。
         raise NotImplementedError()
