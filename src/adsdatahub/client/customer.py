@@ -3,6 +3,9 @@ from abc import ABC, abstractmethod
 
 import adsdatahub
 from adsdatahub.client.query_result import QueryResult
+from adsdatahub.restapi.resources.analysis_queries.validate import (
+    AnalysisQueriesValidateResponseBodyModel,
+)
 from adsdatahub.types import CustomerId
 
 
@@ -24,3 +27,6 @@ class CustomerClient(ABC):
         end_date: str | datetime.date,
         dest_table: str,
     ) -> QueryResult: ...
+
+    @abstractmethod
+    def validate(self, query_text: str) -> AnalysisQueriesValidateResponseBodyModel: ...

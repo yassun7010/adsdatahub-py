@@ -49,7 +49,7 @@ class AnalysisQueriesValidateQueryParams(TypedDict):
     """
 
 
-class AnalysisQueriesValidateResponseBody(ExtraAllowModel):
+class AnalysisQueriesValidateResponseBodyModel(ExtraAllowModel):
     """
     Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries/validate?hl=ja#response-body
     """
@@ -76,3 +76,8 @@ class AnalysisQueriesValidateResponseBody(ExtraAllowModel):
         FilteredRowSummaryModel,
         Field(alias="filteredRowSummary"),
     ]
+    """
+    クエリ実行時に使用される、フィルタされた行のサマリー。
+
+    詳しくは、https://developers.google.com/ads-data-hub/guides/filtered-row-summary をご覧ください。
+    """

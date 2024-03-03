@@ -4,7 +4,7 @@ import adsdatahub.restapi
 import pytest
 from adsdatahub.restapi.resources.analysis_queries.list import AnalysisQueryListResponse
 from adsdatahub.restapi.resources.analysis_queries.validate import (
-    AnalysisQueriesValidateResponseBody,
+    AnalysisQueriesValidateResponseBodyModel,
 )
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
@@ -148,7 +148,7 @@ class TestMockAnalysisQueries:
         mock_customer_id: CustomerId,
         mock_restapi_client: adsdatahub.restapi.MockClient,
     ):
-        expected_response = AnalysisQueriesValidateResponseBody.model_validate(
+        expected_response = AnalysisQueriesValidateResponseBodyModel.model_validate(
             {
                 "queryPerformanceInfo": {
                     "zeroMb": True,

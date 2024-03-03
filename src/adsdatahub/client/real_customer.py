@@ -6,6 +6,9 @@ from typing_extensions import override
 import adsdatahub
 from adsdatahub.client.customer import CustomerClient
 from adsdatahub.client.query_result import QueryResult
+from adsdatahub.restapi.resources.analysis_queries.validate import (
+    AnalysisQueriesValidateResponseBodyModel,
+)
 from adsdatahub.types import CustomerId
 
 
@@ -57,4 +60,17 @@ class RealCustomerClient(CustomerClient):
             dest_table=dest_table,
             operation=operation,
             job=self._client.bigquery_client.query(f"SELECT * FROM {dest_table}"),
+        )
+
+    @override
+    def validate(self, query_text: str) -> AnalysisQueriesValidateResponseBodyModel:
+        return self._client.restapi.resource(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
+            customer_id=self.customer_id,
+        ).validate(
+            {
+                "query": {
+                    "queryText": query_text,
+                }
+            }
         )

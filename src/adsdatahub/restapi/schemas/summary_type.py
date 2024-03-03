@@ -7,7 +7,7 @@ class SummaryType(str, Enum):
 
     列の結合でサポートされているすべてのオペレーション。
 
-    Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja
+    Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/customers.analysisQueries?hl=ja#SummaryType
     """
 
     SUMMARY_TYPE_UNSPECIFIED = "SUMMARY_TYPE_UNSPECIFIED"

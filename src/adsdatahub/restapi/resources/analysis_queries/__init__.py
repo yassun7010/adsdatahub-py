@@ -10,7 +10,7 @@ from adsdatahub.restapi.resources.analysis_queries.start_transient import (
 )
 from adsdatahub.restapi.resources.analysis_queries.validate import (
     AnalysisQueriesValidateQueryParams,
-    AnalysisQueriesValidateResponseBody,
+    AnalysisQueriesValidateResponseBodyModel,
 )
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
@@ -113,7 +113,7 @@ class Resource:
 
     def validate(
         self, request_body: AnalysisQueriesValidateQueryParams
-    ) -> AnalysisQueriesValidateResponseBody:
+    ) -> AnalysisQueriesValidateResponseBodyModel:
         """
         提供された分析クエリに対して静的検証チェックを実行します。
 
@@ -122,7 +122,7 @@ class Resource:
         return self._http.request(
             "POST",
             f"{self._base_url}:validate",
-            AnalysisQueriesValidateResponseBody,
+            AnalysisQueriesValidateResponseBodyModel,
             json=convert_json_value(
                 request_body,
                 model_map={
@@ -166,7 +166,7 @@ class MockResource:
         return self._mock_client
 
     def validate(
-        self, response: AnalysisQueriesValidateResponseBody | Exception
+        self, response: AnalysisQueriesValidateResponseBodyModel | Exception
     ) -> "adsdatahub.restapi.MockClient":
         self._mock_client._http.inject_response(
             "POST", f"{self._base_url}:validate", response

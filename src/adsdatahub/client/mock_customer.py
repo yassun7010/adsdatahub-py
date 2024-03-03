@@ -1,8 +1,13 @@
 import datetime
 
+from typing_extensions import override
+
 import adsdatahub
 from adsdatahub.client.customer import CustomerClient
 from adsdatahub.client.query_result import QueryResult
+from adsdatahub.restapi.resources.analysis_queries.validate import (
+    AnalysisQueriesValidateResponseBodyModel,
+)
 from adsdatahub.types import CustomerId
 
 
@@ -25,5 +30,10 @@ class MockCustomerClient(CustomerClient):
         end_date: str | datetime.date,
         dest_table: str,
     ) -> QueryResult:
+        # TODO: モックのインターフェースを検討する。
+        raise NotImplementedError()
+
+    @override
+    def validate(self, query_text: str) -> AnalysisQueriesValidateResponseBodyModel:
         # TODO: モックのインターフェースを検討する。
         raise NotImplementedError()
