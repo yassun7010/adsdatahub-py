@@ -8,15 +8,17 @@ project = os.environ["PROJECT"]
 dataset = os.environ["DATASET"]
 
 
-client = adsdatahub.Client().customer(customer_id)
-
 # クエリの問い合わせ
-result = client.query(
-    "SELECT @value as value, @start_date as start_date",
-    {"value": 1},
-    start_date="2024-01-01",
-    end_date="2024-02-02",
-    dest_table=f"{project}.{dataset}.sample",
+result = (
+    adsdatahub.Client()
+    .customer(customer_id)
+    .query(
+        "SELECT @value as value, @start_date as start_date",
+        {"value": 1},
+        start_date="2024-01-01",
+        end_date="2024-02-02",
+        dest_table=f"{project}.{dataset}.sample",
+    )
 )
 
 for column in result.table_info.columns:
