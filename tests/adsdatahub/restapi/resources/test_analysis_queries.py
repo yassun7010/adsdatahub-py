@@ -7,6 +7,7 @@ from adsdatahub.restapi.resources import analysis_queries
 from adsdatahub.types import CustomerId
 
 from tests.conftest import synthetic_monitoring_is_disable
+from tests.helper import write_response_json
 
 
 @pytest.mark.skipif(**synthetic_monitoring_is_disable())
@@ -81,5 +82,7 @@ class TestAnalysisQueries:
                 "query": {"queryText": imp_query_text},
             }
         )
+
+        write_response_json(validation)
 
         assert get_extra_fields(validation) == {}

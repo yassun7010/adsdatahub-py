@@ -3,6 +3,9 @@ import uuid
 import adsdatahub.restapi
 import pytest
 from adsdatahub.restapi.resources.analysis_queries.list import AnalysisQueryListResponse
+from adsdatahub.restapi.resources.analysis_queries.validate import (
+    AnalysisQueriesValidateResponseBody,
+)
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
 )
@@ -133,6 +136,43 @@ class TestMockAnalysisQueries:
                     "endDate": "2021-12-31",
                 },
                 "destTable": "project.dataset.table",
+            }
+        )
+
+        assert response == expected_response
+
+    def test_validate(
+        self,
+        customer_id: CustomerId,
+        mock_restapi_client: adsdatahub.restapi.MockClient,
+    ):
+        expected_response = AnalysisQueriesValidateResponseBody.model_validate(
+            {
+                "queryPerformanceInfo": {
+                    "zeroMb": True,
+                },
+                "filteredRowSummary": {},
+            }
+        )
+
+        mock_restapi_client.inject_response(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
+            customer_id=customer_id,
+        ).validate(expected_response)
+
+        response = mock_restapi_client.resource(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
+            customer_id=customer_id,
+        ).validate(
+            {
+                "query": {
+                    "queryText": "SELECT * FROM project.dataset.table",
+                },
+                "spec": {
+                    "startDate": "2021-01-01",
+                    "endDate": "2021-12-31",
+                },
+                "includePerformanceInfo": True,
             }
         )
 
