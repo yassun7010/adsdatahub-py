@@ -23,7 +23,7 @@ class StoreKey(typing.NamedTuple):
     url: URLTypes
 
 
-_StoreData = list[tuple[StoreKey, Model | Exception]]
+_StoreData = list[tuple[StoreKey, Model | None | Exception]]
 
 
 class MockClient(Client):
@@ -99,7 +99,7 @@ class MockClient(Client):
         self,
         method: str,
         url: URLTypes,
-        response: Model | Exception,
+        response: Model | None | Exception,
     ) -> "MockClient":
         self.store.append((StoreKey(method, url), response))
 

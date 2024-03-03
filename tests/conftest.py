@@ -3,7 +3,7 @@ from textwrap import dedent
 
 import adsdatahub.restapi
 import pytest
-from adsdatahub.types import AnalysisQueryId, CustomerId
+from adsdatahub.types import AnalysisQueryId, CustomerId, OperationId
 
 SLEEP_TIME_SEC = 3
 
@@ -91,3 +91,8 @@ def mock_customer_id() -> CustomerId:
 @pytest.fixture
 def mock_analysis_query_id() -> AnalysisQueryId:
     return "this_is_mock_analysis_query_id"
+
+
+@pytest.fixture
+def mock_operation_id() -> OperationId:
+    return "this_is_mock_operation_id"

@@ -81,12 +81,16 @@ class TestOperation:
     def test_get(
         self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
-        assert get_extra_fields(operation_resource.get()) == {}
+        response = operation_resource.get()
+
+        assert get_extra_fields(response) == {}
 
     def test_wait(
         self, operation_resource: adsdatahub.restapi.resources.operation.Resource
     ):
-        assert get_extra_fields(operation_resource.wait()) == {}
+        response = operation_resource.wait()
+
+        assert get_extra_fields(response) == {}
 
     @pytest.mark.long
     def test_wait_until_done(
