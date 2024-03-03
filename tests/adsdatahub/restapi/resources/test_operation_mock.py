@@ -1,4 +1,5 @@
 import adsdatahub.restapi
+import pytest
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
     AnalysisQueryMetadataWithQueryTextModel,
@@ -7,6 +8,7 @@ from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.types import CustomerId, OperationId
 
 
+@pytest.mark.mock
 class TestMockOperation:
     def test_cancel(
         self,

@@ -61,7 +61,7 @@ class MockResource:
         self._base_url = RESOURCE_NAME.format(**path_parameters)
 
     def list(
-        self, response_body: OperationsListResponseBody
+        self, response_body: OperationsListResponseBody | Exception
     ) -> "adsdatahub.restapi.MockClient":
         self._mock_client._http.inject_response(
             "GET",
