@@ -2,7 +2,15 @@ from typing_extensions import Literal, TypedDict
 
 
 class TypeDict(TypedDict):
-    type: Literal["STRING", "INT64"]
+    # See: https://developers.google.com/ads-data-hub/marketers/guides/run-queries?hl=ja#parameter_types
+    type: Literal[
+        "INT64",
+        "FLOAT64",
+        "BOOL",
+        "STRING",
+        "DATE",
+        "TIMESTAMP",
+    ]
 
 
 class ArrayTypeDict(TypedDict):
@@ -18,7 +26,7 @@ class StructFieldDict(TypedDict):
     fieldType: "FieldTypeDict"
 
 
-FieldTypeDict = TypeDict | ArrayTypeDict
+FieldTypeDict = TypeDict | ArrayTypeDict | StructTypeDict
 """
 BigQuery のフィールド タイプを定義します。
 
@@ -27,20 +35,13 @@ Reference: https://developers.google.com/ads-data-hub/reference/rest/v1/FieldTyp
 
 
 class TypeModel(TypedDict):
+    # See: https://developers.google.com/ads-data-hub/marketers/guides/run-queries?hl=ja#parameter_types
     type: Literal[
-        "BIGNUMERIC",
-        "BOOL",
-        "BYTES",
-        "DATE",
-        "DATETIME",
-        "FLOAT64",
-        "GEOGRAPHY",
         "INT64",
-        "INTERVAL",
-        "JSON",
-        "NUMERIC",
+        "FLOAT64",
+        "BOOL",
         "STRING",
-        "TIME",
+        "DATE",
         "TIMESTAMP",
     ]
 
@@ -58,6 +59,6 @@ class StructFieldModel(TypedDict):
     fieldType: "FieldTypeModel"
 
 
-FieldTypeModel = TypeModel | ArrayTypeModel
+FieldTypeModel = TypeModel | ArrayTypeModel | StructTypeModel
 
 FieldType = FieldTypeDict | FieldTypeModel

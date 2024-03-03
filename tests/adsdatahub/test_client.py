@@ -1,5 +1,6 @@
 import adsdatahub
 import pytest
+from adsdatahub.exceptions import AdsDataHubResponseStatusCodeError
 from adsdatahub.types import CustomerId
 from google.cloud import bigquery
 
@@ -32,3 +33,33 @@ class TestClient:
 
         finally:
             bigquery.Client().delete_table(table_name, not_found_ok=True)
+
+    def test_validate_with_default_parameter(
+        self,
+        client: adsdatahub.Client,
+        customer_id: CustomerId,
+    ):
+        # NOTE: start_date, end_date はデフォルトで定義されているため、エラーにならない。
+        client.customer(customer_id).validate(
+            "SELECT @start_date as start_date",
+        )
+
+    def test_validate_with_undefined_parameter(
+        self,
+        client: adsdatahub.Client,
+        customer_id: CustomerId,
+    ):
+        with pytest.raises(AdsDataHubResponseStatusCodeError):
+            client.customer(customer_id).validate(
+                "SELECT @value as value",
+            )
+
+    def test_validate_with_parameter(
+        self,
+        client: adsdatahub.Client,
+        customer_id: CustomerId,
+    ):
+        client.customer(customer_id).validate(
+            "SELECT @value as value",
+            {"value": 1},
+        )

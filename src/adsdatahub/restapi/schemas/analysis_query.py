@@ -114,36 +114,54 @@ class AnalysisQueryRequestOptionalTitleDict(TypedDict):
     """
 
     name: NotRequired[str | None]
-    """クエリを一意に識別する名前。"""
+    """
+    クエリを一意に識別する名前。
+    """
 
     title: NotRequired[str | None]
-    """クエリのタイトル。Ads Data Hub の単一顧客とクエリタイプ内で一意です。"""
+    """
+    クエリのタイトル。
+
+    Ads Data Hub の単一顧客とクエリタイプ内で一意です。
+    """
 
     queryText: str
-    """標準 SQL で記述されたクエリテキスト。"""
+    """
+    標準 SQL で記述されたクエリテキスト。
+    """
 
     parameterTypes: NotRequired[dict[str, ParameterTypeDict] | None]
-    """クエリで想定されるその他のパラメータ。各引数名をその引数タイプにマッピングします。"""
+    """
+    クエリで想定されるその他のパラメータ。
+
+    各引数名をその引数タイプにマッピングします。
+    """
 
     mergeSpec: NotRequired[MergeSpecDict | None]
     """
     行をマージする手順。
+
     存在する場合、プライバシー上の理由でドロップされるはずの行が 1 つに結合されます。
     マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に表示されます。
     """
 
     queryState: NotRequired[QueryState | str | None]
-    """クエリの状態。"""
+    """
+    クエリの状態。
+    """
 
     queryShare: NotRequired[list[QueryShareDict] | None]
-    """所有する Ads Data Hub ユーザー以外のクエリも共有する方法を紹介します。"""
+    """
+    所有する Ads Data Hub ユーザー以外のクエリも共有する方法を紹介します。
+    """
 
     filteredRowSummary: NotRequired[FilteredRowSummaryDict | None]
     """
     プライバシー上の理由によってドロップされた行を 1 つの結合行に統合する方法を定義します。
     マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に含められます。
 
-    generateFilteredRowSummaryAutomatically と同時に使えません。"""
+    generateFilteredRowSummaryAutomatically と同時に使えません。
+    """
 
     generateFilteredRowSummaryAutomatically: NotRequired[bool | None]
     """
@@ -165,9 +183,14 @@ class AnalysisQueryRequestBaseModel(ExtraForbidModel):
         BeforeValidator(_deserialize_name),
         PlainSerializer(_serialize_name),
     ] = None
+    """
+    クエリを一意に識別する名前。
+    """
 
     query_text: Annotated[str, Field(alias="queryText")]
-
+    """
+    標準 SQL で記述されたクエリテキスト。
+    """
     parameter_types: Annotated[
         dict[str, ParameterTypeModel],
         Field(
@@ -175,6 +198,11 @@ class AnalysisQueryRequestBaseModel(ExtraForbidModel):
             default_factory=dict,
         ),
     ]
+    """
+    クエリで想定されるその他のパラメータ。
+
+    各引数名をその引数タイプにマッピングします。
+    """
 
     merge_spec: Annotated[
         MergeSpecModel,
@@ -189,23 +217,54 @@ class AnalysisQueryRequestBaseModel(ExtraForbidModel):
     マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に表示されます。
     """
 
-    query_share: Annotated[list[QueryShareModel], Field(default_factory=list)]
+    queryState: Annotated[QueryState | str | None, Field(alias="queryState")] = None
+    """
+    クエリの状態。
+    """
+
+    query_share: Annotated[
+        list[QueryShareModel], Field(alias="queryShare", default_factory=list)
+    ]
+    """
+    所有する Ads Data Hub ユーザー以外のクエリも共有する方法を紹介します。
+    """
 
     filtered_row_summary: Annotated[
         FilteredRowSummaryModel | None, Field(alias="filteredRowSummary")
     ] = None
+    """
+    プライバシー上の理由によってドロップされた行を 1 つの結合行に統合する方法を定義します。
+    マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に含められます。
+
+    generateFilteredRowSummaryAutomatically と同時に使えません。
+    """
 
     generate_filtered_row_summary_automatically: Annotated[
         bool | None, Field(alias="generateFilteredRowSummaryAutomatically")
     ] = None
+    """
+    true の場合、フィルタリングされた行の概要が自動的に生成されます。
+
+    filteredRowSummary と同時に使えません。
+    """
 
 
 class AnalysisQueryRequestModel(AnalysisQueryRequestBaseModel):
     title: str
+    """
+    クエリのタイトル。
+
+    Ads Data Hub の単一顧客とクエリタイプ内で一意です。
+    """
 
 
 class AnalysisQueryRequestOptionalTitleModel(AnalysisQueryRequestBaseModel):
     title: str | None = None
+    """
+    クエリのタイトル。
+
+    Ads Data Hub の単一顧客とクエリタイプ内で一意です。
+    """
 
 
 class AnalysisQueryModel(ExtraAllowModel):
@@ -222,8 +281,16 @@ class AnalysisQueryModel(ExtraAllowModel):
     ]
 
     title: str
+    """
+    クエリのタイトル。
+
+    Ads Data Hub の単一顧客とクエリタイプ内で一意です。
+    """
 
     query_text: Annotated[str | None, Field(alias="queryText")] = None
+    """
+    標準 SQL で記述されたクエリテキスト。
+    """
 
     parameter_types: Annotated[
         dict[str, ParameterTypeModel],
@@ -232,6 +299,11 @@ class AnalysisQueryModel(ExtraAllowModel):
             default_factory=dict,
         ),
     ]
+    """
+    クエリで想定されるその他のパラメータ。
+
+    各引数名をその引数タイプにマッピングします。
+    """
 
     merge_spec: Annotated[
         MergeSpecModel,
@@ -247,6 +319,9 @@ class AnalysisQueryModel(ExtraAllowModel):
     """
 
     query_state: Annotated[QueryState, Field(alias="queryState")]
+    """
+    クエリの状態。
+    """
 
     update_time: Annotated[datetime.datetime, Field(alias="updateTime")]
 
@@ -257,14 +332,28 @@ class AnalysisQueryModel(ExtraAllowModel):
     create_email: Annotated[str | None, Field(alias="createEmail")] = None
 
     query_share: Annotated[list[QueryShareDict], Field(default_factory=list)]
+    """
+    所有する Ads Data Hub ユーザー以外のクエリも共有する方法を紹介します。
+    """
 
     filtered_row_summary: Annotated[
         FilteredRowSummaryModel | None, Field(alias="filteredRowSummary")
     ] = None
+    """
+    プライバシー上の理由によってドロップされた行を 1 つの結合行に統合する方法を定義します。
+    マージされた行がプライバシー要件を満たしている場合は、マージされた行が最終出力に含められます。
+
+    generateFilteredRowSummaryAutomatically と同時に使えません。
+    """
 
     generate_filtered_row_summary_automatically: Annotated[
         bool | None, Field(alias="generateFilteredRowSummaryAutomatically")
     ] = None
+    """
+    true の場合、フィルタリングされた行の概要が自動的に生成されます。
+
+    filteredRowSummary と同時に使えません。
+    """
 
 
 AnalysisQueryRequest = AnalysisQueryRequestModel | AnalysisQueryRequestDict

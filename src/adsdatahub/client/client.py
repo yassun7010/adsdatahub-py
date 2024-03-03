@@ -26,7 +26,7 @@ class Client:
         return super().__new__(cls)
 
     @abstractmethod
-    def customer(self, customer_id: CustomerId) -> "CustomerClient":
+    def customer(self, customer_id: CustomerId, /) -> "CustomerClient":
         """
         クエリを実行するためのクライアントを生成する。
         """

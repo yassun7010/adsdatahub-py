@@ -5,6 +5,11 @@ from typing_extensions import override
 
 import adsdatahub
 from adsdatahub.client.customer import CustomerClient
+from adsdatahub.client.parameters import (
+    PythonParameterType,
+    convert_param_types,
+    convert_param_values,
+)
 from adsdatahub.client.query_result import QueryResult
 from adsdatahub.types import CustomerId
 
@@ -22,8 +27,8 @@ class RealCustomerClient(CustomerClient):
     def query(
         self,
         query_text: str,
+        parameters: dict[str, PythonParameterType] | None = None,
         /,
-        parameters: dict[str, str] | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,
@@ -36,10 +41,12 @@ class RealCustomerClient(CustomerClient):
             {
                 "query": {
                     "queryText": query_text,
+                    "parameterTypes": convert_param_types(parameters or {}),
                 },
                 "spec": {
                     "startDate": start_date,
                     "endDate": end_date,
+                    "parameterValues": convert_param_values(parameters or {}),
                 },
                 "destTable": dest_table,
             }
@@ -60,7 +67,12 @@ class RealCustomerClient(CustomerClient):
         )
 
     @override
-    def validate(self, query_text: str) -> None:
+    def validate(
+        self,
+        query_text: str,
+        parameters: dict[str, PythonParameterType] | None = None,
+        /,
+    ) -> None:
         self._client.restapi.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=self.customer_id,
@@ -68,6 +80,7 @@ class RealCustomerClient(CustomerClient):
             {
                 "query": {
                     "queryText": query_text,
+                    "parameterTypes": convert_param_types(parameters or {}),
                 }
             }
         )

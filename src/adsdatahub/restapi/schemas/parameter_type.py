@@ -1,3 +1,5 @@
+from typing import NotRequired
+
 from typing_extensions import TypedDict
 
 from adsdatahub.restapi.schemas._model import ExtraForbidModel
@@ -14,13 +16,33 @@ class ParameterTypeDict(TypedDict):
     """
 
     type: FieldType
+    """
+    パラメータ フィールドの型。
+    """
 
-    description: str
+    description: NotRequired[str | None]
+    """
+    パラメータの説明。
+    """
 
-    defaultValue: ParameterValueDict
+    defaultValue: NotRequired[ParameterValueDict | None]
+    """
+    パラメータ値が指定されていない場合に使用する値。
+    """
 
 
 class ParameterTypeModel(ExtraForbidModel):
     type: FieldType
+    """
+    パラメータ フィールドの型。
+    """
+
     description: str | None = None
-    defaultValue: ParameterValueModel
+    """
+    パラメータの説明。
+    """
+
+    defaultValue: ParameterValueModel | None = None
+    """
+    パラメータ値が指定されていない場合に使用する値。
+    """
