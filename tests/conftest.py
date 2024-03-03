@@ -1,4 +1,5 @@
 import os
+import random
 from textwrap import dedent
 
 import adsdatahub.restapi
@@ -53,7 +54,9 @@ def mock_restapi_client():
 
 @pytest.fixture
 def customer_id() -> CustomerId:
-    return os.environ["ADS_DATA_HUB_CUSTOMER_ID"]
+    # NOTE: Customer ID は複数指定できる。
+    #       これは実際に API を叩く際に、1分間に使える Job 数制限を回避するため。
+    return random.choice(os.environ["ADS_DATA_HUB_CUSTOMER_ID"].split(","))
 
 
 @pytest.fixture
