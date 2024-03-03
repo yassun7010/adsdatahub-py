@@ -37,7 +37,10 @@ ci = "task format && task lint && task typecheck && task test"
 
 [tool.pytest.ini_options]
 addopts = "--strict-markers"
-markers = ["long: marks tests as long (deselect with '-m \"not long\"')"]
+markers = [
+    "long: marks tests as long (deselect with '-m \"not long\"')",
+    "mock: marks tests as mock (select with '-m \"mock\"')",
+]
 
 [build-system]
 requires = ["poetry-core"]

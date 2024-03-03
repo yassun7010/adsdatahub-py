@@ -6,12 +6,14 @@ from adsdatahub.restapi.resources.analysis_queries.list import AnalysisQueryList
 from adsdatahub.restapi.schemas.analysis_query import (
     AnalysisQueryModel,
 )
+from adsdatahub.restapi.schemas.analysis_query_metadata import (
+    AnalysisQueryMetadataModel,
+)
+from adsdatahub.restapi.schemas.operation import OperationModel
 from adsdatahub.types import CustomerId
 
-from tests.conftest import synthetic_monitoring_is_disable
 
-
-@pytest.mark.skipif(**synthetic_monitoring_is_disable())
+@pytest.mark.mock
 class TestMockAnalysisQueries:
     @pytest.fixture
     def analysis_query(
@@ -85,5 +87,53 @@ class TestMockAnalysisQueries:
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
             customer_id=customer_id,
         ).list()
+
+        assert response == expected_response
+
+    def test_start_transient(
+        self,
+        customer_id: CustomerId,
+        mock_restapi_client: adsdatahub.restapi.MockClient,
+    ):
+        expected_response = OperationModel[AnalysisQueryMetadataModel].model_validate(
+            {
+                "name": "operations/123456cdeada4c3aab91a06dd1a90abc",
+                "metadata": {
+                    "@type": "type.googleapis.com/google.ads.adsdatahub.v1.QueryMetadata",
+                    "customerId": customer_id,
+                    "adsDataCustomerId": customer_id,
+                    "matchDataCustomerId": customer_id,
+                    "parameterValues": {
+                        "start_date": {"value": "2021-01-01"},
+                        "end_date": {"value": "2021-12-31"},
+                        "time_zone": {"value": "UTC"},
+                    },
+                    "startTime": "2024-03-03T02:13:32.165710Z",
+                    "endTime": "1970-01-01T00:00:00Z",
+                    "destTable": "project.dataset.table",
+                },
+            }
+        )
+
+        mock_restapi_client.inject_response(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
+            customer_id=customer_id,
+        ).start_transient(expected_response)
+
+        response = mock_restapi_client.resource(
+            "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",
+            customer_id=customer_id,
+        ).start_transient(
+            {
+                "query": {
+                    "queryText": "SELECT * FROM project.dataset.table",
+                },
+                "spec": {
+                    "startDate": "2021-01-01",
+                    "endDate": "2021-12-31",
+                },
+                "destTable": "project.dataset.table",
+            }
+        )
 
         assert response == expected_response
