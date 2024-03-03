@@ -27,8 +27,8 @@ class RealCustomerClient(CustomerClient):
     def query(
         self,
         query_text: str,
-        parameters: dict[str, PythonParameterType] | None = None,
         /,
+        parameters: dict[str, PythonParameterType] | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,
@@ -70,8 +70,8 @@ class RealCustomerClient(CustomerClient):
     def validate(
         self,
         query_text: str,
-        parameters: dict[str, PythonParameterType] | None = None,
         /,
+        parameters: dict[str, PythonParameterType] | None = None,
     ) -> None:
         self._client.restapi.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",

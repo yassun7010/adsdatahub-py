@@ -21,8 +21,8 @@ class MockCustomerClient(CustomerClient):
     def query(
         self,
         query_text: str,
-        parameters: dict[str, PythonParameterType] | None = None,
         /,
+        parameters: dict[str, PythonParameterType] | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,
@@ -35,8 +35,8 @@ class MockCustomerClient(CustomerClient):
     def validate(
         self,
         query_text: str,
-        parameters: dict[str, PythonParameterType] | None = None,
         /,
+        parameters: dict[str, PythonParameterType] | None = None,
     ) -> None:
         # TODO: モックのインターフェースを検討する。
         raise NotImplementedError()
