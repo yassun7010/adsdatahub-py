@@ -1,11 +1,14 @@
 import json
 from abc import abstractmethod
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import httpx
 from typing_extensions import override
 
 from adsdatahub.types import OperationId
+
+if TYPE_CHECKING:
+    from adsdatahub.restapi.http.mock_client import StoreKey
 
 
 class AdsDataHubException(Exception):
@@ -25,7 +28,11 @@ class AdsDataHubError(AdsDataHubException):
     """Base error for adsdatahub."""
 
 
-class AdsDataHubResponseStatusCodeError(AdsDataHubError):
+class AdsDataHubResponseError(AdsDataHubError):
+    pass
+
+
+class AdsDataHubResponseStatusCodeError(AdsDataHubResponseError):
     """Response status code error for adsdatahub."""
 
     def __init__(self, response: httpx.Response) -> None:
@@ -63,7 +70,22 @@ class AdsDataHubUnavailableError(AdsDataHubResponseStatusCodeError):
         super().__init__(response)
 
 
-class AdsDataHubMockDataTypeError(AdsDataHubError):
+class AdsDataHubResponseBodyHasError(AdsDataHubResponseError):
+    def __init__(self, response: httpx.Response, error: dict[str, Any]) -> None:
+        self.response = response
+        self.error = error
+
+    @property
+    @override
+    def message(self) -> str:
+        return f"ResponseBody has error: {json.dumps(self.error, ensure_ascii=False)}"
+
+
+class AdsDataHubMockError(AdsDataHubError):
+    pass
+
+
+class AdsDataHubMockDataTypeError(AdsDataHubMockError, TypeError):
     """Mock data type error for adsdatahub."""
 
     def __init__(self, response_type: type, expected_type: type) -> None:
@@ -76,7 +98,25 @@ class AdsDataHubMockDataTypeError(AdsDataHubError):
         return f"Mock Data Type Error {self.response_type.__name__}: expected {self.expected_type.__name__}"
 
 
-class AdsDataHubDestinationTableInfoNotFound(AdsDataHubError):
+class AdsDataHubMockStoreDataEmptyError(AdsDataHubMockError, ValueError):
+    @property
+    @override
+    def message(self) -> str:
+        return "Mock Store Data is empty"
+
+
+class AdsDataHubMockStoreKeyError(AdsDataHubMockError, ValueError):
+    def __init__(self, key: "StoreKey", expected_key: "StoreKey") -> None:
+        self.key = key
+        self.expected_key = expected_key
+
+    @property
+    @override
+    def message(self) -> str:
+        return f"Mock Store Key Error {self.key}: expected {self.expected_key}"
+
+
+class AdsDataHubDestinationTableInfoNotFound(AdsDataHubError, ValueError):
     def __init__(self, operation_id: OperationId) -> None:
         self.operation_id = operation_id
 
@@ -84,14 +124,3 @@ class AdsDataHubDestinationTableInfoNotFound(AdsDataHubError):
     @override
     def message(self) -> str:
         return f"Destination Table Info Not Found: operation_id={self.operation_id}"
-
-
-class AdsDataHubResponseBodyHasError(AdsDataHubError):
-    def __init__(self, response: httpx.Response, error: dict[str, Any]) -> None:
-        self.response = response
-        self.error = error
-
-    @property
-    @override
-    def message(self) -> str:
-        return f"ResponseBody has error: {json.dumps(self.error, ensure_ascii=False)}"

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict, Unpack
 
 from adsdatahub.restapi._helpers import (
     convert_json_value,
@@ -111,23 +111,38 @@ class Resource:
 
 
 class MockResource:
-    def __init__(self, mock_client: "adsdatahub.restapi.MockClient") -> None:
+    def __init__(
+        self,
+        mock_client: "adsdatahub.restapi.MockClient",
+        **path_parameters: Unpack[PathParameters],
+    ) -> None:
         self._mock_client = mock_client
+        self._base_url = RESOURCE_NAME.format(**path_parameters)
 
     def delete(self, response: Exception) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response("DELETE", self._base_url, response)
+
         return self._mock_client
 
     def get(
         self, response: AnalysisQueryModel | Exception
     ) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response("GET", self._base_url, response)
+
         return self._mock_client
 
     def patch(
         self, response: AnalysisQueryModel | Exception
     ) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response("PATCH", self._base_url, response)
+
         return self._mock_client
 
     def start(
         self, response: OperationModel[AnalysisQueryMetadataModel] | Exception
     ) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response(
+            "POST", f"{self._base_url}:start", response
+        )
+
         return self._mock_client

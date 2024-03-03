@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict, Unpack
 
 from adsdatahub.restapi.resources.operation.wait import OperationWaitRequestBody
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
@@ -108,22 +108,39 @@ class Resource:
 
 
 class MockResource:
-    def __init__(self, mock_client: "adsdatahub.restapi.MockClient") -> None:
+    def __init__(
+        self,
+        mock_client: "adsdatahub.restapi.MockClient",
+        **path_parameters: Unpack[PathParameters],
+    ) -> None:
         self._mock_client = mock_client
+        self._base_url = RESOURCE_NAME.format(**path_parameters)
 
     def cancel(self, response: Exception) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response(
+            "POST", f"{self._base_url}:cancel", response
+        )
+
         return self._mock_client
 
     def delete(self, response: Exception) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response("DELETE", self._base_url, response)
+
         return self._mock_client
 
     def get(
         self,
         response: OperationModel[AnalysisQueryMetadataWithQueryTextModel] | Exception,
     ) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response("GET", self._base_url, response)
+
         return self._mock_client
 
     def wait(
         self, response: OperationModel[AnalysisQueryMetadataModel] | Exception
     ) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response(
+            "POST", f"{self._base_url}:wait", response
+        )
+
         return self._mock_client

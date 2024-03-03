@@ -1,32 +1,40 @@
 import typing
-from typing import Any
+from types import NoneType
 
 from typing_extensions import override
 
-from adsdatahub.exceptions import AdsDataHubMockDataTypeError
+from adsdatahub.exceptions import (
+    AdsDataHubMockDataTypeError,
+    AdsDataHubMockStoreDataEmptyError,
+    AdsDataHubMockStoreKeyError,
+)
 from adsdatahub.restapi._helpers import (
     GenericResponseBody,
 )
 from adsdatahub.restapi.http.client import HttpRequestKwargs
+from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.types import TimeoutTypes, URLTypes
 
 from .client import Client
 
 
 class StoreKey(typing.NamedTuple):
-    url: URLTypes
     method: str
+    url: URLTypes
+
+
+_StoreData = list[tuple[StoreKey, Model | Exception]]
 
 
 class MockClient(Client):
-    _store: dict[StoreKey, Any]
+    _store: _StoreData
 
     __slots__ = ("_store",)
 
     @property
-    def store(self) -> dict[StoreKey, Any]:
-        if self._store is None:
-            self._store = {}
+    def store(self) -> _StoreData:
+        if not hasattr(self, "_store"):
+            self._store = []
 
         return self._store
 
@@ -66,15 +74,33 @@ class MockClient(Client):
         response_body_type: typing.Optional[type[GenericResponseBody]] = None,
         **kwargs: typing.Unpack[HttpRequestKwargs],
     ) -> typing.Optional[GenericResponseBody]:
-        response = self.store.pop(StoreKey(url, method))
+        if len(self.store) == 0:
+            raise AdsDataHubMockStoreDataEmptyError()
+        expected_key = StoreKey(method, url)
+        key, response = self.store.pop(0)
+
+        if key != expected_key:
+            raise AdsDataHubMockStoreKeyError(key, expected_key)
 
         if isinstance(response, Exception):
             raise response
 
-        if response_body_type is not None and not isinstance(
-            response, response_body_type
-        ):
+        if response_body_type is None:
+            if response is not None:
+                raise AdsDataHubMockDataTypeError(response.__class__, NoneType)
+
+        elif not isinstance(response, response_body_type):
             raise AdsDataHubMockDataTypeError(response.__class__, response_body_type)
 
         else:
             return response
+
+    def inject_response(
+        self,
+        method: str,
+        url: URLTypes,
+        response: Model | Exception,
+    ) -> "MockClient":
+        self.store.append((StoreKey(method, url), response))
+
+        return self

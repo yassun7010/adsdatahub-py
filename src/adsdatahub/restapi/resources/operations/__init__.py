@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict, Unpack
 
 from adsdatahub.restapi.resources.operations.list import (
     OperationsListQueryParams,
@@ -52,10 +52,21 @@ class Resource:
 
 
 class MockResource:
-    def __init__(self, mock_client: "adsdatahub.restapi.MockClient") -> None:
+    def __init__(
+        self,
+        mock_client: "adsdatahub.restapi.MockClient",
+        **path_parameters: Unpack[PathParameters],
+    ) -> None:
         self._mock_client = mock_client
+        self._base_url = RESOURCE_NAME.format(**path_parameters)
 
     def list(
         self, response_body: OperationsListResponseBody
     ) -> "adsdatahub.restapi.MockClient":
+        self._mock_client._http.inject_response(
+            "GET",
+            self._base_url,
+            response_body,
+        )
+
         return self._mock_client
