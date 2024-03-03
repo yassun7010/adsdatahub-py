@@ -17,7 +17,7 @@ class MockCustomerClient(CustomerClient):
 
     def query(
         self,
-        query: str,
+        query_text: str,
         /,
         parameters: dict[str, str] | None = None,
         *,
@@ -25,4 +25,5 @@ class MockCustomerClient(CustomerClient):
         end_date: str | datetime.date,
         dest_table: str,
     ) -> QueryResult:
+        # TODO: モックのインターフェースを検討する。
         raise NotImplementedError()

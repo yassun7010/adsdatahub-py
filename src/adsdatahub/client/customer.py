@@ -16,7 +16,7 @@ class CustomerClient(ABC):
     @abstractmethod
     def query(
         self,
-        query: str,
+        query_text: str,
         /,
         parameters: dict[str, str] | None = None,
         *,

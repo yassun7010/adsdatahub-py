@@ -21,7 +21,7 @@ class RealCustomerClient(CustomerClient):
     @override
     def query(
         self,
-        query: str,
+        query_text: str,
         /,
         parameters: dict[str, str] | None = None,
         *,
@@ -35,7 +35,7 @@ class RealCustomerClient(CustomerClient):
         ).start_transient(
             {
                 "query": {
-                    "queryText": query,
+                    "queryText": query_text,
                 },
                 "spec": {
                     "startDate": start_date,
