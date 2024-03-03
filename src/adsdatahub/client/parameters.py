@@ -84,7 +84,7 @@ def convert_parameter_type(
                     "arrayType": convert_parameter_type(
                         # NOTE: 配列の要素が空の場合は、型を推測できないため、文字列を仮に入れる。
                         #       クエリ文の側でパラメータの型が明確である場合、文字列は自動で変換処理されるため、最も安全な選択肢となる。
-                        value[0] if len(value) > 0 else ""
+                        value[0] if len(value) > 0 else "STRING"
                     )
                 }
             )
