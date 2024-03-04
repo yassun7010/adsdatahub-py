@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "adsdatahub"
-version = "0.1.0"
+version = "0.0.1"
 description = "Ads Data Hub API client for Python"
 authors = ["yassun7010 <yassun7010@outlook.com>"]
 readme = "README.md"
