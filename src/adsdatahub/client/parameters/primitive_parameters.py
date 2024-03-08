@@ -16,17 +16,6 @@ from adsdatahub.restapi.schemas.parameter_value import (
     ValueDict,
 )
 
-# TODO: 配列の型、デフォルト値などをサポートする必要があるが、後回し。
-#
-# TODO: デフォルト値や NULL のサポートをするためには、 dataclass や pydantic を利用する必要がある。
-#
-# NOTE: ドキュメントの記載は一貫性がない。
-#       1. STRING または INT64 のプリミティブ型に加えて、配列と構造体をサポートしているように見える。
-#          https://developers.google.com/ads-data-hub/reference/rest/v1/FieldType?hl=ja
-#
-#       2. AdsDataHub のコンソールからはさらに多くのパラメータの型を扱うことができるようだ。
-#          https://developers.google.com/ads-data-hub/guides/run-queries?hl=ja#parameter_types
-#
 PrimitivePythonParameter = (
     str
     | int
@@ -36,27 +25,26 @@ PrimitivePythonParameter = (
     | datetime.datetime
     | list["PrimitivePythonParameter"]
 )
-"""
-クエリのパラメータとして使える Python の型。
-"""
 
 
-def convert_param_types(
+def convert_primitive_parameter_types(
     params: dict[str, PrimitivePythonParameter],
 ) -> dict[str, ParameterTypeDict]:
     return {
-        key: ParameterTypeDict({"type": convert_parameter_type(value)})
+        key: ParameterTypeDict({"type": convert_primitive_parameter_type(value)})
         for key, value in params.items()
     }
 
 
-def convert_param_values(
+def convert_primitive_parameter_values(
     params: dict[str, PrimitivePythonParameter],
 ) -> dict[str, ParameterValueDict]:
-    return {key: convert_parameter_value(value) for key, value in params.items()}
+    return {
+        key: convert_primitive_parameter_value(value) for key, value in params.items()
+    }
 
 
-def convert_parameter_type(
+def convert_primitive_parameter_type(
     value: PrimitivePythonParameter,
 ) -> FieldTypeDict:
     match value:
@@ -81,7 +69,7 @@ def convert_parameter_type(
         case list():
             return ArrayTypeDict(
                 {
-                    "arrayType": convert_parameter_type(
+                    "arrayType": convert_primitive_parameter_type(
                         # NOTE: 配列の要素が空の場合は、型を推測できないため、文字列を仮に入れる。
                         #       クエリ文の側でパラメータの型が明確である場合、文字列は自動で変換処理されるため、最も安全な選択肢となる。
                         value[0] if len(value) > 0 else "STRING"
@@ -93,7 +81,9 @@ def convert_parameter_type(
             assert_never(unreachable)
 
 
-def convert_parameter_value(value: PrimitivePythonParameter) -> ParameterValueDict:
+def convert_primitive_parameter_value(
+    value: PrimitivePythonParameter,
+) -> ParameterValueDict:
     match value:
         case str():
             return ValueDict({"value": value})
@@ -117,7 +107,11 @@ def convert_parameter_value(value: PrimitivePythonParameter) -> ParameterValueDi
             return ArrayValueDict(
                 {
                     "arrayValue": ArrayValueValuesDict(
-                        {"values": [convert_parameter_value(v) for v in value]}
+                        {
+                            "values": [
+                                convert_primitive_parameter_value(v) for v in value
+                            ]
+                        }
                     )
                 }
             )

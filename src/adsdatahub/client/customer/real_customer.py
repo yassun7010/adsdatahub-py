@@ -7,8 +7,8 @@ import adsdatahub
 from adsdatahub.client.customer.customer import CustomerClient
 from adsdatahub.client.parameters import PythonParameter
 from adsdatahub.client.parameters.primitive_parameters import (
-    convert_param_types,
-    convert_param_values,
+    convert_primitive_parameter_types,
+    convert_primitive_parameter_values,
 )
 from adsdatahub.client.query_job.real_query_job import RealQueryJob
 from adsdatahub.client.query_result import QueryResult
@@ -42,12 +42,16 @@ class RealCustomerClient(CustomerClient):
             {
                 "query": {
                     "queryText": query_text,
-                    "parameterTypes": convert_param_types(parameters or {}),
+                    "parameterTypes": convert_primitive_parameter_types(
+                        parameters or {}
+                    ),
                 },
                 "spec": {
                     "startDate": start_date,
                     "endDate": end_date,
-                    "parameterValues": convert_param_values(parameters or {}),
+                    "parameterValues": convert_primitive_parameter_values(
+                        parameters or {}
+                    ),
                 },
                 "destTable": dest_table,
             }
@@ -83,7 +87,9 @@ class RealCustomerClient(CustomerClient):
             {
                 "query": {
                     "queryText": query_text,
-                    "parameterTypes": convert_param_types(parameters or {}),
+                    "parameterTypes": convert_primitive_parameter_types(
+                        parameters or {}
+                    ),
                 }
             }
         )
