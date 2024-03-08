@@ -1,7 +1,6 @@
 from functools import cache
 
-from google.cloud import bigquery
-
+from adsdatahub.client.query_job import QueryJob
 from adsdatahub.exceptions import AdsDataHubDestinationTableInfoNotFound
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,
@@ -18,7 +17,7 @@ class QueryResult:
         *,
         dest_table: str,
         operation: OperationModel[AnalysisQueryMetadataModel],
-        job: bigquery.QueryJob,
+        job: QueryJob,
     ) -> None:
         self.dest_table = dest_table
         self.operation = operation

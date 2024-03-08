@@ -11,6 +11,7 @@ from adsdatahub.client.parameters import (
     convert_param_values,
 )
 from adsdatahub.client.query_result import QueryResult
+from adsdatahub.client.real_query_job import RealQueryJob
 from adsdatahub.types import CustomerId
 
 
@@ -63,7 +64,9 @@ class RealCustomerClient(CustomerClient):
         return QueryResult(
             dest_table=dest_table,
             operation=operation,
-            job=self._client.bigquery_client.query(f"SELECT * FROM {dest_table}"),
+            job=RealQueryJob(
+                self._client.bigquery_client.query(f"SELECT * FROM {dest_table}")
+            ),
         )
 
     @override
