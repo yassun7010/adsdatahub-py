@@ -2,7 +2,9 @@ import datetime
 from abc import ABC, abstractmethod
 
 import adsdatahub
-from adsdatahub.client.parameters import PythonParameterType
+from adsdatahub.client.parameters import (
+    PythonParameter,
+)
 from adsdatahub.client.query_result import QueryResult
 from adsdatahub.types import CustomerId
 
@@ -19,7 +21,7 @@ class CustomerClient(ABC):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameterType] | None = None,
+        parameters: dict[str, PythonParameter] | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,
@@ -31,5 +33,5 @@ class CustomerClient(ABC):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameterType] | None = None,
+        parameters: dict[str, PythonParameter] | None = None,
     ) -> None: ...

@@ -27,14 +27,14 @@ from adsdatahub.restapi.schemas.parameter_value import (
 #       2. AdsDataHub のコンソールからはさらに多くのパラメータの型を扱うことができるようだ。
 #          https://developers.google.com/ads-data-hub/guides/run-queries?hl=ja#parameter_types
 #
-PythonParameterType = (
+PrimitivePythonParameter = (
     str
     | int
     | float
     | bool
     | datetime.date
     | datetime.datetime
-    | list["PythonParameterType"]
+    | list["PrimitivePythonParameter"]
 )
 """
 クエリのパラメータとして使える Python の型。
@@ -42,7 +42,7 @@ PythonParameterType = (
 
 
 def convert_param_types(
-    params: dict[str, PythonParameterType],
+    params: dict[str, PrimitivePythonParameter],
 ) -> dict[str, ParameterTypeDict]:
     return {
         key: ParameterTypeDict({"type": convert_parameter_type(value)})
@@ -51,13 +51,13 @@ def convert_param_types(
 
 
 def convert_param_values(
-    params: dict[str, PythonParameterType],
+    params: dict[str, PrimitivePythonParameter],
 ) -> dict[str, ParameterValueDict]:
     return {key: convert_parameter_value(value) for key, value in params.items()}
 
 
 def convert_parameter_type(
-    value: PythonParameterType,
+    value: PrimitivePythonParameter,
 ) -> FieldTypeDict:
     match value:
         case str():
@@ -93,7 +93,7 @@ def convert_parameter_type(
             assert_never(unreachable)
 
 
-def convert_parameter_value(value: PythonParameterType) -> ParameterValueDict:
+def convert_parameter_value(value: PrimitivePythonParameter) -> ParameterValueDict:
     match value:
         case str():
             return ValueDict({"value": value})

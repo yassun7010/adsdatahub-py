@@ -6,7 +6,9 @@ from typing_extensions import override
 
 import adsdatahub
 from adsdatahub.client.customer.customer import CustomerClient
-from adsdatahub.client.parameters import PythonParameterType
+from adsdatahub.client.parameters import (
+    PythonParameter,
+)
 from adsdatahub.client.query_result import QueryResult
 from adsdatahub.exceptions import AdsDataHubMockDataTypeError, AdsDataHubMockMethodError
 from adsdatahub.types import CustomerId
@@ -50,7 +52,7 @@ class MockCustomerClient(CustomerClient):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameterType] | None = None,
+        parameters: dict[str, PythonParameter] | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,
@@ -63,6 +65,6 @@ class MockCustomerClient(CustomerClient):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameterType] | None = None,
+        parameters: dict[str, PythonParameter] | None = None,
     ) -> None:
         return self._provide_response("validate", NoneType)

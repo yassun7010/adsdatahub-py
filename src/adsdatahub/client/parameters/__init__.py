@@ -1,0 +1,3 @@
+from adsdatahub.client.parameters.primitive_parameters import PrimitivePythonParameter
+
+PythonParameter = PrimitivePythonParameter

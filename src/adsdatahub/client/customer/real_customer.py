@@ -5,8 +5,8 @@ from typing_extensions import override
 
 import adsdatahub
 from adsdatahub.client.customer.customer import CustomerClient
-from adsdatahub.client.parameters import (
-    PythonParameterType,
+from adsdatahub.client.parameters import PythonParameter
+from adsdatahub.client.parameters.primitive_parameters import (
     convert_param_types,
     convert_param_values,
 )
@@ -29,7 +29,7 @@ class RealCustomerClient(CustomerClient):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameterType] | None = None,
+        parameters: dict[str, PythonParameter] | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,
@@ -74,7 +74,7 @@ class RealCustomerClient(CustomerClient):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameterType] | None = None,
+        parameters: dict[str, PythonParameter] | None = None,
     ) -> None:
         self._client.restapi.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",

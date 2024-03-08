@@ -3,7 +3,7 @@ import uuid
 
 import adsdatahub
 import pytest
-from adsdatahub.client.parameters import PythonParameterType
+from adsdatahub.client.parameters import PythonParameter
 from adsdatahub.exceptions import (
     AdsDataHubResponseBodyHasError,
     AdsDataHubResponseStatusCodeError,
@@ -135,7 +135,7 @@ class TestClient:
         self,
         client: adsdatahub.Client,
         customer_id: CustomerId,
-        value: PythonParameterType,
+        value: PythonParameter,
     ):
         client.customer(customer_id).validate(
             "SELECT @value as value",
