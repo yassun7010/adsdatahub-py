@@ -1,6 +1,6 @@
 from functools import cache
 
-from adsdatahub.client.query_job import QueryJob
+from adsdatahub.client.query_job.query_job import QueryJob
 from adsdatahub.exceptions import AdsDataHubDestinationTableInfoNotFound
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,

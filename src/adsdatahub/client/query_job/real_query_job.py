@@ -1,7 +1,6 @@
 import pandas as pd
+from adsdatahub.client.query_job.query_job import QueryJob
 from google.cloud import bigquery
-
-from adsdatahub.client.query_job import QueryJob
 
 
 class RealQueryJob(QueryJob):

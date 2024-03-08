@@ -30,6 +30,6 @@ class RealClient(Client):
 
     @override
     def customer(self, customer_id: CustomerId):
-        from adsdatahub.client.real_customer import RealCustomerClient
+        from adsdatahub.client.customer.real_customer import RealCustomerClient
 
         return RealCustomerClient(self, customer_id)

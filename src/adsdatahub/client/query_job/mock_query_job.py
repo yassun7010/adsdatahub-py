@@ -1,6 +1,5 @@
 import pandas as pd
-
-from adsdatahub.client.query_job import QueryJob
+from adsdatahub.client.query_job.query_job import QueryJob
 
 
 class MockQueryJob(QueryJob):

@@ -4,14 +4,14 @@ from time import sleep
 from typing_extensions import override
 
 import adsdatahub
-from adsdatahub.client.customer import CustomerClient
+from adsdatahub.client.customer.customer import CustomerClient
 from adsdatahub.client.parameters import (
     PythonParameterType,
     convert_param_types,
     convert_param_values,
 )
+from adsdatahub.client.query_job.real_query_job import RealQueryJob
 from adsdatahub.client.query_result import QueryResult
-from adsdatahub.client.real_query_job import RealQueryJob
 from adsdatahub.types import CustomerId
 
 

@@ -8,7 +8,7 @@ from adsdatahub.restapi.real_client import RealRestApiClientConstructerKwargs
 from adsdatahub.types import CustomerId
 
 if TYPE_CHECKING:
-    from adsdatahub.client.customer import CustomerClient
+    from adsdatahub.client.customer.customer import CustomerClient
 
 
 class Client:

@@ -3,7 +3,7 @@ import datetime
 from typing_extensions import override
 
 import adsdatahub
-from adsdatahub.client.customer import CustomerClient
+from adsdatahub.client.customer.customer import CustomerClient
 from adsdatahub.client.parameters import PythonParameterType
 from adsdatahub.client.query_result import QueryResult
 from adsdatahub.types import CustomerId
