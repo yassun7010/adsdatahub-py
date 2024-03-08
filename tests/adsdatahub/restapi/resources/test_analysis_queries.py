@@ -2,7 +2,7 @@ import uuid
 
 import adsdatahub.restapi
 import pytest
-from adsdatahub.restapi._helpers import get_extra_fields
+from adsdatahub._helpers import get_extra_fields
 from adsdatahub.restapi.resources import analysis_queries
 from adsdatahub.types import CustomerId
 

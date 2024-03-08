@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Literal, TypedDict, Unpack
 
-from adsdatahub.restapi._helpers import convert_json_value
+from adsdatahub._helpers import convert_json_value
 from adsdatahub.restapi.resources.analysis_queries.list import (
     AnalysisQueryListQueryParams,
     AnalysisQueryListResponse,

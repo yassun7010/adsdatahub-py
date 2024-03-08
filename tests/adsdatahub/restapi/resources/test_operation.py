@@ -4,11 +4,11 @@ from typing import Callable
 import adsdatahub.restapi
 import adsdatahub.restapi.resources.operation
 import pytest
+from adsdatahub._helpers import get_extra_fields
 from adsdatahub.exceptions import (
     AdsDataHubResponseStatusCodeError,
     AdsDataHubUnimplementedError,
 )
-from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.resources import operation
 from adsdatahub.restapi.schemas.analysis_query_metadata import (
     AnalysisQueryMetadataModel,

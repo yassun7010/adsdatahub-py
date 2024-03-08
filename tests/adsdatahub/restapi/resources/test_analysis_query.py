@@ -4,7 +4,7 @@ import uuid
 import adsdatahub.restapi
 import adsdatahub.restapi.resources.analysis_query
 import pytest
-from adsdatahub.restapi._helpers import get_extra_fields
+from adsdatahub._helpers import get_extra_fields
 from adsdatahub.restapi.schemas.analysis_query import AnalysisQueryModel
 from adsdatahub.types import CustomerId
 

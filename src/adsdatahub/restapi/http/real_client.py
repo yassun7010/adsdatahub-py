@@ -7,7 +7,7 @@ from httpx._types import (
 )
 from typing_extensions import override
 
-from adsdatahub.restapi._helpers import (
+from adsdatahub._helpers import (
     GenericResponseBody,
     parse_response_body,
     validate_status_code,

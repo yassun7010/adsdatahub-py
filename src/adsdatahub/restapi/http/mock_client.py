@@ -3,13 +3,13 @@ from types import NoneType
 
 from typing_extensions import override
 
+from adsdatahub._helpers import (
+    GenericResponseBody,
+)
 from adsdatahub.exceptions import (
     AdsDataHubMockDataTypeError,
     AdsDataHubMockStoreDataEmptyError,
     AdsDataHubMockStoreKeyError,
-)
-from adsdatahub.restapi._helpers import (
-    GenericResponseBody,
 )
 from adsdatahub.restapi.http.client import HttpRequestKwargs
 from adsdatahub.restapi.schemas._model import Model

@@ -2,11 +2,11 @@ from typing import Callable
 
 import adsdatahub.restapi
 import pytest
+from adsdatahub._helpers import get_extra_fields
 from adsdatahub.exceptions import (
     AdsDataHubUnavailableError,
     AdsDataHubUnimplementedError,
 )
-from adsdatahub.restapi._helpers import get_extra_fields
 from adsdatahub.restapi.resources import operation
 from adsdatahub.restapi.schemas._model import Model
 from adsdatahub.restapi.schemas.operation import OperationModel

@@ -15,7 +15,7 @@ from httpx._types import (
     URLTypes,
 )
 
-from adsdatahub.restapi._helpers import GenericResponseBody
+from adsdatahub._helpers import GenericResponseBody
 
 
 class HttpRequestKwargs(typing.TypedDict):

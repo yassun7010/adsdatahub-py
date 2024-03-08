@@ -1,5 +1,5 @@
 import pytest
-from adsdatahub.restapi import _helpers as helpers
+from adsdatahub import _helpers as helpers
 from adsdatahub.restapi.schemas._model import ExtraAllowModel
 
 
