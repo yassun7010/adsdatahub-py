@@ -85,6 +85,19 @@ class AdsDataHubMockError(AdsDataHubError):
     pass
 
 
+class AdsDataHubMockMethodError(AdsDataHubMockError, ValueError):
+    """Mock method error for adsdatahub."""
+
+    def __init__(self, method: str, expected_method: str) -> None:
+        self.method = method
+        self.expected_method = expected_method
+
+    @property
+    @override
+    def message(self) -> str:
+        return f"Mock Method Error {self.method}: expected {self.expected_method}"
+
+
 class AdsDataHubMockDataTypeError(AdsDataHubMockError, TypeError):
     """Mock data type error for adsdatahub."""
 
