@@ -2,6 +2,7 @@ import datetime
 from types import NoneType
 from typing import Any, TypeVar
 
+from pydantic import BaseModel
 from typing_extensions import override
 
 import adsdatahub
@@ -52,7 +53,7 @@ class MockCustomerClient(CustomerClient):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameter] | None = None,
+        parameters: dict[str, PythonParameter] | BaseModel | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,

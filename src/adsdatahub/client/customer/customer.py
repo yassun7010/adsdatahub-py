@@ -1,6 +1,8 @@
 import datetime
 from abc import ABC, abstractmethod
 
+from pydantic import BaseModel
+
 import adsdatahub
 from adsdatahub.client.parameters import (
     PythonParameter,
@@ -21,7 +23,7 @@ class CustomerClient(ABC):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameter] | None = None,
+        parameters: dict[str, PythonParameter] | BaseModel | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,
