@@ -94,6 +94,7 @@ class TestClient:
         finally:
             bigquery.Client().delete_table(table_name, not_found_ok=True)
 
+    @pytest.mark.long
     def test_query_with_pydantic_parameter(
         self,
         client: adsdatahub.Client,
@@ -112,8 +113,7 @@ class TestClient:
             dest_table="test",
         )
 
-        print(result.operation.model_dump_json(by_alias=True, exclude_unset=True))
-        raise Exception()
+        assert result.operation.done is True
 
     def test_validate_with_default_parameter(
         self,
