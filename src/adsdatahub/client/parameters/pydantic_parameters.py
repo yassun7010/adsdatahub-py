@@ -90,7 +90,16 @@ def convert_pydantic_parameter_type(field_type: type | None) -> FieldTypeDict:
 
 def convert_pydantic_parameter_value(value: Any) -> ParameterValueDict:
     if value is None:
-        return ValueDict({"value": "NULL"})
+        # NOTE: nullを渡す方法がわかっていません。
+        #       値フィールドにnullを渡すと、次のようなエラーになることはわかっています。
+        #
+        #      ```json
+        #      {"code": 3, "message": "Value for parameter \"value\" not given and no default value found. (Error 0410)"}
+        #      ```
+        #
+        # See: https://developers.google.com/ads-data-hub/reference/rest/v1/FieldType?hl=ja
+
+        raise NotImplementedError("null is not supported yet.")
 
     match value:
         case str():
