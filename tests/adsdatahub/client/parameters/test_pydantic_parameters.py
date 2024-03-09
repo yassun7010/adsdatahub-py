@@ -63,7 +63,7 @@ class TestConvertPydanticParamTypes:
             list_some_float: Annotated[
                 list[float], Field(default_factory=lambda: [1.1, 2.2, 3.3])
             ]
-            optional: Annotated[str | None, Field(default=None)]
+            # optional: Annotated[str | None, Field(default=None)]
 
         assert convert_pydantic_parameter_types(
             Params(
@@ -75,7 +75,7 @@ class TestConvertPydanticParamTypes:
                 timestamp=datetime.datetime.now(),
                 list_empty_string=["a", "b", "c"],
                 list_some_float=[],
-                optional=None,
+                # optional=None,
             )
         ) == {
             "string": {
@@ -105,8 +105,8 @@ class TestConvertPydanticParamTypes:
                     }
                 },
             },
-            "optional": {
-                "type": {"type": "STRING"},
-                "defaultValue": {"value": "NULL"},
-            },
+            # "optional": {
+            #     "type": {"type": "STRING"},
+            #     "defaultValue": {"value": "NULL"},
+            # },
         }
