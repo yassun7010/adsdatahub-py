@@ -88,19 +88,13 @@ def convert_primitive_parameter_value(
         case str():
             return ValueDict({"value": value})
 
-        case int():
-            return ValueDict({"value": str(value)})
-
-        case float():
-            return ValueDict({"value": str(value)})
-
         case bool():
+            return ValueDict({"value": str(value).upper()})
+
+        case int() | float():
             return ValueDict({"value": str(value)})
 
-        case datetime.date():
-            return ValueDict({"value": value.isoformat()})
-
-        case datetime.datetime():
+        case datetime.date() | datetime.datetime():
             return ValueDict({"value": value.isoformat()})
 
         case list():

@@ -1,4 +1,16 @@
-from adsdatahub.client.parameters.primitive_parameters import PrimitivePythonParameter
+from pydantic import BaseModel
+
+from adsdatahub.client.parameters.primitive_parameters import (
+    PrimitivePythonParameter,
+    convert_primitive_parameter_types,
+    convert_primitive_parameter_values,
+)
+from adsdatahub.client.parameters.pydantic_parameters import (
+    convert_pydantic_parameter_types,
+    convert_pydantic_parameter_values,
+)
+from adsdatahub.restapi.schemas.parameter_type import ParameterTypeDict
+from adsdatahub.restapi.schemas.parameter_value import ParameterValueDict
 
 # TODO: 配列の型、デフォルト値などをサポートする必要があるが、後回し。
 #
@@ -15,3 +27,23 @@ PythonParameter = PrimitivePythonParameter
 """
 クエリのパラメータとして使える Python の型。
 """
+
+
+def convert_parameter_types(
+    parameter: dict[str, PrimitivePythonParameter] | BaseModel,
+) -> dict[str, ParameterTypeDict]:
+    if isinstance(parameter, BaseModel):
+        return convert_pydantic_parameter_types(parameter)
+
+    else:
+        return convert_primitive_parameter_types(parameter)
+
+
+def convert_parameter_values(
+    parameter: dict[str, PrimitivePythonParameter] | BaseModel,
+) -> dict[str, ParameterValueDict]:
+    if isinstance(parameter, BaseModel):
+        return convert_pydantic_parameter_values(parameter)
+
+    else:
+        return convert_primitive_parameter_values(parameter)

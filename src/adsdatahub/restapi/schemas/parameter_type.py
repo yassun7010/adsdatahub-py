@@ -46,3 +46,6 @@ class ParameterTypeModel(ExtraForbidModel):
     """
     パラメータ値が指定されていない場合に使用する値。
     """
+
+
+ParameterType = ParameterTypeDict | ParameterTypeModel

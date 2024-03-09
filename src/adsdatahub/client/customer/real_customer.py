@@ -1,14 +1,15 @@
 import datetime
 from time import sleep
 
+from pydantic import BaseModel
 from typing_extensions import override
 
 import adsdatahub
 from adsdatahub.client.customer.customer import CustomerClient
-from adsdatahub.client.parameters import PythonParameter
-from adsdatahub.client.parameters.primitive_parameters import (
-    convert_primitive_parameter_types,
-    convert_primitive_parameter_values,
+from adsdatahub.client.parameters import (
+    PythonParameter,
+    convert_parameter_types,
+    convert_parameter_values,
 )
 from adsdatahub.client.query_job.real_query_job import RealQueryJob
 from adsdatahub.client.query_result import QueryResult
@@ -29,7 +30,7 @@ class RealCustomerClient(CustomerClient):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameter] | None = None,
+        parameters: dict[str, PythonParameter] | BaseModel | None = None,
         *,
         start_date: str | datetime.date,
         end_date: str | datetime.date,
@@ -42,16 +43,12 @@ class RealCustomerClient(CustomerClient):
             {
                 "query": {
                     "queryText": query_text,
-                    "parameterTypes": convert_primitive_parameter_types(
-                        parameters or {}
-                    ),
+                    "parameterTypes": convert_parameter_types(parameters or {}),
                 },
                 "spec": {
                     "startDate": start_date,
                     "endDate": end_date,
-                    "parameterValues": convert_primitive_parameter_values(
-                        parameters or {}
-                    ),
+                    "parameterValues": convert_parameter_values(parameters or {}),
                 },
                 "destTable": dest_table,
             }
@@ -87,9 +84,7 @@ class RealCustomerClient(CustomerClient):
             {
                 "query": {
                     "queryText": query_text,
-                    "parameterTypes": convert_primitive_parameter_types(
-                        parameters or {}
-                    ),
+                    "parameterTypes": convert_parameter_types(parameters or {}),
                 }
             }
         )
