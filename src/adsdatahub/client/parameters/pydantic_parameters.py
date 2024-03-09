@@ -1,5 +1,6 @@
 import datetime
-from typing import Any, List, assert_never, get_args, get_origin
+from types import NoneType, UnionType
+from typing import Any, List, Union, assert_never, get_args, get_origin
 
 from pydantic import BaseModel
 from pydantic_core import PydanticUndefined
@@ -51,35 +52,46 @@ def convert_pydantic_parameter_type(field_type: type | None) -> FieldTypeDict:
     if field_type is None:
         raise TypeError("Field annotation cannot be None")
 
-    if issubclass(field_type, bool):
-        return TypeDict({"type": "BOOL"})
+    origin_type = get_origin(field_type)
+    if origin_type is None:
+        if issubclass(field_type, bool):
+            return TypeDict({"type": "BOOL"})
 
-    elif issubclass(field_type, str):
-        return TypeDict({"type": "STRING"})
+        elif issubclass(field_type, str):
+            return TypeDict({"type": "STRING"})
 
-    elif issubclass(field_type, int):
-        return TypeDict({"type": "INT64"})
+        elif issubclass(field_type, int):
+            return TypeDict({"type": "INT64"})
 
-    elif issubclass(field_type, float):
-        return TypeDict({"type": "FLOAT64"})
+        elif issubclass(field_type, float):
+            return TypeDict({"type": "FLOAT64"})
 
-    elif issubclass(field_type, datetime.datetime):
-        return TypeDict({"type": "TIMESTAMP"})
+        elif issubclass(field_type, datetime.datetime):
+            return TypeDict({"type": "TIMESTAMP"})
 
-    elif issubclass(field_type, datetime.date):
-        return TypeDict({"type": "DATE"})
+        elif issubclass(field_type, datetime.date):
+            return TypeDict({"type": "DATE"})
 
-    else:
-        origin_type = get_origin(field_type)
-        if origin_type is list or origin_type is List:
-            element_type = get_args(field_type)[0]
-            return ArrayTypeDict(
-                {"arrayType": convert_pydantic_parameter_type(element_type)}
-            )
-        raise TypeError(f"Unsupported type: {field_type}")
+    elif origin_type is list or origin_type is List:
+        element_type = get_args(field_type)[0]
+        return ArrayTypeDict(
+            {"arrayType": convert_pydantic_parameter_type(element_type)}
+        )
+
+    elif origin_type is UnionType or origin_type is Union:
+        element_types = get_args(field_type)
+        for element_type in element_types:
+            if element_type is NoneType:
+                continue
+            return convert_pydantic_parameter_type(element_type)
+
+    raise TypeError(f"Unsupported type: {field_type}")
 
 
 def convert_pydantic_parameter_value(value: Any) -> ParameterValueDict:
+    if value is None:
+        return ValueDict({"value": "NULL"})
+
     match value:
         case str():
             return ValueDict({"value": value})
