@@ -61,6 +61,7 @@ class TestClient:
         finally:
             bigquery.Client().delete_table(table_name, not_found_ok=True)
 
+    @pytest.mark.long
     def test_query_with_undefined_parameter(
         self,
         client: adsdatahub.Client,
@@ -74,6 +75,7 @@ class TestClient:
                 dest_table="test",
             )
 
+    @pytest.mark.long
     def test_query_with_parameter(
         self,
         client: adsdatahub.Client,
@@ -91,6 +93,27 @@ class TestClient:
 
         finally:
             bigquery.Client().delete_table(table_name, not_found_ok=True)
+
+    def test_query_with_pydantic_parameter(
+        self,
+        client: adsdatahub.Client,
+        customer_id: CustomerId,
+    ):
+        from pydantic import BaseModel
+
+        class MyParameter(BaseModel):
+            value: str | None = None
+
+        result = client.customer(customer_id).query(
+            "SELECT @value as value",
+            MyParameter(),
+            start_date="2024-01-01",
+            end_date="2024-02-02",
+            dest_table="test",
+        )
+
+        print(result.operation.model_dump_json(by_alias=True, exclude_unset=True))
+        raise Exception()
 
     def test_validate_with_default_parameter(
         self,
@@ -140,4 +163,19 @@ class TestClient:
         client.customer(customer_id).validate(
             "SELECT @value as value",
             {"value": value},
+        )
+
+    def test_validate_with_pydantic_parameter(
+        self,
+        client: adsdatahub.Client,
+        customer_id: CustomerId,
+    ):
+        from pydantic import BaseModel
+
+        class MyParameter(BaseModel):
+            value: str | None = None
+
+        client.customer(customer_id).validate(
+            "SELECT @value as value",
+            MyParameter(),
         )
