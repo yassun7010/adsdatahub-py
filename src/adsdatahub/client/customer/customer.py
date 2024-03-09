@@ -35,5 +35,5 @@ class CustomerClient(ABC):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameter] | None = None,
+        parameters: dict[str, PythonParameter] | BaseModel | None = None,
     ) -> None: ...

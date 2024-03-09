@@ -75,7 +75,7 @@ class RealCustomerClient(CustomerClient):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameter] | None = None,
+        parameters: dict[str, PythonParameter] | BaseModel | None = None,
     ) -> None:
         self._client.restapi.resource(
             "https://adsdatahub.googleapis.com/v1/customers/{customer_id}/analysisQueries",

@@ -66,6 +66,6 @@ class MockCustomerClient(CustomerClient):
         self,
         query_text: str,
         /,
-        parameters: dict[str, PythonParameter] | None = None,
+        parameters: dict[str, PythonParameter] | BaseModel | None = None,
     ) -> None:
         return self._provide_response("validate", NoneType)
