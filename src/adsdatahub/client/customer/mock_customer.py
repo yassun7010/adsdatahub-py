@@ -1,6 +1,6 @@
 import datetime
 from types import NoneType
-from typing import Any, TypeVar
+from typing import Any, Self, TypeVar
 
 from pydantic import BaseModel
 from typing_extensions import override
@@ -27,11 +27,15 @@ class MockCustomerClient(CustomerClient):
         self.customer_id = customer_id
         self._store: list[tuple[str, Any]] = []
 
-    def inject_query_response(self, response: QueryResult | Exception) -> None:
+    def inject_query_response(self, response: QueryResult | Exception) -> Self:
         self._store.append(("query", response))
 
-    def inject_validate_response(self, response: None | Exception = None) -> None:
+        return self
+
+    def inject_validate_response(self, response: None | Exception = None) -> Self:
         self._store.append(("validate", response))
+
+        return self
 
     def _provide_response(
         self, expected_method: str, expected_response_type: type[GenericResponse]
