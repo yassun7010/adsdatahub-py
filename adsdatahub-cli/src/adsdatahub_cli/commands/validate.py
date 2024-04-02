@@ -1,11 +1,9 @@
 import datetime
 import os
-
 from argparse import ArgumentParser, Namespace, _SubParsersAction
 from logging import getLogger
 from pathlib import Path
 from typing import Any, cast
-
 
 logger = getLogger(__name__)
 
@@ -35,20 +33,20 @@ def add_subparser(subparsers: "_SubParsersAction[Any]", **kwargs: Any) -> None:
     parser.add_argument(
         "--start-date",
         type=datetime.date.fromisoformat,
-        required=False,
+        required=True,
         help=dummy_desctiption,
     )
     parser.add_argument(
         "--end-date",
         type=datetime.date.fromisoformat,
-        required=False,
+        required=True,
         help=dummy_desctiption,
     )
 
     parser.add_argument(
         "--dest-table",
         type=str,
-        required=False,
+        required=True,
         help=dummy_desctiption,
     )
 

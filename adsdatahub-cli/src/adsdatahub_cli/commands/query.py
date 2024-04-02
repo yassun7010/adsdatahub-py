@@ -1,11 +1,9 @@
 import datetime
 import os
-
 from argparse import ArgumentParser, Namespace, _SubParsersAction
 from logging import getLogger
 from pathlib import Path
 from typing import Any, cast
-
 
 logger = getLogger(__name__)
 
@@ -23,7 +21,7 @@ def add_subparser(subparsers: "_SubParsersAction[Any]", **kwargs: Any) -> None:
         ),
     )
 
-    query_group = parser.add_mutually_exclusive_group()
+    query_group = parser.add_mutually_exclusive_group(required=True)
     query_group.add_argument("--query-text", type=str, help="クエリ文字列。")
     query_group.add_argument(
         "--query-file",
@@ -34,17 +32,20 @@ def add_subparser(subparsers: "_SubParsersAction[Any]", **kwargs: Any) -> None:
     parser.add_argument(
         "--start-date",
         type=datetime.date.fromisoformat,
+        required=True,
         help="クエリが利用するデータ期間の開始日",
     )
     parser.add_argument(
         "--end-date",
         type=datetime.date.fromisoformat,
+        required=True,
         help="クエリが利用するデータ期間の終了日",
     )
 
     parser.add_argument(
         "--dest-table",
         type=str,
+        required=True,
         help="結果の出力対象の bigquery テーブル。 Format: [[{project_id}.]{dataset_id}.]{table_id}",
     )
 
