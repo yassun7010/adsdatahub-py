@@ -6,8 +6,16 @@ on:
       - "v*"
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        working_directory:
+          - './'
+          - "./adsdatahub-cli"
+    defaults:
+      run:
+        working-directory: ${{ matrix.working_directory }}
     steps:
       - uses: actions/checkout@v2
       - name: Build and publish to pypi
